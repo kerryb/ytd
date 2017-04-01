@@ -1,4 +1,6 @@
-%{"certifi": {:hex, :certifi, "1.0.0", "1c787a85b1855ba354f0b8920392c19aa1d06b0ee1362f9141279620a5be2039", [:rebar3], []},
+%{"bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], []},
+  "certifi": {:hex, :certifi, "1.0.0", "1c787a85b1855ba354f0b8920392c19aa1d06b0ee1362f9141279620a5be2039", [:rebar3], []},
+  "credo": {:hex, :credo, "0.7.2", "850463f126c09227994967fdcf8b8ad7684ab220f7727c00bcafc0ac37bd3660", [:mix], [{:bunt, "~> 0.2.0", [hex: :bunt, optional: false]}]},
   "exactor": {:hex, :exactor, "2.2.3", "a6972f43bb6160afeb73e1d8ab45ba604cd0ac8b5244c557093f6e92ce582786", [:mix], []},
   "exjsx": {:hex, :exjsx, "3.2.1", "1bc5bf1e4fd249104178f0885030bcd75a4526f4d2a1e976f4b428d347614f0f", [:mix], [{:jsx, "~> 2.8.0", [hex: :jsx, optional: false]}]},
   "exvcr": {:hex, :exvcr, "0.8.7", "e76f33b10dfefbcf32afa6d6867140566d0d54797e352b47485eed0241dd7edf", [:mix], [{:exactor, "~> 2.2", [hex: :exactor, optional: false]}, {:exjsx, "~> 3.2", [hex: :exjsx, optional: false]}, {:httpoison, "~> 0.8", [hex: :httpoison, optional: true]}, {:httpotion, "~> 3.0", [hex: :httpotion, optional: true]}, {:ibrowse, "~> 4.2.2", [hex: :ibrowse, optional: true]}, {:meck, "~> 0.8.3", [hex: :meck, optional: false]}]},
