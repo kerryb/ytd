@@ -8,6 +8,7 @@ defmodule YTDCore.Strava do
   @doc """
   Given an access token for an athlete, retrieve their year-to-data mileage.
   """
+  @spec ytd(String.t) :: float
   def ytd(token) do
     client = Client.new token
     %{id: id} = Athlete.retrieve_current client
