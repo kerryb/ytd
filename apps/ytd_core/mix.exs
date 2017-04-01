@@ -14,6 +14,7 @@ defmodule YTDCore.Mixfile do
       start_permanent: Mix.env == :prod,
       deps: deps(),
       preferred_cli_env: preferred_cli_env(),
+      elixirc_options: [warnings_as_errors: true],
     ]
   end
 
