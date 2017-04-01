@@ -2,7 +2,7 @@ all: clean test style dialyzer docs
 clean:
 	mix clean
 test:
-	mix test
+	MIX_ENV=test mix coveralls.html --umbrella
 style:
 	mix credo --strict
 dialyzer:

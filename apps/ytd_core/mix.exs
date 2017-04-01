@@ -15,6 +15,7 @@ defmodule YTDCore.Mixfile do
       deps: deps(),
       preferred_cli_env: preferred_cli_env(),
       elixirc_options: [warnings_as_errors: true],
+      test_coverage: [tool: ExCoveralls],
     ]
   end
 
