@@ -13,14 +13,28 @@ defmodule YTDCore.Mixfile do
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
       deps: deps(),
+      preferred_cli_env: preferred_cli_env(),
     ]
   end
 
   def application do
-    [extra_applications: [:logger]]
+    [extra_applications: [:httpoison, :logger, :strava]]
   end
 
   defp deps do
-    []
+    [
+      {:exvcr, ">= 0.8.0", only: :test},
+      {:httpoison, ">= 0.10.0"},
+      {:strava, ">= 0.3.0"},
+    ]
+  end
+
+  defp preferred_cli_env do
+    [
+      vcr: :test,
+      "vcr.delete": :test,
+      "vcr.check": :test,
+      "vcr.show": :test,
+    ]
   end
 end
