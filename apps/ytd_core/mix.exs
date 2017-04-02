@@ -20,14 +20,13 @@ defmodule YTDCore.Mixfile do
   end
 
   def application do
-    [extra_applications: [:httpoison, :logger, :strava]]
+    [extra_applications: [:hackney, :httpoison, :logger, :strava]]
   end
 
   defp deps do
     [
       {:exvcr, ">= 0.8.0", only: :test},
       {:httpoison, ">= 0.10.0"},
-      {:poison, "~> 3.0", override: true}, # strava conflicts with phoenix
       {:strava, ">= 0.3.0"},
     ]
   end

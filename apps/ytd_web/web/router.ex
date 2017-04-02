@@ -16,11 +16,7 @@ defmodule YTDWeb.Router do
   scope "/", YTDWeb do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
+    get "/", IndexController, :index
+    get "/auth", AuthController, :index
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", YTDWeb do
-  #   pipe_through :api
-  # end
 end

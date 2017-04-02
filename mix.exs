@@ -9,7 +9,7 @@ defmodule Ytd.Mixfile do
       deps: deps(),
       preferred_cli_env: preferred_cli_env(),
       test_coverage: [tool: ExCoveralls],
-      dialyzer: [plt_add_deps: :transitive],
+      dialyzer: dialyzer(),
     ]
   end
 
@@ -27,6 +27,13 @@ defmodule Ytd.Mixfile do
       coveralls: :test,
       "coveralls.detail": :test,
       "coveralls.html": :test,
+    ]
+  end
+
+  defp dialyzer do
+    [
+      plt_add_deps: :transitive,
+      ignore_warnings: "config/dialyzer.ignore-warnings",
     ]
   end
 end
