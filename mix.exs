@@ -9,6 +9,7 @@ defmodule Ytd.Mixfile do
       deps: deps(),
       preferred_cli_env: preferred_cli_env(),
       test_coverage: [tool: ExCoveralls],
+      dialyzer: [plt_add_deps: :transitive],
     ]
   end
 

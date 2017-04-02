@@ -14,7 +14,6 @@ config :ytd_web, YTDWeb.Endpoint,
   watchers: [node: ["node_modules/brunch/bin/brunch", "watch", "--stdin",
                     cd: Path.expand("../", __DIR__)]]
 
-
 # Watch static and templates for browser reloading.
 config :ytd_web, YTDWeb.Endpoint,
   live_reload: [
