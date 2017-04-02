@@ -48,6 +48,7 @@ defmodule YTDWeb.Mixfile do
       {:phoenix_html, ">= 2.6.0"},
       {:phoenix_live_reload, ">= 1.0.0", only: :dev},
       {:phoenix_pubsub, ">= 1.0.0"},
+      {:phoenix_slime, ">= 0.8.0"},
       {:poison, ">= 3.0.0", override: true}, # strava conflicts with phoenix
     ]
   end
