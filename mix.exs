@@ -16,6 +16,7 @@ defmodule Ytd.Mixfile do
   defp deps do
     [
       {:credo, ">= 0.7.0", only: [:dev, :test]},
+      {:distillery, ">= 1.3.2"},
       {:dialyxir, ">= 0.5.0", only: [:dev], runtime: false},
       {:excoveralls, ">= 0.6.0", only: :test},
       {:ex_doc, ">= 0.14.0", only: :dev, runtime: false},

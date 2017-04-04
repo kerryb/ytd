@@ -27,6 +27,7 @@ defmodule YTDWeb.Mixfile do
        :phoenix,
        :phoenix_pubsub,
        :phoenix_html,
+       :phoenix_slime,
        :cowboy,
        :logger,
        :gettext,

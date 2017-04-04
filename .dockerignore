@@ -1,0 +1,14 @@
+.dockerignore  # check and see if this is excluded by default
+.git
+.gitignore
+.log
+tmp
+docker
+_build
+deps
+*.ez
+releases
+erl_crash.dump
+apps/ytd_web/node_modules
+apps/ytd_web/priv
+docs
