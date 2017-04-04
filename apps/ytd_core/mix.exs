@@ -20,7 +20,7 @@ defmodule YTDCore.Mixfile do
   end
 
   def application do
-    [extra_applications: [:hackney, :httpoison, :logger, :strava]]
+    [extra_applications: [:hackney, :httpoison, :logger, :strava, :timex]]
   end
 
   defp deps do
@@ -29,6 +29,7 @@ defmodule YTDCore.Mixfile do
       {:httpoison, ">= 0.10.0"},
       {:mock, ">= 0.2.0", only: :test},
       {:strava, ">= 0.3.0"},
+      {:timex, ">= 0.19.0"},
     ]
   end
 

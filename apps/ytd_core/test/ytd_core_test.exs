@@ -1,7 +1,7 @@
 defmodule YTDCoreTest do
   use ExUnit.Case
   import Mock
-  alias YTDCore.{Data, Strava}
+  alias YTDCore.Strava
   doctest YTDCore
 
   describe "YTDCore.token_from_code/1" do
@@ -15,10 +15,15 @@ defmodule YTDCoreTest do
   end
 
   describe "YTDCore.values/1" do
-    test "returns the YTD figure from Strava" do
+    test "returns the YTD figure from Strava and calculated values" do
       token = "strava-token-would-go-here"
-      with_mock Strava, [ytd: fn ^token -> 123.456 end] do
-        assert YTDCore.values(token) == %Data{ytd: 123.456}
+      with_mocks [
+        {Strava, [], [ytd: fn ^token -> 123.456 end]},
+        {Date, [], [utc_today: fn -> ~D(2017-03-15) end]},
+      ] do
+        data = YTDCore.values token
+        assert data.ytd == 123.456
+        assert_in_delta data.projected_annual, 608.9, 0.1
       end
     end
   end

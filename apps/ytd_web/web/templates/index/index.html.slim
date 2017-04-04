@@ -1,10 +1,18 @@
 .ytd
   hr
   div
-    ' So far this year, you have run
+    | So far this year, you&rsquo;ve run
   .big
     span.ytd-value
       = @ytd
+    | &nbsp;
+    ' miles
+  hr
+  div
+    | You&rsquo;re heading for an annual total of
+  .big
+    span.ytd-value
+      = @projected_annual
     | &nbsp;
     ' miles
   hr

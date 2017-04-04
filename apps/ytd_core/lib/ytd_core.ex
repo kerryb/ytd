@@ -3,7 +3,7 @@ defmodule YTDCore do
   Public interface.
   """
 
-  alias YTDCore.{Data, Strava}
+  alias YTDCore.{Calculations, Data, Strava}
 
   @doc """
   Given an authorization code (from an oauth callback), request and return an
@@ -16,6 +16,10 @@ defmodule YTDCore do
   """
   @spec values(String.t) :: %YTDCore.Data{}
   def values(token) do
-    %Data{ytd: Strava.ytd(token)}
+    ytd = Strava.ytd(token)
+    %Data{
+      ytd: ytd,
+      projected_annual: Calculations.projected_annual(ytd, Date.utc_today),
+    }
   end
 end

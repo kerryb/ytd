@@ -19,6 +19,7 @@ defmodule YTDWeb.IndexController do
     data = YTDCore.values token
     conn
     |> assign(:ytd, :io_lib.format("~.1f", [data.ytd]))
+    |> assign(:projected_annual, :io_lib.format("~.1f", [data.projected_annual]))
     |> render("index.html")
   end
 
