@@ -1,6 +1,26 @@
 $icon-font-path: "/fonts/";
 
 $body-bg: #fc4c02;
-$text-color: rgba(255,255,255,0.87);
+$text-color: rgba(255,255,255,0.7);
+$font-size-base: 40px;
+$line-height-base: 1.1;
 
 @import "bootstrap";
+
+.ytd {
+  padding-top: 40px;
+  font-weight: 100;
+
+  hr {
+    margin: 10px 0;
+  }
+
+  .big {
+    font-size: 220%;
+  }
+
+  .ytd-value {
+    color: #fff;
+    font-weight: 500;
+  }
+}

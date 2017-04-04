@@ -1,3 +1,10 @@
-p
-  ' YTD:
-  = @ytd
+.ytd
+  hr
+  div
+    ' So far this year, you have run
+  .big
+    span.ytd-value
+      = @ytd
+    | &nbsp;
+    ' miles
+  hr
