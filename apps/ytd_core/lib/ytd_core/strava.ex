@@ -1,23 +1,14 @@
 defmodule YTDCore.Strava do
-  @moduledoc """
-  Wrapper for calls to the Strava API.
-  """
+  @moduledoc false
 
   alias Strava.{Auth, Client, Athlete}
 
-  @doc """
-  Given an authorization code (from an oauth callback), request and return an
-  access token for that athlete.
-  """
   @spec token_from_code(String.t) :: String.t
   def token_from_code(code) do
     %{token: %{access_token: token}} = Auth.get_token! code: code
     token
   end
 
-  @doc """
-  Given an access token for an athlete, retrieve their year-to-data mileage.
-  """
   @spec ytd(String.t) :: float
   def ytd(token) do
     client = Client.new token

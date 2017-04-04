@@ -1,7 +1,6 @@
 defmodule YTDWeb.IndexController do
   use YTDWeb.Web, :controller
   alias Strava.Auth
-  alias YTDCore.Strava
 
   def index(conn, _params) do
     case session_token conn do
@@ -17,9 +16,9 @@ defmodule YTDWeb.IndexController do
   end
 
   defp render_index(conn, token) do
-    ytd = Strava.ytd token
+    data = YTDCore.values token
     conn
-    |> assign(:ytd, ytd)
+    |> assign(:ytd, :io_lib.format("~.1f", [data.ytd]))
     |> render("index.html")
   end
 

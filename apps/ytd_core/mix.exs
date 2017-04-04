@@ -27,6 +27,7 @@ defmodule YTDCore.Mixfile do
     [
       {:exvcr, ">= 0.8.0", only: :test},
       {:httpoison, ">= 0.10.0"},
+      {:mock, ">= 0.2.0", only: :test},
       {:strava, ">= 0.3.0"},
     ]
   end

@@ -11,14 +11,14 @@ defmodule YTDWeb.AuthControllerTest do
     test "retrieves the token and stores it in the session", %{conn: conn} do
       code = "authorisation-code-would-go-here"
       token = "strava-token-would-go-here"
-      with_mock YTDCore.Strava, [token_from_code: fn ^code -> token end] do
+      with_mock YTDCore, [token_from_code: fn ^code -> token end] do
         conn = get conn, "/auth?code=#{code}"
         assert get_session(conn, :token) == token
       end
     end
 
     test "redirects to the index", %{conn: conn} do
-      with_mock YTDCore.Strava, [token_from_code: fn _ -> "" end] do
+      with_mock YTDCore, [token_from_code: fn _ -> "" end] do
         conn = get conn, "/auth?code="
         assert redirected_to(conn) == "/"
       end
