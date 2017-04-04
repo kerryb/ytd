@@ -20,6 +20,7 @@ defmodule YTDWeb.IndexController do
     conn
     |> assign(:ytd, :io_lib.format("~.1f", [data.ytd]))
     |> assign(:projected_annual, :io_lib.format("~.1f", [data.projected_annual]))
+    |> assign(:weekly_average, :io_lib.format("~.1f", [data.weekly_average]))
     |> render("index.html")
   end
 

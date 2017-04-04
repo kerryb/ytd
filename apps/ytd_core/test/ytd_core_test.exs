@@ -24,6 +24,7 @@ defmodule YTDCoreTest do
         data = YTDCore.values token
         assert data.ytd == 123.456
         assert_in_delta data.projected_annual, 608.9, 0.1
+        assert_in_delta data.weekly_average, 11.7, 0.1
       end
     end
   end

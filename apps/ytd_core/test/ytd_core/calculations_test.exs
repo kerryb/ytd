@@ -14,4 +14,11 @@ defmodule YTDCore.CalculationsTest do
         Calculations.projected_annual(123, ~D(2017-02-01))
     end
   end
+
+  describe "YTDCore.Calculations.weekly_average/2" do
+    test "returns the weekly average, given a mileage and date" do
+      assert_in_delta(Calculations.weekly_average(123, ~D(2017-04-15)),
+                      8.2, 0.1)
+    end
+  end
 end

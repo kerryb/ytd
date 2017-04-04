@@ -20,6 +20,7 @@ defmodule YTDCore do
     %Data{
       ytd: ytd,
       projected_annual: Calculations.projected_annual(ytd, Date.utc_today),
+      weekly_average: Calculations.weekly_average(ytd, Date.utc_today),
     }
   end
 end

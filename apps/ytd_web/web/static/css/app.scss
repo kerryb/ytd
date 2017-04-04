@@ -8,15 +8,19 @@ $line-height-base: 1.1;
 @import "bootstrap";
 
 .ytd {
-  padding-top: 40px;
+  padding-top: 10px;
   font-weight: 100;
 
   hr {
-    margin: 10px 0;
+    margin: 20px 0;
   }
 
-  .big {
+  .ytd-big {
     font-size: 220%;
+  }
+
+  .ytd-small {
+    font-size: 80%;
   }
 
   .ytd-value {

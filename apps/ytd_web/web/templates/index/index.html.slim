@@ -2,15 +2,21 @@
   hr
   div
     | So far this year, you&rsquo;ve run
-  .big
+  .ytd-big
     span.ytd-value
       = @ytd
     | &nbsp;
     ' miles
+  .ytd-small
+    ' (that's an average of
+    span.ytd-value
+      = @weekly_average
+    | &nbsp;
+    ' miles a week)
   hr
   div
     | You&rsquo;re heading for an annual total of
-  .big
+  .ytd-big
     span.ytd-value
       = @projected_annual
     | &nbsp;
