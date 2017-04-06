@@ -12,6 +12,7 @@ WORKDIR /app
 COPY . .
 
 ENV MIX_ENV prod
+ENV REPLACE_OS_VARS true
 RUN mix deps.get
 
 CMD ["bash"]
