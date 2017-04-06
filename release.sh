@@ -21,8 +21,10 @@ else
 fi
 
 pushd apps/ytd_web
+npm install
 ./node_modules/brunch/bin/brunch b -p
 mix phoenix.digest
 popd
+
 docker build --tag=build-elixir -f docker/builder/Dockerfile .
 docker run -v $PWD/releases:/app/releases build-elixir mix release --env=prod ${extra_flag}
