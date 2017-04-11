@@ -20,7 +20,10 @@ defmodule YTDCore.Mixfile do
   end
 
   def application do
-    [extra_applications: [:hackney, :httpoison, :logger, :strava, :timex]]
+    [
+      mod: {YTDCore.Application, []},
+      extra_applications: [:hackney, :httpoison, :logger, :strava, :timex],
+    ]
   end
 
   defp deps do
