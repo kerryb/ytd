@@ -15,4 +15,4 @@ or
 Make a directory for the new version under `releases` in the deployed
 directory, copy the tarball there, then run
 
-    bin/ytd upgrade <version>
+    REPLACE_OS_VARS=true bin/ytd upgrade <version>
