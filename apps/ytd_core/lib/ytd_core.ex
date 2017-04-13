@@ -3,20 +3,27 @@ defmodule YTDCore do
   Public interface.
   """
 
-  alias YTDCore.{Calculations, Data, Strava}
+  alias YTDCore.{Athlete, Calculations, Data, Strava}
 
   @doc """
-  Given an authorization code (from an oauth callback), request and return an
-  access token for that athlete.
+  Given an authorization code (from an oauth callback), request and return the
+  corresponding athlete ID.
   """
-  def token_from_code(code), do: Strava.token_from_code code
+  @spec register(String.t) :: integer
+  def register(code) do
+    athlete = Strava.athlete_from_code(code)
+    Athlete.register athlete
+    athlete.id
+  end
 
   @doc """
   Returns a `YTDCore.Data` struct with the values to be displayed
   """
-  @spec values(String.t) :: %YTDCore.Data{}
-  def values(token) do
-    ytd = Strava.ytd(token)
+  @spec values(integer) :: %YTDCore.Data{}
+  def values(athlete_id) do
+    ytd = athlete_id
+          |> Athlete.find
+          |> Strava.ytd
     %Data{
       ytd: ytd,
       projected_annual: Calculations.projected_annual(ytd, Date.utc_today),

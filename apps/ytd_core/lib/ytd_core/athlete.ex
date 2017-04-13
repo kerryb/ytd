@@ -5,6 +5,8 @@ defmodule YTDCore.Athlete do
   values (currently only the API token).
   """
 
+  require Logger
+
   @type t :: %__MODULE__{id: integer, token: String.t}
   defstruct [:id, :token]
 
@@ -13,10 +15,11 @@ defmodule YTDCore.Athlete do
   @doc """
   Register a new athlete, given their Strava ID and API token.
   """
-  @spec register(integer, String.t) :: :ok
-  def register(id, token) do
+  @spec register(%YTDCore.Athlete{}) :: :ok
+  def register(athlete) do
+    Logger.info "Registering athlete #{inspect athlete}"
     Agent.update __MODULE__, fn athletes ->
-      Map.put athletes, id, %__MODULE__{id: id, token: token}
+      Map.put athletes, athlete.id, athlete
     end
   end
 

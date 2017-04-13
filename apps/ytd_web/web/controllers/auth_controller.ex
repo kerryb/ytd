@@ -2,9 +2,9 @@ defmodule YTDWeb.AuthController do
   use YTDWeb.Web, :controller
 
   def index(conn, params) do
-    token = YTDCore.token_from_code params["code"]
+    athlete_id = YTDCore.register params["code"]
     conn
-    |> put_session(:token, token)
+    |> put_session(:athlete_id, athlete_id)
     |> redirect(to: "/")
   end
 end
