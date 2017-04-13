@@ -33,14 +33,20 @@ defmodule YTDCoreTest do
   describe "YTDCore.values/1" do
     test "returns the YTD figure from Strava and calculated values" do
       with_mocks [
-        {Strava, [], [ytd: fn @token -> 123.456 end]},
         {Athlete, [], [find: fn @id -> @token end]},
+        {Strava, [], [ytd: fn @token -> 123.456 end]},
         {Date, [], [utc_today: fn -> ~D(2017-03-15) end]},
       ] do
         data = YTDCore.values @id
         assert data.ytd == 123.456
         assert_in_delta data.projected_annual, 608.9, 0.1
         assert_in_delta data.weekly_average, 11.7, 0.1
+      end
+    end
+
+    test "returns nil if the athlete is not registered" do
+      with_mock Athlete, [find: fn _ -> nil end] do
+        assert YTDCore.values(@id) == nil
       end
     end
   end

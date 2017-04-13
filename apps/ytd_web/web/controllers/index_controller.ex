@@ -5,7 +5,7 @@ defmodule YTDWeb.IndexController do
   def index(conn, _params) do
     case athlete_id conn do
       nil -> redirect_to_auth conn
-      athlete_id -> render_index conn, athlete_id
+      athlete_id -> get_data conn, athlete_id
     end
   end
 
@@ -15,8 +15,14 @@ defmodule YTDWeb.IndexController do
     |> get_session(:athlete_id)
   end
 
-  defp render_index(conn, athlete_id) do
-    data = YTDCore.values athlete_id
+  defp get_data(conn, athlete_id) do
+    case YTDCore.values(athlete_id) do
+      nil -> redirect_to_auth(conn)
+      data -> render_index conn, data
+    end
+  end
+
+  defp render_index(conn, data) do
     conn
     |> assign(:ytd, :io_lib.format("~.1f", [data.ytd]))
     |> assign(:projected_annual, :io_lib.format("~.1f", [data.projected_annual]))

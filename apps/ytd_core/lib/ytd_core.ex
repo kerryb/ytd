@@ -21,13 +21,15 @@ defmodule YTDCore do
   """
   @spec values(integer) :: %YTDCore.Data{}
   def values(athlete_id) do
-    ytd = athlete_id
-          |> Athlete.find
-          |> Strava.ytd
-    %Data{
-      ytd: ytd,
-      projected_annual: Calculations.projected_annual(ytd, Date.utc_today),
-      weekly_average: Calculations.weekly_average(ytd, Date.utc_today),
-    }
+    case Athlete.find(athlete_id) do
+      nil -> nil
+      athlete ->
+        ytd = Strava.ytd athlete
+        %Data{
+          ytd: ytd,
+          projected_annual: Calculations.projected_annual(ytd, Date.utc_today),
+          weekly_average: Calculations.weekly_average(ytd, Date.utc_today),
+        }
+    end
   end
 end

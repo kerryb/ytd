@@ -27,6 +27,15 @@ defmodule YTDWeb.IndexControllerTest do
       end
     end
 
+    test "redirects to Strava authorisation if there's no data for the athlete", %{conn: conn} do
+      with_mock YTDCore, [values: fn _ -> nil end] do
+        conn = conn
+               |> put_session(:athlete_id, 123)
+               |> get("/")
+        assert redirected_to(conn) == Auth.authorize_url!
+      end
+    end
+
     test "redirects to Strava authorisation if there's no athlete ID in the session", %{conn: conn} do
       conn = conn
              |> get("/")
