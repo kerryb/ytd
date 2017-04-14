@@ -18,6 +18,6 @@ assets:
 docker-build:
 	docker build --tag=build-elixir -f docker/builder/Dockerfile .
 deploy-upgrade:
-	ssh root@ytd.kerryb.org 'mkdir -p /opt/ytd/releases/$(version)'
+	ssh root@ytd.kerryb.org mkdir -p /opt/ytd/releases/$(version)
 	scp releases/ytd/releases/$(version)/ytd.tar.gz root@ytd.kerryb.org:/opt/ytd/releases/$(version)
-	ssh root@ytd.kerryb.org 'REPLACE_OS_VARS=true /opt/ytd/bin/ytd upgrade $(version)'
+	ssh root@ytd.kerryb.org bash -lc 'REPLACE_OS_VARS=true /opt/ytd/bin/ytd upgrade $(version)'
