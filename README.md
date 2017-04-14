@@ -1,18 +1,22 @@
 # YTD
 
+Strave year-to-date running mileage.
+
+http://ytd.kerryb.org
+
 ## Building
 
-Update the version in `rel/config.exs`, then run
+Compile, test etc:
 
-    ./release.sh release
+    make
 
-or
+Build an upgrade tarball, using version in `rel/config.exs` (uses Docker: if
+you get certificate errors, restart Docker to get the VM clock back in sync):
 
-    ./release.sh upgrade
+		make build-upgrade
 
-## Upgrading
+Deploy upgrade:
 
-Make a directory for the new version under `releases` in the deployed
-directory, copy the tarball there, then run
+		make deploy-upgrade
 
-    REPLACE_OS_VARS=true bin/ytd upgrade <version>
+See `Makefile` for other targets.
