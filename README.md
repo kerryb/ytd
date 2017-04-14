@@ -10,8 +10,12 @@ Compile, test etc:
 
     make
 
-Build an upgrade tarball, using version in `rel/config.exs` (uses Docker: if
-you get certificate errors, restart Docker to get the VM clock back in sync):
+Build an upgrade tarball:
+
+_Notes: ensure umbrella app version is updated in `rel/config.exs`, and also
+individual app versions (assuming they've changed) in their `mix.exs` files.
+The release build uses Docker: if you get certificate errors, restart Docker to
+get the VM clock back in sync._
 
 		make build-upgrade
 
