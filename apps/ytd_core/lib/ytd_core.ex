@@ -19,7 +19,7 @@ defmodule YTDCore do
   @doc """
   Returns a `YTDCore.Data` struct with the values to be displayed
   """
-  @spec values(integer) :: %YTDCore.Data{}
+  @spec values(integer) :: %YTDCore.Data{} | nil
   def values(athlete_id) do
     case Athlete.find(athlete_id) do
       nil -> nil
