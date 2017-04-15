@@ -9,10 +9,10 @@ email = kerryjbuckley@gmail.com
 domains = ytd.kerryb.org
 text = True
 authenticator = webroot
-standalone-supported-challenges = tls-sni-01
+preferred-challenges = tls-sni-01
 webroot-path = /etc/letsencrypt/webroot
 EOF
 
 mkdir -p /etc/letsencrypt/webroot/.well-known
 
-letsencrypt-auto certonly --config /etc/letsencrypt/letsencrypt.conf
+certbot certonly --config /etc/letsencrypt/letsencrypt.conf
