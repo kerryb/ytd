@@ -11,6 +11,7 @@ config :ytd_web, YTDWeb.Endpoint,
   cache_static_manifest: "priv/static/manifest.json",
   server: true,
   root: ".",
+  version: Mix.Project.config[:version], # Force asset reload on hot upgrade
   secret_key_base: "${SECRET_KEY_BASE}"
 
 config :logger, level: :info
