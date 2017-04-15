@@ -30,7 +30,7 @@ end
 environment :prod do
   set include_erts: true
   set include_src: false
-  set cookie: :crypto.strong_rand_bytes(64) |> :base64.encode_to_string |> List.to_atom
+  set cookie: "YTD_ERLANG_COOKIE" |> System.get_env |> String.to_atom
 end
 
 # You may define one or more releases in this file.

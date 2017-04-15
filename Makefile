@@ -10,9 +10,11 @@ dialyzer:
 docs:
 	mix docs
 build-release: assets docker-build
-	docker run -v $(shell pwd)/releases:/app/releases build-elixir mix release --env=prod
+	docker run -e YTD_ERLANG_COOKIE='${YTD_ERLANG_COOKIE}' \
+		-v $(shell pwd)/releases:/app/releases build-elixir mix release --env=prod
 build-upgrade: assets docker-build
-	docker run -v $(shell pwd)/releases:/app/releases build-elixir mix release --env=prod --upgrade
+	docker run -e YTD_ERLANG_COOKIE='${YTD_ERLANG_COOKIE}' \
+		-v $(shell pwd)/releases:/app/releases build-elixir mix release --env=prod --upgrade
 assets:
 	cd apps/ytd_web && npm install && ./node_modules/brunch/bin/brunch b -p && mix phoenix.digest
 docker-build:
