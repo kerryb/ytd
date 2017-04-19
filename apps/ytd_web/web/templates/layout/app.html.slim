@@ -14,4 +14,6 @@ html lang="en"
       .row
         .col-xs-12.col-md-8.col-md-offset-2.col-lg-6.col-lg-offset-3
           = render @view_module, @view_template, assigns
+    footer.footer
+      img.strava src="#{static_path @conn, "/images/strava.png"}" alt="Powered by Strava" width="169"
     script src="#{static_path @conn, "/js/app.js"}"

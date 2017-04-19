@@ -3,6 +3,7 @@ $icon-font-path: "/fonts/";
 $body-bg: #fc4c02;
 $text-color: rgba(255,255,255,0.7);
 $line-height-base: 1.1;
+$link-color: white;
 
 @import "bootstrap";
 
@@ -21,6 +22,22 @@ $line-height-base: 1.1;
 
   padding-top: 10px;
 
+  .ytd-connect {
+    margin-top: 40px;
+    text-align: center;
+
+    h1 {
+      font-size: 200%;
+      font-weight: 500;
+      letter-spacing: +3px;
+    }
+
+    p {
+      margin-bottom: 30px;
+      margin-top: 20px;
+    }
+  }
+
   hr {
     margin: 20px 0;
   }
@@ -37,4 +54,19 @@ $line-height-base: 1.1;
     color: #fff;
     font-weight: 500;
   }
+
+  .ytd-strava-link {
+    text-align: right;
+    margin-top: 10px;
+    font-size: 40%;
+    font-weight: 400;
+  }
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
 }

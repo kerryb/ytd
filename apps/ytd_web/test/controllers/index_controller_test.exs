@@ -2,7 +2,6 @@ defmodule YTDWeb.IndexControllerTest do
   use YTDWeb.ConnCase
   import Mock
   alias YTDCore.Data
-  alias Strava.Auth
 
   setup do
     conn = build_conn() |> SessionHelper.prepare_session()
@@ -27,19 +26,19 @@ defmodule YTDWeb.IndexControllerTest do
       end
     end
 
-    test "redirects to Strava authorisation if there's no data for the athlete", %{conn: conn} do
+    test "renders the 'Connect with Strava' page if there's no data for the athlete", %{conn: conn} do
       with_mock YTDCore, [values: fn _ -> nil end] do
         conn = conn
                |> put_session(:athlete_id, 123)
                |> get("/")
-        assert redirected_to(conn) == Auth.authorize_url!
+        assert html_response(conn, 200) =~ ~r/\bConnect with Strava\b/
       end
     end
 
-    test "redirects to Strava authorisation if there's no athlete ID in the session", %{conn: conn} do
+    test "renders the 'Connect with Strava' page if there's no athlete ID in the session", %{conn: conn} do
       conn = conn
              |> get("/")
-      assert redirected_to(conn) == Auth.authorize_url!
+        assert html_response(conn, 200) =~ ~r/\bConnect with Strava\b/
     end
   end
 end
