@@ -14,7 +14,7 @@ build-release: assets docker-build
 		-v $(shell pwd)/releases:/app/releases build-elixir mix release --env=prod
 build-upgrade: assets docker-build
 	docker run -e YTD_ERLANG_COOKIE='${YTD_ERLANG_COOKIE}' \
-		-v $(shell pwd)/releases:/app/releases build-elixir MIX_ENV=prod mix release --env=prod --upgrade
+		-v $(shell pwd)/releases:/app/releases build-elixir mix release --env=prod --upgrade
 assets:
 	cd apps/ytd_web && npm install && ./node_modules/brunch/bin/brunch b -p && MIX_ENV=prod mix phoenix.digest
 docker-build:
