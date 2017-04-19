@@ -17,7 +17,7 @@ defmodule YTDCore.Athlete do
   """
   @spec register(%YTDCore.Athlete{}) :: :ok
   def register(athlete) do
-    Logger.info "Registering athlete #{inspect athlete}"
+    Logger.info fn -> "Registering athlete #{inspect athlete}" end
     Agent.update __MODULE__, fn athletes ->
       Map.put athletes, athlete.id, athlete
     end
