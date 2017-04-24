@@ -21,4 +21,16 @@ defmodule YTDCore.CalculationsTest do
                       8.2, 0.1)
     end
   end
+
+  describe "YTDCore.Calculations.extra_needed_today/3" do
+    test "returns the number of miles needed today to get back on target, given a mileage, date, and target" do
+      assert_in_delta(Calculations.extra_needed_today(123, ~D(2017-04-15), 450),
+                      6.4, 0.1)
+    end
+
+    test "accounts for leap years" do
+      assert Calculations.extra_needed_today(123, ~D(2016-02-01), 450) <
+        Calculations.extra_needed_today(123, ~D(2017-02-01), 450)
+    end
+  end
 end
