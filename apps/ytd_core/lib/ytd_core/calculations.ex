@@ -11,6 +11,8 @@ defmodule YTDCore.Calculations do
     miles / Timex.day(date) * 7
   end
 
+  def on_target?(miles, date, target), do: projected_annual(miles, date) >= target
+
   @spec extra_needed_today(float, %Date{}, integer) :: float
   def extra_needed_today(miles, date, target) do
     target * Timex.day(date) / days_in_year(date) - miles

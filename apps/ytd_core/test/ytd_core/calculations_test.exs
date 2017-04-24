@@ -22,6 +22,16 @@ defmodule YTDCore.CalculationsTest do
     end
   end
 
+  describe "YTDCore.Calculations.on_target?/3" do
+    test "returns true if the projected mileage is at least the target" do
+      assert Calculations.on_target?(123, ~D(2017-04-15), 427.5)
+    end
+
+    test "returns false if the projected mileage is below the target" do
+      refute Calculations.on_target?(123, ~D(2017-04-15), 427.6)
+    end
+  end
+
   describe "YTDCore.Calculations.extra_needed_today/3" do
     test "returns the number of miles needed today to get back on target, given a mileage, date, and target" do
       assert_in_delta(Calculations.extra_needed_today(123, ~D(2017-04-15), 450),
