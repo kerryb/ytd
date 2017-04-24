@@ -3,20 +3,17 @@ defmodule YTDCore.Calculations do
 
   @spec projected_annual(float, %Date{}) :: float
   def projected_annual(miles, date) do
-    yday = Timex.day date
-    miles * days_in_year(date) / yday
+    miles * days_in_year(date) / Timex.day(date)
   end
 
   @spec weekly_average(float, %Date{}) :: float
   def weekly_average(miles, date) do
-    yday = Timex.day date
-    miles / yday * 7
+    miles / Timex.day(date) * 7
   end
 
   @spec extra_needed_today(float, %Date{}, integer) :: float
   def extra_needed_today(miles, date, target) do
-    yday = Timex.day date
-    target * yday / days_in_year(date) - miles
+    target * Timex.day(date) / days_in_year(date) - miles
   end
 
   defp days_in_year(date), do: if Timex.is_leap?(date), do: 366, else: 365
