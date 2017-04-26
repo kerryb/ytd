@@ -9,8 +9,8 @@ defmodule YTDWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/", from: :ytd_web, gzip: false,
-    only: ~w(css fonts images js favicon*.ico favicon-96x96.png
-             apple-icon-180x180.png robots.txt .well-known)
+    only: ~w(css fonts images js favicon*.ico favicon*.png
+             apple-icon*.png robots.txt .well-known)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
