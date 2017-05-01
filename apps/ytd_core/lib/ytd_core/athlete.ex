@@ -34,6 +34,10 @@ defmodule YTDCore.Athlete do
     Agent.get __MODULE__, fn athletes -> Map.get athletes, id end
   end
 
+  @doc """
+  Store a target mileage for the athlete with the specified ID.
+  """
+  @spec set_target(integer, integer) :: :ok
   def set_target(id, target) do
     Agent.update __MODULE__, fn athletes ->
       Map.update! athletes, id, fn athlete -> %{athlete | target: target} end
