@@ -8,7 +8,7 @@ defmodule YTDCore.Athlete do
   require Logger
 
   @type t :: %__MODULE__{id: integer, token: String.t}
-  defstruct [:id, :token]
+  defstruct [:id, :token, :target]
 
   def start_link, do: Agent.start_link fn -> %{} end, name: __MODULE__
 
@@ -29,5 +29,11 @@ defmodule YTDCore.Athlete do
   @spec find(integer) :: %YTDCore.Athlete{} | nil
   def find(id) do
     Agent.get __MODULE__, fn athletes -> Map.get athletes, id end
+  end
+
+  def set_target(id, target) do
+    Agent.update __MODULE__, fn athletes ->
+      Map.update! athletes, id, fn athlete -> %{athlete | target: target} end
+    end
   end
 end
