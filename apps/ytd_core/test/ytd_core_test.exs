@@ -33,8 +33,8 @@ defmodule YTDCoreTest do
   describe "YTDCore.values/1" do
     test "returns the YTD figure from Strava and calculated values" do
       with_mocks [
-        {Athlete, [], [find: fn @id -> @token end]},
-        {Strava, [], [ytd: fn @token -> 123.456 end]},
+        {Athlete, [], [find: fn @id -> @athlete end]},
+        {Strava, [], [ytd: fn @athlete -> 123.456 end]},
         {Date, [], [utc_today: fn -> ~D(2017-03-15) end]},
       ] do
         data = YTDCore.values @id
