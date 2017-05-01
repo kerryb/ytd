@@ -3,6 +3,9 @@ defmodule YTDCore.Athlete do
   Stores details of athletes, keyed by athlete ID. This is not intended to hold
   any data that can be obtained from Strava, but only application-specific
   values (currently only the API token).
+
+  Athlete information is only stored in memory, not on disk, so will be lost if
+  the application is restarted.
   """
 
   require Logger
