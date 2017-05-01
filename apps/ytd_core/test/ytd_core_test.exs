@@ -7,7 +7,7 @@ defmodule YTDCoreTest do
   @code "strava-code-would-go-here"
   @id 123
   @token "strava-token-would-go-here"
-  @athlete %Athlete{id: @id, token: @token}
+  @athlete %Athlete{id: @id, token: @token, target: 650}
 
   describe "YTDCore.register/1" do
     test "retrieves and returns the athlete's ID" do
@@ -39,8 +39,25 @@ defmodule YTDCoreTest do
       ] do
         data = YTDCore.values @id
         assert data.ytd == 123.456
+        assert data.target == 650
         assert_in_delta data.projected_annual, 608.9, 0.1
         assert_in_delta data.weekly_average, 11.7, 0.1
+        assert_in_delta data.extra_needed_today, 8.3, 0.1
+        assert_in_delta data.extra_needed_this_week, 15.4, 0.1
+      end
+    end
+
+    test "returns nil extra_needed values if there is no target" do
+      athlete = %{@athlete | target: nil}
+      with_mocks [
+        {Athlete, [], [find: fn @id -> athlete end]},
+        {Strava, [], [ytd: fn ^athlete -> 123.456 end]},
+        {Date, [], [utc_today: fn -> ~D(2017-03-15) end]},
+      ] do
+        data = YTDCore.values @id
+        assert is_nil data.target
+        assert is_nil data.extra_needed_today
+        assert is_nil data.extra_needed_this_week
       end
     end
 

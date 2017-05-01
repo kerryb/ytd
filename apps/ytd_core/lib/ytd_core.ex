@@ -25,11 +25,27 @@ defmodule YTDCore do
       nil -> nil
       athlete ->
         ytd = Strava.ytd athlete
+        projected_annual = Calculations.projected_annual ytd, Date.utc_today
+        weekly_average = Calculations.weekly_average ytd, Date.utc_today
         %Data{
           ytd: ytd,
-          projected_annual: Calculations.projected_annual(ytd, Date.utc_today),
-          weekly_average: Calculations.weekly_average(ytd, Date.utc_today),
+          target: athlete.target,
+          projected_annual: projected_annual,
+          weekly_average: weekly_average,
+          extra_needed_today: extra_needed_today(athlete, ytd),
+          extra_needed_this_week: extra_needed_this_week(athlete, ytd),
         }
     end
+  end
+
+  defp extra_needed_today(%Athlete{target: nil}, _), do: nil
+  defp extra_needed_today(athlete, ytd) do
+    Calculations.extra_needed_today(ytd, Date.utc_today, athlete.target)
+  end
+
+  defp extra_needed_this_week(%Athlete{target: nil}, _), do: nil
+  defp extra_needed_this_week(athlete, ytd) do
+    Calculations.extra_needed_this_week(ytd, Date.utc_today,
+                                        athlete.target, :mon)
   end
 end
