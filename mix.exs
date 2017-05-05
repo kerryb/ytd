@@ -33,7 +33,7 @@ defmodule Ytd.Mixfile do
 
   defp dialyzer do
     [
-      plt_add_deps: :transitive,
+      plt_add_deps: :project,
       ignore_warnings: "config/dialyzer.ignore-warnings",
     ]
   end

@@ -6,6 +6,7 @@ test:
 style:
 	mix credo --strict
 dialyzer:
+	MIX_ENV=dev mix compile --debug-info
 	mix dialyzer --halt-exit-status
 docs:
 	mix docs
