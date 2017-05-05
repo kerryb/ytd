@@ -46,6 +46,6 @@ defmodule YTDCore do
   defp extra_needed_this_week(%Athlete{target: nil}, _), do: nil
   defp extra_needed_this_week(athlete, ytd) do
     Calculations.extra_needed_this_week(ytd, Date.utc_today,
-                                        athlete.target, :mon)
+                                        athlete.target, 1)
   end
 end

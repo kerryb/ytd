@@ -19,7 +19,7 @@ defmodule YTDCore.Calculations do
   end
 
   @spec extra_needed_this_week(float, %Date{}, integer,
-                               (integer | atom | String.t)) :: float
+                               Timex.Types.weekday) :: float
   def extra_needed_this_week(miles, date, target, week_start) do
     end_of_week = date |> Timex.end_of_week(week_start) |> Timex.day
     target * end_of_week / days_in_year(date) - miles
