@@ -16,4 +16,6 @@ html lang="en"
           = render @view_module, @view_template, assigns
     footer.footer
       img.strava src="#{static_path @conn, "/images/strava.png"}" alt="Powered by Strava" width="169"
+      ' &ndash; Made by
+      a href="https://github.com/kerryb/ytd" Kerry Buckley
     script src="#{static_path @conn, "/js/app.js"}"

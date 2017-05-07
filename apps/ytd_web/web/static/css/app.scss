@@ -63,6 +63,18 @@ $link-color: white;
   position: absolute;
   bottom: 0;
   width: 100%;
-  padding: 10px;
+  padding-top: 10px;
   text-align: center;
+  color: #999;
+  font-weight: 200;
+
+  a, a:visited, {
+    color: #999;
+    font-weight: 400;
+  }
+
+  img.strava {
+    position: relative;
+    bottom: 5px;
+  }
 }
