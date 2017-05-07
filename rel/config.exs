@@ -39,7 +39,7 @@ end
 # will be used by default
 
 release :ytd do
-  set version: "0.6.5"
+  set version: "0.7.0"
   set applications: [
     :runtime_tools,
     ytd_core: :permanent,
