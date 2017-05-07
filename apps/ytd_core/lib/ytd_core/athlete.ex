@@ -8,6 +8,8 @@ defmodule YTDCore.Athlete do
   the application is restarted.
   """
 
+  @vsn "1"
+
   require Logger
 
   @type t :: %__MODULE__{id: integer, token: String.t}
@@ -43,4 +45,6 @@ defmodule YTDCore.Athlete do
       Map.update! athletes, id, fn athlete -> %{athlete | target: target} end
     end
   end
+
+  def code_change(:undefined, athlete, _), do: {:ok, %{athlete | target: nil}}
 end
