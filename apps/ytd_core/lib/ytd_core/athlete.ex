@@ -10,6 +10,7 @@ defmodule YTDCore.Athlete do
 
   @vsn "1"
 
+  use GenServer
   require Logger
 
   @type t :: %__MODULE__{id: integer, token: String.t}
