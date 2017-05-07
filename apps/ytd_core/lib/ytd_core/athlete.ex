@@ -46,5 +46,8 @@ defmodule YTDCore.Athlete do
     end
   end
 
-  def code_change(:undefined, athlete, _), do: {:ok, %{athlete | target: nil}}
+  def code_change(version, athlete, _) do
+    Logger.info fn -> "Upgrading from version #{inspect version}" end
+    {:ok, %{athlete | target: nil}}
+  end
 end
