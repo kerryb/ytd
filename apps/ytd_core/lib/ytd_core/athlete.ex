@@ -46,9 +46,4 @@ defmodule YTDCore.Athlete do
       Map.update! athletes, id, fn athlete -> %{athlete | target: target} end
     end
   end
-
-  def code_change(version, athlete, _) do
-    Logger.info fn -> "Upgrading from version #{inspect version}" end
-    {:ok, %{athlete | target: nil}}
-  end
 end
