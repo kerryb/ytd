@@ -1,4 +1,4 @@
-defmodule Ytd.Mixfile do
+defmodule YTD.Mixfile do
   use Mix.Project
 
   def project do
