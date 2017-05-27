@@ -3,7 +3,7 @@ defmodule YTD.Mixfile do
 
   def project do
     [
-      version: "0.7.3",
+      version: version(),
       apps_path: "apps",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
@@ -13,6 +13,8 @@ defmodule YTD.Mixfile do
       dialyzer: dialyzer(),
     ]
   end
+
+  defp version, do: "VERSION" |> File.read! |> String.trim
 
   defp deps do
     [

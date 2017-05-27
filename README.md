@@ -12,14 +12,13 @@ Compile, test etc:
 
 Build an upgrade tarball:
 
-_Notes:
+**Notes:**
 
-  * ensure umbrella app version is updated in `rel/config.exs`, and also
-		individual app versions (assuming they've changed) in their `mix.exs` files.
+  * Set the release version in `VERSION`
   * The release build uses Docker: if you get certificate errors, restart Docker to
-		get the VM clock back in sync.
+		get the VM clock back in sync
 	* Make sure the YTD_ERLANG_COOKIE environment variable is set to a suitable
-	  secret value._
+	  secret value
 
 		make build-upgrade
 
