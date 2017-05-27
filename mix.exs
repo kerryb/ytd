@@ -3,6 +3,7 @@ defmodule Ytd.Mixfile do
 
   def project do
     [
+      version: "0.7.3",
       apps_path: "apps",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,

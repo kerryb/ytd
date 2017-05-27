@@ -12,11 +12,15 @@ defmodule YTDCore.Strava do
     %Athlete{id: id, token: token}
   end
 
-  @spec ytd(%YTDCore.Athlete{}) :: float
+  # @spec ytd(%YTDCore.Athlete{}) :: float
   def ytd(%Athlete{token: token}) do
     client = Client.new token
-    %{id: id} = Strava.Athlete.retrieve_current client
-    %{ytd_run_totals: %{distance: distance}} = Strava.Athlete.stats id, client
+    distance = try do
+      %Strava.Athlete{id: id} = Strava.Athlete.retrieve_current client
+      Strava.Athlete.stats(id, client).ytd_run_totals.distance
+    rescue
+      _ -> 0.0
+    end
     metres_to_miles distance
   end
 
