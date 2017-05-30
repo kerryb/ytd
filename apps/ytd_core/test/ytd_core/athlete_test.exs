@@ -22,11 +22,4 @@ defmodule YTDCore.AthleteTest do
       assert Athlete.set_target(123, 1000) == :ok
     end
   end
-
-  describe "YTDCore.Athlete.code_change/3" do
-    test "adds a nil target when upgrading from :undefined" do
-      assert Athlete.code_change(:undefined, %Athlete{id: 123, token: "token"}, nil)
-        == {:ok, %Athlete{id: 123, token: "token", target: nil}}
-    end
-  end
 end
