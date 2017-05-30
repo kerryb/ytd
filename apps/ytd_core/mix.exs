@@ -14,7 +14,7 @@ defmodule YTDCore.Mixfile do
       start_permanent: Mix.env == :prod,
       deps: deps(),
       preferred_cli_env: preferred_cli_env(),
-      elixirc_options: [warnings_as_errors: true],
+      elixirc_options: elixirc_options(),
       test_coverage: [tool: ExCoveralls],
     ]
   end
@@ -30,9 +30,9 @@ defmodule YTDCore.Mixfile do
 
   defp deps do
     [
-      {:exvcr, ">= 0.8.0", only: :test},
+      {:exvcr, ">= 0.8.0", runtime: false, only: [:test]},
       {:httpoison, ">= 0.10.0"},
-      {:mock, ">= 0.2.0", only: :test},
+      {:mock, ">= 0.2.0", only: [:test]},
       {:strava, ">= 0.3.0"},
       {:timex, ">= 0.19.0"},
     ]
@@ -45,5 +45,9 @@ defmodule YTDCore.Mixfile do
       "vcr.check": :test,
       "vcr.show": :test,
     ]
+  end
+
+  defp elixirc_options do
+    if Mix.env == :test, do: [], else: [warnings_as_errors: true]
   end
 end
