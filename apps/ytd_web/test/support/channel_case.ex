@@ -1,4 +1,4 @@
-defmodule YTDWeb.ChannelCase do
+defmodule YTDWeb.Web.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -22,7 +22,7 @@ defmodule YTDWeb.ChannelCase do
 
 
       # The default endpoint for testing
-      @endpoint YTDWeb.Endpoint
+      @endpoint YTDWeb.Web.Endpoint
     end
   end
 

@@ -1,5 +1,5 @@
-defmodule YTDWeb.AuthControllerTest do
-  use YTDWeb.ConnCase
+defmodule YTDWeb.Web.AuthControllerTest do
+  use YTDWeb.Web.ConnCase
   import Mock
 
   setup do

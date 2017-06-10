@@ -24,16 +24,17 @@ defmodule YTDWeb.Web do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: YTDWeb
+      use Phoenix.Controller, namespace: YTDWeb.Web
 
-      import YTDWeb.Router.Helpers
-      import YTDWeb.Gettext
+      import YTDWeb.Web.Router.Helpers
+      import YTDWeb.Web.Gettext
     end
   end
 
   def view do
     quote do
-      use Phoenix.View, root: "web/templates", namespace: YTDWeb
+      use Phoenix.View, root: "lib/ytd_web/web/templates",
+                        namespace: YTDWeb.Web
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
@@ -41,9 +42,9 @@ defmodule YTDWeb.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import YTDWeb.Router.Helpers
-      import YTDWeb.ErrorHelpers
-      import YTDWeb.Gettext
+      import YTDWeb.Web.Router.Helpers
+      import YTDWeb.Web.ErrorHelpers
+      import YTDWeb.Web.Gettext
     end
   end
 
@@ -56,7 +57,7 @@ defmodule YTDWeb.Web do
   def channel do
     quote do
       use Phoenix.Channel
-      import YTDWeb.Gettext
+      import YTDWeb.Web.Gettext
     end
   end
 

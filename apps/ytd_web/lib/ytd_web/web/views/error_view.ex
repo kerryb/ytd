@@ -1,4 +1,4 @@
-defmodule YTDWeb.ErrorView do
+defmodule YTDWeb.Web.ErrorView do
   use YTDWeb.Web, :view
 
   def render("404.html", _assigns) do

@@ -1,4 +1,4 @@
-defmodule YTDWeb.Router do
+defmodule YTDWeb.Web.Router do
   use YTDWeb.Web, :router
 
   pipeline :browser do
@@ -13,7 +13,7 @@ defmodule YTDWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", YTDWeb do
+  scope "/", YTDWeb.Web do
     pipe_through :browser # Use the default browser stack
 
     get "/", IndexController, :index

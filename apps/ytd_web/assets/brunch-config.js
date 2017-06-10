@@ -14,19 +14,16 @@ exports.config = {
     }
   },
 conventions: {
-    assets: /^(web\/static\/assets)/
+    assets: /^(static)/
   },
   paths: {
-    watched: [
-      "web/static",
-      "test/static"
-    ],
-    public: "priv/static"
+    watched: ["static", "css", "js", "vendor"],
+    public: "../priv/static"
   },
   
   plugins: {
     babel: {
-      ignore: [/web\/static\/vendor/]
+      ignore: [/vendor/]
     },
     copycat: {
       "fonts": ["node_modules/bootstrap-sass/assets/fonts/bootstrap"]
@@ -41,7 +38,7 @@ conventions: {
   
   modules: {
     autoRequire: {
-      "js/app.js": ["web/static/js/app"]
+      "js/app.js": ["js/app"]
     }
   },
   

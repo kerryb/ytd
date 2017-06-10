@@ -1,5 +1,5 @@
-defmodule YTDWeb.IndexControllerTest do
-  use YTDWeb.ConnCase
+defmodule YTDWeb.Web.IndexControllerTest do
+  use YTDWeb.Web.ConnCase
   import Mock
   alias YTDCore.Data
 

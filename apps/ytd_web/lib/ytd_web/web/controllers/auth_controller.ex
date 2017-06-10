@@ -1,4 +1,4 @@
-defmodule YTDWeb.AuthController do
+defmodule YTDWeb.Web.AuthController do
   use YTDWeb.Web, :controller
 
   def index(conn, params) do

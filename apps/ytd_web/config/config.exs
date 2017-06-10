@@ -7,14 +7,14 @@ use Mix.Config
 
 # General application configuration
 config :ytd_web,
-  namespace: YTDWeb
+  namespace: YTDWeb.Web
 
 # Configures the endpoint
-config :ytd_web, YTDWeb.Endpoint,
+config :ytd_web, YTDWeb.Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "qeLmxgJOWW6wI/5a/LuOrJXXFfADqnBfgaXx3zkPVM3DpO1ACTtY8O5qcAwZkIx6",
-  render_errors: [view: YTDWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: YTDWeb.PubSub,
+  render_errors: [view: YTDWeb.Web.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: YTDWeb.Web.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
