@@ -50,7 +50,7 @@ defmodule YTDWeb.Mixfile do
       {:cowboy, ">= 1.0.0"},
       {:gettext, ">= 0.11.0"},
       {:mock, ">= 0.2.0", only: :test},
-      {:phoenix, ">= 1.2.1"},
+      {:phoenix, ">= 1.3.0-rc"},
       {:phoenix_html, ">= 2.6.0"},
       {:phoenix_live_reload, ">= 1.0.0", only: :dev},
       {:phoenix_pubsub, ">= 1.0.0"},

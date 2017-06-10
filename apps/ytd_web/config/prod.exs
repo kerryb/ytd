@@ -8,7 +8,7 @@ config :ytd_web, YTDWeb.Endpoint,
           certfile: "/etc/letsencrypt/live/ytd.kerryb.org/fullchain.pem"],
   force_ssl: [port: 443],
   url: [host: "ytd.kerryb.org", port: 443],
-  cache_static_manifest: "priv/static/manifest.json",
+  cache_static_manifest: "priv/static/cache_manifest.json",
   server: true,
   root: ".",
   version: Mix.Project.config[:version], # Force asset reload on hot upgrade
