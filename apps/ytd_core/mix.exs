@@ -30,6 +30,7 @@ defmodule YTDCore.Mixfile do
 
   defp deps do
     [
+      {:amnesia, "~> 0.2.7"},
       {:exvcr, ">= 0.8.0", runtime: false, only: [:test]},
       {:httpoison, ">= 0.10.0"},
       {:mock, ">= 0.2.0", only: [:test]},
