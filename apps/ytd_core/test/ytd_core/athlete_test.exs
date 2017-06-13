@@ -12,6 +12,10 @@ defmodule YTDCore.AthleteTest do
       Athlete.register %Athlete{id: 123, token: "access-token"}
       assert Athlete.find(123) == %Athlete{id: 123, token: "access-token"}
     end
+
+    test "returns nil when trying to find an unregistered athlete" do
+      assert Athlete.find(999) == nil
+    end
   end
 
   describe "YTDCore.Athlete.set_target/2" do

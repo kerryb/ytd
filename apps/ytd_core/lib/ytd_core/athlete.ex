@@ -32,8 +32,12 @@ defmodule YTDCore.Athlete do
   """
   @spec find(integer) :: %YTDCore.Athlete{} | nil
   def find(id) do
-    Amnesia.transaction do
-      struct YTDCore.Athlete, Map.from_struct(Database.Athlete.read id)
+    athlete = Amnesia.transaction do
+      Database.Athlete.read id
+    end
+    case athlete do
+      nil -> nil
+      _ -> struct YTDCore.Athlete, Map.from_struct(athlete)
     end
   end
 
