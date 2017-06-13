@@ -1,13 +1,13 @@
 defmodule YTDCoreTest do
   use ExUnit.Case
   import Mock
-  alias YTDCore.{Athlete, Strava}
+  alias YTDCore.{Athlete, Database, Strava}
   doctest YTDCore
 
   @code "strava-code-would-go-here"
   @id 123
   @token "strava-token-would-go-here"
-  @athlete %Athlete{id: @id, token: @token, target: 650}
+  @athlete %Database.Athlete{id: @id, token: @token, target: 650}
 
   describe "YTDCore.register/1" do
     test "retrieves and returns the athlete's ID" do

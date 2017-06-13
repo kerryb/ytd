@@ -3,7 +3,7 @@ defmodule YTDCore do
   Public interface.
   """
 
-  alias YTDCore.{Athlete, Calculations, Data, Strava}
+  alias YTDCore.{Athlete, Calculations, Data, Database, Strava}
 
   @doc """
   Given an authorization code (from an oauth callback), request and return the
@@ -38,12 +38,12 @@ defmodule YTDCore do
     end
   end
 
-  defp extra_needed_today(%Athlete{target: nil}, _), do: nil
+  defp extra_needed_today(%Database.Athlete{target: nil}, _), do: nil
   defp extra_needed_today(athlete, ytd) do
     Calculations.extra_needed_today(ytd, Date.utc_today, athlete.target)
   end
 
-  defp extra_needed_this_week(%Athlete{target: nil}, _), do: nil
+  defp extra_needed_this_week(%Database.Athlete{target: nil}, _), do: nil
   defp extra_needed_this_week(athlete, ytd) do
     Calculations.extra_needed_this_week(ytd, Date.utc_today,
                                         athlete.target, 1)

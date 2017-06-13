@@ -1,7 +1,8 @@
 defmodule YTDCore.StravaTest do
   use ExUnit.Case
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
-  alias YTDCore.{Athlete, Strava}
+  alias YTDCore.Database.Athlete
+  alias YTDCore.Strava
   doctest Strava
 
   describe "YTDCore.Strava.athlete_from_code/1" do

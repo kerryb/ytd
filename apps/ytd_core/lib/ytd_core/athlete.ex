@@ -13,31 +13,24 @@ defmodule YTDCore.Athlete do
   require Logger
   alias YTDCore.Database
 
-  @type t :: %__MODULE__{id: integer, token: String.t, target: integer}
-  defstruct [:id, :token, :target]
-
   @doc """
   Register a new athlete, given their Strava ID and API token.
   """
-  @spec register(%YTDCore.Athlete{}) :: :ok
+  @spec register(%YTDCore.Database.Athlete{}) :: :ok
   def register(athlete) do
     Logger.info fn -> "Registering athlete #{inspect athlete}" end
     Amnesia.transaction do
-      Database.Athlete.write struct(Database.Athlete, Map.from_struct athlete)
+      Database.Athlete.write athlete
     end
   end
 
   @doc """
   Return the athlete with the supplied ID, or nil if not found.
   """
-  @spec find(integer) :: %YTDCore.Athlete{} | nil
+  @spec find(integer) :: %YTDCore.Database.Athlete{} | nil
   def find(id) do
-    athlete = Amnesia.transaction do
+    Amnesia.transaction do
       Database.Athlete.read id
-    end
-    case athlete do
-      nil -> nil
-      _ -> struct YTDCore.Athlete, Map.from_struct(athlete)
     end
   end
 
