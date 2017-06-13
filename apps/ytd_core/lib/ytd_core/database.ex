@@ -1,6 +1,6 @@
 use Amnesia
 
-defdatabase YTDCore.Database do
+defdatabase Database do
   deftable Athlete, [:id, :token, :target], type: :set do
     @type t :: %Athlete{id: integer, token: String.t, target: integer}
   end

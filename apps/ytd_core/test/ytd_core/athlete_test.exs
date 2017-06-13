@@ -3,6 +3,10 @@ defmodule YTDCore.AthleteTest do
   alias YTDCore.Athlete
   doctest Athlete
 
+  setup do
+    Database.Athlete.clear
+  end
+
   describe "YTDCore.Athlete.register/2 and .find/1" do
     test "register and find athletes by ID" do
       Athlete.register %Athlete{id: 123, token: "access-token"}

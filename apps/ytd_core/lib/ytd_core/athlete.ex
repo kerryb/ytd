@@ -8,15 +8,12 @@ defmodule YTDCore.Athlete do
   the application is restarted.
   """
 
-  @vsn "1"
-
-  use GenServer
+  require Amnesia
+  require Amnesia.Helper
   require Logger
 
-  @type t :: %__MODULE__{id: integer, token: String.t}
+  @type t :: %__MODULE__{id: integer, token: String.t, target: integer}
   defstruct [:id, :token, :target]
-
-  def start_link, do: Agent.start_link fn -> %{} end, name: __MODULE__
 
   @doc """
   Register a new athlete, given their Strava ID and API token.
@@ -24,8 +21,8 @@ defmodule YTDCore.Athlete do
   @spec register(%YTDCore.Athlete{}) :: :ok
   def register(athlete) do
     Logger.info fn -> "Registering athlete #{inspect athlete}" end
-    Agent.update __MODULE__, fn athletes ->
-      Map.put athletes, athlete.id, athlete
+    Amnesia.transaction do
+      Database.Athlete.write struct(Database.Athlete, Map.from_struct athlete)
     end
   end
 
@@ -34,7 +31,9 @@ defmodule YTDCore.Athlete do
   """
   @spec find(integer) :: %YTDCore.Athlete{} | nil
   def find(id) do
-    Agent.get __MODULE__, fn athletes -> Map.get athletes, id end
+    Amnesia.transaction do
+      struct YTDCore.Athlete, Map.from_struct(Database.Athlete.read id)
+    end
   end
 
   @doc """
@@ -42,8 +41,12 @@ defmodule YTDCore.Athlete do
   """
   @spec set_target(integer, integer) :: :ok
   def set_target(id, target) do
-    Agent.update __MODULE__, fn athletes ->
-      Map.update! athletes, id, fn athlete -> %{athlete | target: target} end
+    Amnesia.transaction do
+      id
+      |> Database.Athlete.read
+      |> Map.put(:target, target)
+      |> Database.Athlete.write
     end
+    :ok
   end
 end

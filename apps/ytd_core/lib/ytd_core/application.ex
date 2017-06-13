@@ -7,7 +7,6 @@ defmodule YTDCore.Application do
     import Supervisor.Spec, warn: false
 
     children = [
-      worker(YTDCore.Athlete, []),
     ]
 
     opts = [strategy: :one_for_one, name: YTDCore.Supervisor]
