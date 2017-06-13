@@ -2,10 +2,10 @@ defmodule YTDCore.Athlete do
   @moduledoc """
   Stores details of athletes, keyed by athlete ID. This is not intended to hold
   any data that can be obtained from Strava, but only application-specific
-  values (currently only the API token).
+  values (currently only the API token and annual mileage target).
 
-  Athlete information is only stored in memory, not on disk, so will be lost if
-  the application is restarted.
+  These functions are a wrapper for the Amnesia table
+  `YTDCore.Database.Athlete`.
   """
 
   require Amnesia
