@@ -27,3 +27,10 @@ Deploy upgrade:
 		make deploy-upgrade
 
 See `Makefile` for other targets.
+
+## Server setup
+
+Run `install-letsencrypt` to set up SSH certs.
+
+Run `<install-dir>/bin/ytd rpc YTDCore.Database.setup` after the initial
+installation of the application to create the mnesia database.
