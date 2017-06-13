@@ -1,6 +1,9 @@
-all: clean test style dialyzer docs
+all: clean database test style dialyzer docs
 clean:
 	mix clean
+database: Mnesia.nonode@nohost
+Mnesia.nonode@nohost:
+	mix amnesia.create -d YTDCore.Database --disk
 test:
 	MIX_ENV=test mix coveralls.html --umbrella
 style:
