@@ -11,6 +11,7 @@ defmodule YTDCore.Athlete do
   require Amnesia
   require Amnesia.Helper
   require Logger
+  alias YTDCore.Database
 
   @type t :: %__MODULE__{id: integer, token: String.t, target: integer}
   defstruct [:id, :token, :target]

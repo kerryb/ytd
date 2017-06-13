@@ -1,6 +1,6 @@
 defmodule YTDCore.AthleteTest do
   use ExUnit.Case
-  alias YTDCore.Athlete
+  alias YTDCore.{Athlete, Database}
   doctest Athlete
 
   setup do
