@@ -32,5 +32,5 @@ See `Makefile` for other targets.
 
 Run `install-letsencrypt` to set up SSH certs.
 
-Run `<install-dir>/bin/ytd rpc YTDCore.Database.setup` after the initial
-installation of the application to create the mnesia database.
+Run `<install-dir>/bin/ytd remote_console`, then `YTDCore.Database.setup` after
+the initial installation of the application to create the mnesia database.
