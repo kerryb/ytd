@@ -1,4 +1,4 @@
-defmodule YTDWeb.Web.IndexController do
+defmodule YTDWeb.Web.HomeController do
   use YTDWeb.Web, :controller
   alias Strava.Auth
 
