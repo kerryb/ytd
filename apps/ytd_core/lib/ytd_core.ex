@@ -24,10 +24,12 @@ defmodule YTDCore do
     case Athlete.find(athlete_id) do
       nil -> nil
       athlete ->
+        profile_url = "https://www.strava.com/athletes/#{athlete_id}"
         ytd = Strava.ytd athlete
         projected_annual = Calculations.projected_annual ytd, Date.utc_today
         weekly_average = Calculations.weekly_average ytd, Date.utc_today
         %Data{
+          profile_url: profile_url,
           ytd: ytd,
           target: athlete.target,
           projected_annual: projected_annual,

@@ -31,13 +31,14 @@ defmodule YTDCoreTest do
   end
 
   describe "YTDCore.values/1" do
-    test "returns the YTD figure from Strava and calculated values" do
+    test "returns the profile URL and YTD figure from Strava and calculated values" do
       with_mocks [
         {Athlete, [], [find: fn @id -> @athlete end]},
         {Strava, [], [ytd: fn @athlete -> 123.456 end]},
         {Date, [], [utc_today: fn -> ~D(2017-03-15) end]},
       ] do
         data = YTDCore.values @id
+        assert data.profile_url == "https://www.strava.com/athletes/#{@id}"
         assert data.ytd == 123.456
         assert data.target == 650
         assert_in_delta data.projected_annual, 608.9, 0.1
