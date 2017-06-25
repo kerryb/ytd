@@ -68,4 +68,16 @@ defmodule YTDCoreTest do
       end
     end
   end
+
+  describe "YTDCore.set_target/2" do
+    test "sets a target mileage for the athlete" do
+      target = 1000
+      with_mocks [
+        {Athlete, [], [set_target: fn @athlete, ^target -> :ok end]},
+      ] do
+        assert YTDCore.set_target(@athlete, target) == :ok
+        assert called Athlete.set_target(@athlete, target)
+      end
+    end
+  end
 end

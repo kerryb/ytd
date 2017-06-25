@@ -51,11 +51,13 @@ $link-color: white;
     font-weight: 500;
   }
 
-  .ytd-strava-link {
+  .ytd-right-link {
     text-align: right;
     margin-top: 10px;
     font-size: 40%;
     font-weight: 400;
+
+    a:link, a:visited, a:hover, a:active, a:focus { color: $gray-lighter; }
   }
 }
 

@@ -1,0 +1,8 @@
+.ytd
+  = form_for @conn, settings_path(@conn, :update), [as: :settings], fn f ->
+    = label f, :target, "Annual mileage target:"
+    .form-group
+      = text_input f, :target, type: :number, class: "form-control input-lg"
+    .form-group
+      = submit "Update", class: "btn btn-default btn-lg"
+    end

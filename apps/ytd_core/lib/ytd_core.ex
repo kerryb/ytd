@@ -50,4 +50,12 @@ defmodule YTDCore do
     Calculations.extra_needed_this_week(ytd, Date.utc_today,
                                         athlete.target, 1)
   end
+
+  @doc """
+  Sets the annual mileage target for the athlete with the specified ID
+  """
+  @spec set_target(integer, integer) :: :ok
+  def set_target(athlete_id, target) do
+    Athlete.set_target athlete_id, target
+  end
 end

@@ -8,3 +8,6 @@ config :ytd_web, YTDWeb.Web.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :phoenix_integration,
+  endpoint: YTDWeb.Web.Endpoint
