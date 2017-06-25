@@ -25,9 +25,7 @@ assets:
 docker-build:
 	docker build --tag=build-elixir -f docker/builder/Dockerfile .
 deploy-release:
-	ssh root@ytd.kerryb.org mkdir -p /opt/ytd/releases/$(version)
-	scp releases/ytd/releases/$(version)/ytd.tar.gz root@ytd.kerryb.org:/opt/ytd/releases/$(version)
-	ssh root@ytd.kerryb.org "bash -lc 'REPLACE_OS_VARS=true /opt/ytd/bin/ytd install $(version)'"
+	ssh root@ytd.kerryb.org 'tar -C /opt/ytd/ -xzf -' < releases/ytd/releases/$(version)/ytd.tar.gz 
 	ssh root@ytd.kerryb.org "bash -lc 'REPLACE_OS_VARS=true /opt/ytd/bin/ytd restart'"
 	ssh root@ytd.kerryb.org ln -s /etc/letsencrypt/webroot/.well-known /opt/ytd/lib/ytd_web-$(version)/priv/static/.well-known
 deploy-upgrade:
