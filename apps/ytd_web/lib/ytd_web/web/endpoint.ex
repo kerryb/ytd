@@ -8,7 +8,7 @@ defmodule YTDWeb.Web.Endpoint do
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/", from: :ytd_web, gzip: false,
+    at: "/", from: :ytd_web, gzip: true,
     only_matching: ~w(css fonts images js favicon apple-icon
                       robots.txt .well-known)
 
