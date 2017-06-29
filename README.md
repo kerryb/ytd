@@ -24,7 +24,9 @@ Build an upgrade tarball:
 
 Deploy upgrade:
 
-		make deploy-upgrade
+		make deploy-upgrade version=<version>
+
+Full releases are similar, but using `build-release` and `install-release`.
 
 See `Makefile` for other targets.
 
