@@ -10,7 +10,7 @@ defmodule YTDWeb.Web.AuthController do
   end
 
   def create(conn, params) do
-    athlete_id = YTDCore.register params["code"]
+    athlete_id = YTDCore.find_or_register params["code"]
     conn
     |> put_session(:athlete_id, athlete_id)
     |> redirect(to: "/")

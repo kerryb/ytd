@@ -9,23 +9,42 @@ defmodule YTDCoreTest do
   @token "strava-token-would-go-here"
   @athlete %Database.Athlete{id: @id, token: @token, target: 650}
 
-  describe "YTDCore.register/1" do
+  describe "YTDCore.find_or_register/1 for a new athlete" do
     test "retrieves and returns the athlete's ID" do
       with_mocks [
         {Strava, [], [athlete_from_code: fn @code -> @athlete end]},
-        {Athlete, [], [register: fn @athlete -> :ok end]},
+        {Athlete, [], [
+            find: fn @id -> nil end,
+            register: fn @athlete -> :ok end
+          ]
+        },
       ] do
-        assert YTDCore.register(@code) == @id
+        assert YTDCore.find_or_register(@code) == @id
       end
     end
 
     test "registers the athlete's API token" do
       with_mocks [
         {Strava, [], [athlete_from_code: fn @code -> @athlete end]},
-        {Athlete, [], [register: fn @athlete -> :ok end]},
+        {Athlete, [], [
+            find: fn @id -> nil end,
+            register: fn @athlete -> :ok end
+          ]
+        },
       ] do
-        YTDCore.register @code
+        YTDCore.find_or_register @code
         assert called Athlete.register @athlete
+      end
+    end
+  end
+
+  describe "YTDCore.find_or_register/1 for an existing athlete" do
+    test "retrieves and returns the athlete's ID" do
+      with_mocks [
+        {Strava, [], [athlete_from_code: fn @code -> @athlete end]},
+        {Athlete, [], [find: fn @id -> @athlete end]},
+      ] do
+        assert YTDCore.find_or_register(@code) == @id
       end
     end
   end
