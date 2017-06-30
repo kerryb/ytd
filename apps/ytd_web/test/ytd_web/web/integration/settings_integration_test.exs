@@ -7,7 +7,7 @@ defmodule YTDWeb.Web.SettingsIntegrationTest do
   @data %Data{
     ytd: 123.456789,
     projected_annual: 456.789,
-    weekly_average: 12.345
+    weekly_average: 12.345,
   }
 
   setup do
@@ -41,6 +41,21 @@ defmodule YTDWeb.Web.SettingsIntegrationTest do
         |> assert_response(path: home_path(conn, :index))
         refute called YTDCore.set_target
       end
+    end
+  end
+
+  test "Shows the existing target if set", %{conn: conn} do
+    data = %{@data |
+      target: 123,
+      extra_needed_today: 1.2,
+      extra_needed_this_week: 3.4,
+    }
+    with_mock YTDCore, [values: fn @athlete_id -> data end] do
+      conn
+      |> put_session(:athlete_id, @athlete_id)
+      |> get("/")
+      |> follow_link("Change target")
+      |> assert_response(html: "123")
     end
   end
 end

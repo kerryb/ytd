@@ -2,7 +2,12 @@ defmodule YTDWeb.Web.SettingsController do
   use YTDWeb.Web, :controller
 
   def show(conn, _params) do
+    data = conn
+           |> fetch_session
+           |> get_session(:athlete_id)
+           |> YTDCore.values
     conn
+    |> assign(:target, data.target)
     |> render("show.html")
   end
 
