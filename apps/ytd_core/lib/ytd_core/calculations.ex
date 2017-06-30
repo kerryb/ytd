@@ -26,4 +26,10 @@ defmodule YTDCore.Calculations do
   end
 
   defp days_in_year(date), do: if Timex.is_leap?(date), do: 366, else: 365
+
+  def estimated_target_completion(miles, date, target) do
+    beginning_of_year = Timex.beginning_of_year(date)
+    yday = Timex.diff date, beginning_of_year, :days
+    Timex.shift beginning_of_year, days: round(yday * target / miles)
+  end
 end

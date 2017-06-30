@@ -36,6 +36,7 @@ defmodule YTDCore do
           weekly_average: weekly_average,
           extra_needed_today: extra_needed_today(athlete, ytd),
           extra_needed_this_week: extra_needed_this_week(athlete, ytd),
+          estimated_target_completion: estimated_completion(athlete, ytd),
         }
     end
   end
@@ -49,6 +50,11 @@ defmodule YTDCore do
   defp extra_needed_this_week(athlete, ytd) do
     Calculations.extra_needed_this_week(ytd, Date.utc_today,
                                         athlete.target, 1)
+  end
+
+  defp estimated_completion(%Database.Athlete{target: nil}, _), do: nil
+  defp estimated_completion(athlete, ytd) do
+    Calculations.estimated_target_completion ytd, Date.utc_today, athlete.target
   end
 
   @doc """

@@ -64,6 +64,7 @@ defmodule YTDCoreTest do
         assert_in_delta data.weekly_average, 11.7, 0.1
         assert_in_delta data.extra_needed_today, 8.3, 0.1
         assert_in_delta data.extra_needed_this_week, 15.4, 0.1
+        assert data.estimated_target_completion == ~D(2018-01-20)
       end
     end
 

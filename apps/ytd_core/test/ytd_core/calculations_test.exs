@@ -44,7 +44,7 @@ defmodule YTDCore.CalculationsTest do
     end
   end
 
-  describe "YTDCore.Calculations.extra_needed_this_week/3" do
+  describe "YTDCore.Calculations.extra_needed_this_week/4" do
     test "returns the same as extra_needed_today if end_of_week is the same day" do
       assert Calculations.extra_needed_this_week(123,
                                                  ~D(2017-04-15), 450,
@@ -70,6 +70,13 @@ defmodule YTDCore.CalculationsTest do
                                             ~D(2017-02-15),
                                             450,
                                             :sun)
+    end
+  end
+
+  describe "YTDCore.Calculations.estimated_target_completion/3" do
+    test "returns the date target would be hit at the current rate" do
+      assert Calculations.estimated_target_completion(123, ~D(2017-04-15), 400)
+        == ~D(2017-12-05)
     end
   end
 end
