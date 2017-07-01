@@ -27,11 +27,12 @@ defmodule YTDWeb.Web.IndexControllerTest do
       end
     end
 
-    test "shows target-related data if present", %{conn: conn} do
+    test "shows extra needed if short of target", %{conn: conn} do
       data = %{@data |
         target: 1000,
         extra_needed_today: 1.2,
         extra_needed_this_week: 3.4,
+        estimated_target_completion: ~D(2018-01-10),
       }
       with_mock YTDCore, [values: fn @athlete_id -> data end] do
         conn = conn
@@ -48,6 +49,7 @@ defmodule YTDWeb.Web.IndexControllerTest do
         target: 1000,
         extra_needed_today: 1.2,
         extra_needed_this_week: 1.2,
+        estimated_target_completion: ~D(2018-01-10),
       }
       with_mock YTDCore, [values: fn @athlete_id -> data end] do
         conn = conn
@@ -57,11 +59,12 @@ defmodule YTDWeb.Web.IndexControllerTest do
       end
     end
 
-    test "doesn't show negative extra mileages", %{conn: conn} do
+    test "shows estimated target completion date if on target", %{conn: conn} do
       data = %{@data |
         target: 1000,
         extra_needed_today: -1.2,
         extra_needed_this_week: -3.4,
+        estimated_target_completion: ~D(2017-12-15)
       }
       with_mock YTDCore, [values: fn @athlete_id -> data end] do
         conn = conn
@@ -69,7 +72,7 @@ defmodule YTDWeb.Web.IndexControllerTest do
                |> get("/")
         refute html_response(conn, 200) =~ ~r/\b-1.2\b/
         refute html_response(conn, 200) =~ ~r/\b-3.4\b/
-        assert html_response(conn, 200) =~ ~r/still on target/
+        assert html_response(conn, 200) =~ ~r/15 December/
       end
     end
 

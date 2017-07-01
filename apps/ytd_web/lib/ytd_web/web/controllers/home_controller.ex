@@ -27,6 +27,8 @@ defmodule YTDWeb.Web.HomeController do
       |> assign(:extra_needed_this_week,
                 :io_lib.format("~.1f", [data.extra_needed_this_week]))
       |> assign(:extra_needed, data.extra_needed_today > 0)
+      |> assign(:estimated_target_completion,
+                Timex.format!(data.estimated_target_completion, "{D} {Mfull}"))
     else
       conn
     end

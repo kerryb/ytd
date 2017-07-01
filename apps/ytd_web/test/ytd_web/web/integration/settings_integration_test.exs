@@ -49,6 +49,7 @@ defmodule YTDWeb.Web.SettingsIntegrationTest do
       target: 123,
       extra_needed_today: 1.2,
       extra_needed_this_week: 3.4,
+      estimated_target_completion: ~D(2017-12-20),
     }
     with_mock YTDCore, [values: fn @athlete_id -> data end] do
       conn

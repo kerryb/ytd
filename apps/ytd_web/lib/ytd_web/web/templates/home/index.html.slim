@@ -35,9 +35,10 @@
           ' this week)
     - else
       .ytd-small
-        ' You&rsquo;re still on target for
+        ' You should hit
         span.ytd-value> = @target
-        ' miles!
+        ' miles by
+        span.ytd-value> = @estimated_target_completion
     .ytd-right-link
       = link "Change target", to: settings_path(@conn, :show)
   - else
