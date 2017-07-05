@@ -1,4 +1,4 @@
-all: clean database test style dialyzer docs
+all: clean database test style security dialyzer docs
 clean:
 	mix clean
 database: Mnesia.nonode@nohost
@@ -8,6 +8,8 @@ test:
 	MIX_ENV=test mix coveralls.html --umbrella
 style:
 	mix credo --strict
+security:
+	mix sobelow --root apps/ytd_web --exit low
 dialyzer:
 	MIX_ENV=dev mix compile --debug-info
 	mix dialyzer --halt-exit-status

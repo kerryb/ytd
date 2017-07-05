@@ -57,6 +57,8 @@ defmodule YTDWeb.Mixfile do
       {:phoenix_pubsub, ">= 1.0.0"},
       {:phoenix_slime, ">= 0.8.0"},
       {:poison, ">= 3.0.0", override: true}, # strava conflicts with phoenix
+      # {:sobelow, ">= 0.3.0", only: :dev},
+      {:sobelow, github: "kerryb/sobelow"},
       {:ytd_core, in_umbrella: true},
     ]
   end
