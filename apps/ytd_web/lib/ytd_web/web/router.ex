@@ -24,6 +24,7 @@ defmodule YTDWeb.Web.Router do
     pipe_through [:browser, SessionCheck]
 
     get "/", HomeController, :index
+    get "/friends", FriendsController, :index
     get "/settings", SettingsController, :show
     post "/settings", SettingsController, :update
   end

@@ -1,5 +1,11 @@
 .ytd
-  hr
+  .ytd-header
+    ul.nav.nav-pills
+      li role="presentation" class="active"
+        a href="#" You
+      li role="presentation"
+        = link "Friends", to: friends_path(@conn, :index)
+  hr.top
   div
     | So far this year, you&rsquo;ve run
   .ytd-big

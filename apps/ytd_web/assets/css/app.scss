@@ -36,6 +36,33 @@ $link-color: white;
 
   hr {
     margin: 20px 0;
+
+    &.top {
+      margin-top: 10px;
+    }
+  }
+
+  .ytd-header {
+    font-size: 50%;
+
+    .nav > li > a {
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+
+    %active-nav-pill {
+      background-color: rgba(255, 255, 255, 0.9);
+      color: $body-bg;
+      font-weight: 400;
+    }
+
+    .nav-pills>li.active>a {
+      @extend %active-nav-pill;
+    }
+
+    .nav-pills>li>a:hover {
+      @extend %active-nav-pill;
+    }
   }
 
   .ytd-big {
