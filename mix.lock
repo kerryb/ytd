@@ -40,7 +40,7 @@
   "slime": {:hex, :slime, "0.16.0", "4f9c677ca37b2817cd10422ecb42c524fe904d3630acf242b81dfe189900272a", [:mix], [], "hexpm"},
   "sobelow": {:hex, :sobelow, "0.4.6", "28d92a12120534ce47d9c8426de65ee327ec7ae5f6d4e7b8f5205df59e34eb1f", [:mix], [], "hexpm"},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.1", "28a4d65b7f59893bc2c7de786dec1e1555bd742d336043fe644ae956c3497fbe", [:make, :rebar], [], "hexpm"},
-  "strava": {:hex, :strava, "0.3.4", "592ff6c4ccbafa966bf7f573c7360ab800a8aee87456e1d52c9b5991b6be8692", [:mix], [{:httpoison, "~> 0.10", [hex: :httpoison, repo: "hexpm", optional: false]}, {:oauth2, "~> 0.8", [hex: :oauth2, repo: "hexpm", optional: false]}, {:poison, "~> 3.0", [hex: :poison, repo: "hexpm", optional: false]}], "hexpm"},
+  "strava": {:git, "git@github.com:kerryb/strava.git", "e781e51ea2c282b388ceb4448135bedf0b8d338b", [branch: "friends-and-followers"]},
   "timex": {:hex, :timex, "3.1.24", "d198ae9783ac807721cca0c5535384ebdf99da4976be8cefb9665a9262a1e9e3", [:mix], [{:combine, "~> 0.7", [hex: :combine, repo: "hexpm", optional: false]}, {:gettext, "~> 0.10", [hex: :gettext, repo: "hexpm", optional: false]}, {:tzdata, "~> 0.1.8 or ~> 0.5", [hex: :tzdata, repo: "hexpm", optional: false]}], "hexpm"},
   "tzdata": {:hex, :tzdata, "0.5.12", "1c17b68692c6ba5b6ab15db3d64cc8baa0f182043d5ae9d4b6d35d70af76f67b", [:mix], [{:hackney, "~> 1.0", [hex: :hackney, repo: "hexpm", optional: false]}], "hexpm"},
   "unicode_util_compat": {:hex, :unicode_util_compat, "0.2.0", "dbbccf6781821b1c0701845eaf966c9b6d83d7c3bfc65ca2b78b88b8678bfa35", [:rebar3], [], "hexpm"}}

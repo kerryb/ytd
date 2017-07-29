@@ -34,7 +34,7 @@ defmodule YTDCore.Mixfile do
       {:exvcr, ">= 0.8.0", runtime: false, only: [:test]},
       {:httpoison, ">= 0.10.0"},
       {:mock, ">= 0.2.0", only: [:test]},
-      {:strava, ">= 0.3.0"},
+      {:strava, git: "git@github.com:kerryb/strava.git", branch: "friends-and-followers"},
       {:timex, ">= 0.19.0"},
     ]
   end
