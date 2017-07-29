@@ -17,7 +17,8 @@ defmodule YTDCore do
   end
 
   @doc """
-  Returns a `YTDCore.Data` struct with the values to be displayed
+  Given an athlete ID, returns a `YTDCore.Data` struct with the values to be
+  displayed
   """
   @spec values(integer) :: %YTDCore.Data{} | nil
   def values(athlete_id) do
