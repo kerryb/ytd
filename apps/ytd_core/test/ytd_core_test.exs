@@ -89,6 +89,25 @@ defmodule YTDCoreTest do
     end
   end
 
+  describe "YTDCore.friends/1" do
+    test "returns the name, YTD figure and profile URL for each friend" do
+      friend = %{id: 789, firstname: "Fred", lastname: "Flintstone"}
+      with_mocks [
+        {Athlete, [], [find: fn @id -> @athlete end]},
+        {Strava, [], [
+          friends: fn @athlete -> [friend] end,
+          ytd: fn ^friend -> 456.789 end,
+        ]},
+      ] do
+        friends = YTDCore.friends @id
+        first_friend = friends |> List.first
+        assert first_friend.name == "Fred Flintstone"
+        assert first_friend.ytd == 456.789
+        assert first_friend.profile_url == "https://www.strava.com/athletes/789"
+      end
+    end
+  end
+
   describe "YTDCore.set_target/2" do
     test "sets a target mileage for the athlete" do
       target = 1000

@@ -3,11 +3,11 @@ defmodule YTDCore do
   Public interface.
   """
 
-  alias YTDCore.{Athlete, Calculations, Data, Database, Strava}
+  alias YTDCore.{Athlete, Calculations, Data, Database, Friend, Strava}
 
   @doc """
-  Given an authorization code (from an oauth callback), request and return the
-  corresponding athlete ID.
+  Given an authorization code (from an oauth callback), requests and returns
+  the corresponding athlete ID.
   """
   @spec find_or_register(String.t) :: integer
   def find_or_register(code) do
@@ -25,7 +25,7 @@ defmodule YTDCore do
     case Athlete.find(athlete_id) do
       nil -> nil
       athlete ->
-        profile_url = "https://www.strava.com/athletes/#{athlete_id}"
+        profile_url = profile_url athlete_id
         ytd = Strava.ytd athlete
         projected_annual = Calculations.projected_annual ytd, Date.utc_today
         weekly_average = Calculations.weekly_average ytd, Date.utc_today
@@ -41,6 +41,33 @@ defmodule YTDCore do
         }
     end
   end
+
+  @doc """
+  Given an athlete ID, returns a list of `YTDCore.Friend` structures with data
+  for the leaderboard.
+
+  **NOT YET IMPLEMENTED**
+  """
+  @spec friends(integer) :: [YTDCore.Friend]
+  def friends(athlete_id) do
+    case Athlete.find(athlete_id) do
+      # nil -> nil
+      athlete ->
+        athlete
+        |> Strava.friends
+        |> Enum.map(&build_friend/1)
+    end
+  end
+
+  defp build_friend(athlete) do
+    %Friend{
+      name: "#{athlete.firstname} #{athlete.lastname}",
+      profile_url: profile_url(athlete.id),
+      ytd: Strava.ytd(athlete),
+    }
+  end
+
+  defp profile_url(athlete_id), do: "https://www.strava.com/athletes/#{athlete_id}"
 
   defp extra_needed_today(%Database.Athlete{target: nil}, _), do: nil
   defp extra_needed_today(athlete, ytd) do
@@ -59,7 +86,7 @@ defmodule YTDCore do
   end
 
   @doc """
-  Sets the annual mileage target for the athlete with the specified ID
+  Sets the annual mileage target for the athlete with the specified ID.
   """
   @spec set_target(integer, integer) :: :ok
   def set_target(athlete_id, target) do

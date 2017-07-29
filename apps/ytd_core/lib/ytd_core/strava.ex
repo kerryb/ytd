@@ -24,5 +24,8 @@ defmodule YTDCore.Strava do
     metres_to_miles distance
   end
 
+  def friends(%Athlete{token: _token, id: _id}) do
+  end
+
   defp metres_to_miles(metres), do: metres / 1609.34
 end
