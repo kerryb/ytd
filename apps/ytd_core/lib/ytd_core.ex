@@ -51,7 +51,7 @@ defmodule YTDCore do
   @spec friends(integer) :: [YTDCore.Friend]
   def friends(athlete_id) do
     case Athlete.find(athlete_id) do
-      # nil -> nil
+      nil -> []
       athlete ->
         athlete
         |> Strava.friends

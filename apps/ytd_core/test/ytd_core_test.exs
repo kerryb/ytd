@@ -106,6 +106,12 @@ defmodule YTDCoreTest do
         assert first_friend.profile_url == "https://www.strava.com/athletes/789"
       end
     end
+
+    test "returns an empty list if the athlete is not registered" do
+      with_mock Athlete, [find: fn _ -> nil end] do
+        assert YTDCore.friends(@id) == []
+      end
+    end
   end
 
   describe "YTDCore.set_target/2" do
