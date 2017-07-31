@@ -6,6 +6,10 @@
       li role="presentation" class="active"
         = link "Friends", to: friends_path(@conn, :index)
   hr.top
-  .ytd-big
-    ' Coming soon &hellip;
+  table
+    tbody
+    = for friend <- @friends do
+      tr
+        td = friend.name
+        td = friend.ytd
   hr

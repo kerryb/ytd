@@ -22,4 +22,16 @@ defmodule YTDCore.StravaTest do
       end
     end
   end
+
+  describe "YTDCore.Strava.friends/1" do
+    test "returns the provided athlete's friends" do
+      athlete = %Athlete{token: "e3c701b40a0adae60e83b025a168941de2bcf472", id: "5324239"}
+      use_cassette "friends" do
+        friend = Strava.friends(athlete) |> List.first
+        assert friend.name == ""
+        assert friend.profile_url == ""
+        assert friend.ytd == ""
+      end
+    end
+  end
 end

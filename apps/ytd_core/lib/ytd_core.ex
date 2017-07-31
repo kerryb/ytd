@@ -5,6 +5,8 @@ defmodule YTDCore do
 
   alias YTDCore.{Athlete, Calculations, Data, Database, Friend, Strava}
 
+  # TODO: figure out a common abstraction level for this module
+
   @doc """
   Given an authorization code (from an oauth callback), requests and returns
   the corresponding athlete ID.
@@ -25,7 +27,7 @@ defmodule YTDCore do
     case Athlete.find(athlete_id) do
       nil -> nil
       athlete ->
-        profile_url = profile_url athlete_id
+        profile_url = "https://www.strava.com/athletes/#{athlete.id}"
         ytd = Strava.ytd athlete
         projected_annual = Calculations.projected_annual ytd, Date.utc_today
         weekly_average = Calculations.weekly_average ytd, Date.utc_today
@@ -55,19 +57,8 @@ defmodule YTDCore do
       athlete ->
         athlete
         |> Strava.friends
-        |> Enum.map(&build_friend/1)
     end
   end
-
-  defp build_friend(athlete) do
-    %Friend{
-      name: "#{athlete.firstname} #{athlete.lastname}",
-      profile_url: profile_url(athlete.id),
-      ytd: Strava.ytd(athlete),
-    }
-  end
-
-  defp profile_url(athlete_id), do: "https://www.strava.com/athletes/#{athlete_id}"
 
   defp extra_needed_today(%Database.Athlete{target: nil}, _), do: nil
   defp extra_needed_today(athlete, ytd) do
