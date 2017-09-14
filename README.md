@@ -6,11 +6,13 @@ http://ytd.kerryb.org
 
 ## Building
 
-Compile, test etc:
+### Compile, test etc:
 
     make
 
-Build an upgrade tarball:
+### Build an upgrade tarball:
+
+    make build-upgrade
 
 **Notes:**
 
@@ -20,9 +22,7 @@ Build an upgrade tarball:
   * Make sure the YTD_ERLANG_COOKIE environment variable is set to a suitable
     secret value
 
-    make build-upgrade
-
-Deploy upgrade:
+### Deploy upgrade:
 
     make deploy-upgrade version=<version>
 
