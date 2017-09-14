@@ -4,7 +4,7 @@ Strave year-to-date running mileage.
 
 http://ytd.kerryb.org
 
-## Building
+## Building
 
 Compile, test etc:
 
@@ -16,15 +16,15 @@ Build an upgrade tarball:
 
   * Set the release version in `VERSION`
   * The release build uses Docker: if you get certificate errors, restart Docker to
-		get the VM clock back in sync
-	* Make sure the YTD_ERLANG_COOKIE environment variable is set to a suitable
-	  secret value
+    get the VM clock back in sync
+  * Make sure the YTD_ERLANG_COOKIE environment variable is set to a suitable
+    secret value
 
-		make build-upgrade
+    make build-upgrade
 
 Deploy upgrade:
 
-		make deploy-upgrade version=<version>
+    make deploy-upgrade version=<version>
 
 Full releases are similar, but using `build-release` and `install-release`.
 
