@@ -22,6 +22,7 @@ defmodule YTDWeb.Web.HomeController do
 
     conn = if data.target do
       conn
+      |> assign(:target_met, data.ytd > data.target)
       |> assign(:extra_needed_today,
                 :io_lib.format("~.1f", [data.extra_needed_today]))
       |> assign(:extra_needed_this_week,

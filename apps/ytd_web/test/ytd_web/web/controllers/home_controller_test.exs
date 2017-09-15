@@ -27,6 +27,25 @@ defmodule YTDWeb.Web.IndexControllerTest do
       end
     end
 
+    test "indicates if target has been achieved", %{conn: conn} do
+      data = %{@data |
+        target: 100,
+        extra_needed_today: -12.3,
+        extra_needed_this_week: -45.6,
+        estimated_target_completion: ~D(2018-01-10),
+      }
+      with_mock YTDCore, [values: fn @athlete_id -> data end] do
+        conn = conn
+               |> put_session(:athlete_id, @athlete_id)
+               |> get("/")
+        refute html_response(conn, 200) =~ ~r/\bset a target\b>/
+        refute html_response(conn, 200) =~ ~r/\bYou should hit\b/
+        refute html_response(conn, 200) =~ ~r/\bYou can get back on target\b/
+        assert html_response(conn, 200) =~
+          ~r/\bYou have hit your target of <span.*>100<\/span> miles!/
+      end
+    end
+
     test "shows extra needed if short of target", %{conn: conn} do
       data = %{@data |
         target: 1000,
