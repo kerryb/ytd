@@ -1,5 +1,5 @@
-defmodule YTDWeb.Web.AuthController do
-  use YTDWeb.Web, :controller
+defmodule YTDWeb.AuthController do
+  use YTDWeb, :controller
   alias Strava.Auth
 
   def show(conn, _params) do

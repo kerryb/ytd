@@ -1,4 +1,4 @@
-defmodule YTDWeb.Web.ErrorHelpers do
+defmodule YTDWeb.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
@@ -32,9 +32,9 @@ defmodule YTDWeb.Web.ErrorHelpers do
     #     dgettext "errors", "is invalid"
     #
     if count = opts[:count] do
-      Gettext.dngettext(YTDWeb.Web.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(YTDWeb.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(YTDWeb.Web.Gettext, "errors", msg, opts)
+      Gettext.dgettext(YTDWeb.Gettext, "errors", msg, opts)
     end
   end
 end

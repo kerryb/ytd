@@ -1,5 +1,5 @@
-defmodule YTDWeb.Web.ErrorView do
-  use YTDWeb.Web, :view
+defmodule YTDWeb.ErrorView do
+  use YTDWeb, :view
 
   def render("404.html", _assigns) do
     "Page not found"

@@ -1,5 +1,5 @@
-defmodule YTDWeb.Web.HomeController do
-  use YTDWeb.Web, :controller
+defmodule YTDWeb.HomeController do
+  use YTDWeb, :controller
 
   def index(conn, _params) do
     athlete_id = conn

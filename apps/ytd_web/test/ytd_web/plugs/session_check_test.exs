@@ -1,6 +1,6 @@
-defmodule YTDWeb.Web.Plugs.SessionCheckTest do
-  use YTDWeb.Web.ConnCase, async: true
-  alias YTDWeb.Web.Plugs.SessionCheck
+defmodule YTDWeb.Plugs.SessionCheckTest do
+  use YTDWeb.ConnCase, async: true
+  alias YTDWeb.Plugs.SessionCheck
   doctest SessionCheck
 
   setup do

@@ -24,7 +24,7 @@ defmodule YTDWeb.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {YTDWeb, []},
+    [mod: {YTDWeb.Application, []},
      applications: [
        :phoenix,
        :phoenix_pubsub,

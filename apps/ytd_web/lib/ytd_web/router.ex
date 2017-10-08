@@ -1,6 +1,6 @@
-defmodule YTDWeb.Web.Router do
-  use YTDWeb.Web, :router
-  alias YTDWeb.Web.Plugs.SessionCheck
+defmodule YTDWeb.Router do
+  use YTDWeb, :router
+  alias YTDWeb.Plugs.SessionCheck
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -14,13 +14,13 @@ defmodule YTDWeb.Web.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/auth", YTDWeb.Web do
+  scope "/auth", YTDWeb do
     pipe_through :browser
     get "/", AuthController, :show
     get "/callback", AuthController, :create
   end
 
-  scope "/", YTDWeb.Web do
+  scope "/", YTDWeb do
     pipe_through [:browser, SessionCheck]
 
     get "/", HomeController, :index

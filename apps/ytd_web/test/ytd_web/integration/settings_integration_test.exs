@@ -1,5 +1,5 @@
-defmodule YTDWeb.Web.SettingsIntegrationTest do
-  use YTDWeb.Web.IntegrationCase
+defmodule YTDWeb.SettingsIntegrationTest do
+  use YTDWeb.IntegrationCase
   import Mock
   alias YTDCore.Data
 

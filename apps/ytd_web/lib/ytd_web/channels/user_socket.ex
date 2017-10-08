@@ -1,4 +1,4 @@
-defmodule YTDWeb.Web.UserSocket do
+defmodule YTDWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels

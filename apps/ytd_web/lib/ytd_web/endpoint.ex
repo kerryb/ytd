@@ -1,7 +1,7 @@
-defmodule YTDWeb.Web.Endpoint do
+defmodule YTDWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :ytd_web
 
-  socket "/socket", YTDWeb.Web.UserSocket
+  socket "/socket", YTDWeb.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -40,5 +40,5 @@ defmodule YTDWeb.Web.Endpoint do
     signing_salt: "fYS/klK+",
     max_age: 100_000_000
 
-  plug YTDWeb.Web.Router
+  plug YTDWeb.Router
 end

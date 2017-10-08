@@ -1,9 +1,9 @@
-defmodule YTDWeb.Web.IntegrationCase do
+defmodule YTDWeb.IntegrationCase do
   use ExUnit.CaseTemplate
 
   using do
     quote do
-      use YTDWeb.Web.ConnCase
+      use YTDWeb.ConnCase
       use PhoenixIntegration
     end
   end

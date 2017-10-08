@@ -1,22 +1,70 @@
 defmodule YTDWeb do
-  use Application
+  @moduledoc """
+  A module that keeps using definitions for controllers,
+  views and so on.
 
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
-  def start(_type, _args) do
-    import Supervisor.Spec
+  This can be used in your application as:
 
-    # Define workers and child supervisors to be supervised
-    children = [
-      # Start the endpoint when the application starts
-      supervisor(YTDWeb.Web.Endpoint, []),
-      # Start your own worker by calling: YTDWeb.Web.Worker.start_link(arg1, arg2, arg3)
-      # worker(YTDWeb.Web.Worker, [arg1, arg2, arg3]),
-    ]
+      use YTDWeb, :controller
+      use YTDWeb, :view
 
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: YTDWeb.Web.Supervisor]
-    Supervisor.start_link(children, opts)
+  The definitions below will be executed for every view,
+  controller, etc, so keep them short and clean, focused
+  on imports, uses and aliases.
+
+  Do NOT define functions inside the quoted expressions
+  below.
+  """
+
+  def model do
+    quote do
+      # Define common model functionality
+    end
+  end
+
+  def controller do
+    quote do
+      use Phoenix.Controller, namespace: YTDWeb
+
+      import YTDWeb.Router.Helpers
+      import YTDWeb.Gettext
+    end
+  end
+
+  def view do
+    quote do
+      use Phoenix.View, root: "lib/ytd_web/templates",
+                        namespace: YTDWeb
+
+      # Import convenience functions from controllers
+      import Phoenix.Controller, only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
+
+      # Use all HTML functionality (forms, tags, etc)
+      use Phoenix.HTML
+
+      import YTDWeb.Router.Helpers
+      import YTDWeb.ErrorHelpers
+      import YTDWeb.Gettext
+    end
+  end
+
+  def router do
+    quote do
+      use Phoenix.Router
+    end
+  end
+
+  def channel do
+    quote do
+      use Phoenix.Channel
+      import YTDWeb.Gettext
+    end
+  end
+
+  @doc """
+  When used, dispatch to the appropriate controller/view/etc.
+  """
+  defmacro __using__(which) when is_atom(which) do
+    apply(__MODULE__, which, [])
   end
 end

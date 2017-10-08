@@ -1,4 +1,4 @@
-defmodule YTDWeb.Web.Plugs.SessionCheck do
+defmodule YTDWeb.Plugs.SessionCheck do
   @moduledoc """
   A plug to check whether the user has an active session. If an athlete ID is
   found in the session it allows the request to continue, otherwise it halts
@@ -6,7 +6,7 @@ defmodule YTDWeb.Web.Plugs.SessionCheck do
   """
   import Plug.Conn
   alias Phoenix.Controller
-  alias YTDWeb.Web.Router.Helpers
+  alias YTDWeb.Router.Helpers
   alias Strava.Auth
 
   def init(opts), do: opts

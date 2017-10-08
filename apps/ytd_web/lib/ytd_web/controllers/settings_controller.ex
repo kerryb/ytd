@@ -1,5 +1,5 @@
-defmodule YTDWeb.Web.SettingsController do
-  use YTDWeb.Web, :controller
+defmodule YTDWeb.SettingsController do
+  use YTDWeb, :controller
 
   def show(conn, _params) do
     data = conn

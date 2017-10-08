@@ -6,7 +6,7 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
-config :ytd_web, YTDWeb.Web.Endpoint,
+config :ytd_web, YTDWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
@@ -15,13 +15,13 @@ config :ytd_web, YTDWeb.Web.Endpoint,
                     cd: Path.expand("../assets", __DIR__)]]
 
 # Watch static and templates for browser reloading.
-config :ytd_web, YTDWeb.Web.Endpoint,
+config :ytd_web, YTDWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
-      ~r{lib/ytd_web/web/views/.*(ex)$},
-      ~r{lib/ytd_web/web/templates/.*(eex|slim|slime)$}
+      ~r{lib/ytd_web/views/.*(ex)$},
+      ~r{lib/ytd_web/templates/.*(eex|slim|slime)$}
     ]
   ]
 
