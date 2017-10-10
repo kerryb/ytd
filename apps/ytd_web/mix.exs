@@ -14,6 +14,9 @@ defmodule YTDWeb.Mixfile do
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
+      preferred_cli_env: preferred_cli_env(),
+      elixirc_options: elixirc_options(),
+      test_coverage: [tool: ExCoveralls],
       deps: deps()
     ]
   end
@@ -25,16 +28,19 @@ defmodule YTDWeb.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {YTDWeb.Application, []},
-     applications: [
+     extra_applications: [
+       :cowboy,
+       :gettext,
+       :hackney,
+       :httpoison,
+       :logger,
        :phoenix,
-       :phoenix_pubsub,
        :phoenix_html,
+       :phoenix_pubsub,
        :phoenix_slime,
        :plug,
-       :cowboy,
-       :logger,
-       :gettext,
-       :ytd_core,
+       :strava,
+       :timex,
      ]]
   end
 
@@ -47,8 +53,12 @@ defmodule YTDWeb.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:amnesia, "~> 0.2.7"},
       {:cowboy, ">= 1.0.0"},
+      {:exvcr, ">= 0.8.0", runtime: false, only: [:test]},
       {:gettext, ">= 0.11.0"},
+      {:hackney, "~> 1.8.6"},
+      {:httpoison, ">= 0.10.0"},
       {:mock, ">= 0.2.0", only: :test},
       {:phoenix, ">= 1.3.0"},
       {:phoenix_html, ">= 2.6.0"},
@@ -58,7 +68,21 @@ defmodule YTDWeb.Mixfile do
       {:phoenix_slime, ">= 0.8.0"},
       {:poison, ">= 3.0.0", override: true}, # strava conflicts with phoenix
       {:sobelow, ">= 0.3.0", only: :dev},
-      {:ytd_core, in_umbrella: true},
+      {:strava, ">= 0.3.0"},
+      {:timex, ">= 0.19.0"},
     ]
+  end
+
+  defp preferred_cli_env do
+    [
+      vcr: :test,
+      "vcr.delete": :test,
+      "vcr.check": :test,
+      "vcr.show": :test,
+    ]
+  end
+
+  defp elixirc_options do
+    if Mix.env == :test, do: [], else: [warnings_as_errors: true]
   end
 end
