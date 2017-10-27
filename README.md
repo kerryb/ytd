@@ -1,19 +1,23 @@
 # YTDWeb
 
-To start your Phoenix app:
+## Compile, test, etc
 
-  * Install dependencies with `mix deps.get`
-  * Install Node.js dependencies with `npm install`
-  * Start Phoenix endpoint with `mix phoenix.server`
+```bash
+make
+```
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+## Build and deploy a release or upgrade
 
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
+Update the `VERSION` file, then:
 
-## Learn more
+```bash
+make build-release
+make deploy-release version=x.y.z
+```
 
-  * Official website: http://www.phoenixframework.org/
-  * Guides: http://phoenixframework.org/docs/overview
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
+or
+
+```bash
+make build-upgrade
+make deploy-upgrade version=x.y.z
+```
