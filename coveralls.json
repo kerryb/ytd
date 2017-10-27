@@ -1,11 +1,5 @@
 {
   "skip_files": [
-    "apps/ytd_web/lib/ytd_core/database.ex"
-  ],
-  "custom_stop_words": [
-    "Amnesia.transaction"
-  ],
-  "coverage_options": {
-    "treat_no_relevant_lines_as_covered": true
-  }
+    "lib/ytd_core/database.ex"
+  ]
 }

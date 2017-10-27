@@ -1,15 +1,16 @@
 all: clean database test style security dialyzer docs
+.PHONY: clean database test style security dialyzer docs
 clean:
 	mix clean
 database: Mnesia.nonode@nohost
 Mnesia.nonode@nohost:
 	mix amnesia.create -d YTDCore.Database --disk
 test:
-	MIX_ENV=test mix coveralls.html --umbrella
+	MIX_ENV=test mix coveralls.html
 style:
 	mix credo --strict
 security:
-	mix sobelow --root apps/ytd_web --exit low
+	mix sobelow --exit low
 dialyzer:
 	MIX_ENV=dev mix compile --debug-info
 	mix dialyzer --halt-exit-status
@@ -22,8 +23,8 @@ build-upgrade: assets docker-build
 	docker run -e YTD_ERLANG_COOKIE='${YTD_ERLANG_COOKIE}' \
 		-v $(shell pwd)/releases:/app/releases build-elixir mix release --env=prod --upgrade
 assets:
-	cd apps/ytd_web/assets && npm install && ./node_modules/brunch/bin/brunch b -p
-	cd apps/ytd_web && MIX_ENV=prod mix phx.digest
+	cd assets && npm install && ./node_modules/brunch/bin/brunch b -p
+	MIX_ENV=prod mix phx.digest
 docker-build:
 	docker build --tag=build-elixir -f docker/builder/Dockerfile .
 deploy-release:
