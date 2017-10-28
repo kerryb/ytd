@@ -1,13 +1,13 @@
-defmodule YTDCore.AthleteTest do
+defmodule YTD.Core.AthleteTest do
   use ExUnit.Case
-  alias YTDCore.{Athlete, Database}
+  alias YTD.Core.{Athlete, Database}
   doctest Athlete
 
   setup do
     Database.Athlete.clear
   end
 
-  describe "YTDCore.Athlete.register/2 and .find/1" do
+  describe "YTD.Core.Athlete.register/2 and .find/1" do
     test "register and find athletes by ID" do
       Athlete.register %Database.Athlete{id: 123, token: "access-token"}
       assert Athlete.find(123) == %Database.Athlete{id: 123, token: "access-token"}
@@ -18,7 +18,7 @@ defmodule YTDCore.AthleteTest do
     end
   end
 
-  describe "YTDCore.Athlete.set_target/2" do
+  describe "YTD.Core.Athlete.set_target/2" do
     test "allows setting of target mileage" do
       Athlete.register %Database.Athlete{id: 123, token: "access-token"}
       Athlete.set_target 123, 1000

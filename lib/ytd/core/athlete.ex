@@ -1,22 +1,22 @@
-defmodule YTDCore.Athlete do
+defmodule YTD.Core.Athlete do
   @moduledoc """
   Stores details of athletes, keyed by athlete ID. This is not intended to hold
   any data that can be obtained from Strava, but only application-specific
   values (currently only the API token and annual mileage target).
 
   These functions are a wrapper for the Amnesia table
-  `YTDCore.Database.Athlete`.
+  `YTD.Core.Database.Athlete`.
   """
 
   require Amnesia
   require Amnesia.Helper
   require Logger
-  alias YTDCore.Database
+  alias YTD.Core.Database
 
   @doc """
   Register a new athlete, given their Strava ID and API token.
   """
-  @spec register(%YTDCore.Database.Athlete{}) :: :ok
+  @spec register(%YTD.Core.Database.Athlete{}) :: :ok
   def register(athlete) do
     Logger.info fn -> "Registering athlete #{inspect athlete}" end
     Amnesia.transaction do
@@ -27,7 +27,7 @@ defmodule YTDCore.Athlete do
   @doc """
   Return the athlete with the supplied ID, or nil if not found.
   """
-  @spec find(integer) :: %YTDCore.Database.Athlete{} | nil
+  @spec find(integer) :: %YTD.Core.Database.Athlete{} | nil
   def find(id) do
     Amnesia.transaction do
       Database.Athlete.read id

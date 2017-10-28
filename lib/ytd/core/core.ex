@@ -1,9 +1,9 @@
-defmodule YTDCore do
+defmodule YTD.Core do
   @moduledoc """
   Public interface.
   """
 
-  alias YTDCore.{Athlete, Calculations, Data, Database, Strava}
+  alias YTD.Core.{Athlete, Calculations, Data, Database, Strava}
 
   @doc """
   Given an authorization code (from an oauth callback), request and return the
@@ -17,10 +17,10 @@ defmodule YTDCore do
   end
 
   @doc """
-  Given an athlete ID, returns a `YTDCore.Data` struct with the values to be
+  Given an athlete ID, returns a `YTD.Core.Data` struct with the values to be
   displayed
   """
-  @spec values(integer) :: %YTDCore.Data{} | nil
+  @spec values(integer) :: %YTD.Core.Data{} | nil
   def values(athlete_id) do
     case Athlete.find(athlete_id) do
       nil -> nil

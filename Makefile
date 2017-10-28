@@ -4,7 +4,7 @@ clean:
 	mix clean
 database: Mnesia.nonode@nohost
 Mnesia.nonode@nohost:
-	mix amnesia.create -d YTDCore.Database --disk
+	mix amnesia.create -d YTD.Core.Database --disk
 test:
 	MIX_ENV=test mix coveralls.html
 style:

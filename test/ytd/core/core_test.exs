@@ -1,15 +1,15 @@
-defmodule YTDCoreTest do
+defmodule YTD.CoreTest do
   use ExUnit.Case
   import Mock
-  alias YTDCore.{Athlete, Database, Strava}
-  doctest YTDCore
+  alias YTD.Core.{Athlete, Database, Strava}
+  doctest YTD.Core
 
   @code "strava-code-would-go-here"
   @id 123
   @token "strava-token-would-go-here"
   @athlete %Database.Athlete{id: @id, token: @token, target: 650}
 
-  describe "YTDCore.find_or_register/1 for a new athlete" do
+  describe "YTD.Core.find_or_register/1 for a new athlete" do
     test "retrieves and returns the athlete's ID" do
       with_mocks [
         {Strava, [], [athlete_from_code: fn @code -> @athlete end]},
@@ -19,7 +19,7 @@ defmodule YTDCoreTest do
           ]
         },
       ] do
-        assert YTDCore.find_or_register(@code) == @id
+        assert YTD.Core.find_or_register(@code) == @id
       end
     end
 
@@ -32,31 +32,31 @@ defmodule YTDCoreTest do
           ]
         },
       ] do
-        YTDCore.find_or_register @code
+        YTD.Core.find_or_register @code
         assert called Athlete.register @athlete
       end
     end
   end
 
-  describe "YTDCore.find_or_register/1 for an existing athlete" do
+  describe "YTD.Core.find_or_register/1 for an existing athlete" do
     test "retrieves and returns the athlete's ID" do
       with_mocks [
         {Strava, [], [athlete_from_code: fn @code -> @athlete end]},
         {Athlete, [], [find: fn @id -> @athlete end]},
       ] do
-        assert YTDCore.find_or_register(@code) == @id
+        assert YTD.Core.find_or_register(@code) == @id
       end
     end
   end
 
-  describe "YTDCore.values/1" do
+  describe "YTD.Core.values/1" do
     test "returns the profile URL and YTD figure from Strava and calculated values" do
       with_mocks [
         {Athlete, [], [find: fn @id -> @athlete end]},
         {Strava, [], [ytd: fn @athlete -> 123.456 end]},
         {Date, [], [utc_today: fn -> ~D(2017-03-15) end]},
       ] do
-        data = YTDCore.values @id
+        data = YTD.Core.values @id
         assert data.profile_url == "https://www.strava.com/athletes/#{@id}"
         assert data.ytd == 123.456
         assert data.target == 650
@@ -75,7 +75,7 @@ defmodule YTDCoreTest do
         {Strava, [], [ytd: fn ^athlete -> 123.456 end]},
         {Date, [], [utc_today: fn -> ~D(2017-03-15) end]},
       ] do
-        data = YTDCore.values @id
+        data = YTD.Core.values @id
         assert is_nil data.target
         assert is_nil data.extra_needed_today
         assert is_nil data.extra_needed_this_week
@@ -84,18 +84,18 @@ defmodule YTDCoreTest do
 
     test "returns nil if the athlete is not registered" do
       with_mock Athlete, [find: fn _ -> nil end] do
-        assert YTDCore.values(@id) == nil
+        assert YTD.Core.values(@id) == nil
       end
     end
   end
 
-  describe "YTDCore.set_target/2" do
+  describe "YTD.Core.set_target/2" do
     test "sets a target mileage for the athlete" do
       target = 1000
       with_mocks [
         {Athlete, [], [set_target: fn @athlete, ^target -> :ok end]},
       ] do
-        assert YTDCore.set_target(@athlete, target) == :ok
+        assert YTD.Core.set_target(@athlete, target) == :ok
         assert called Athlete.set_target(@athlete, target)
       end
     end
