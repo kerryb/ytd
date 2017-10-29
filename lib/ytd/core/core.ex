@@ -3,7 +3,8 @@ defmodule YTD.Core do
   Public interface.
   """
 
-  alias YTD.Core.{Athlete, Calculations, Data, Database, Strava}
+  alias YTD.Database
+  alias YTD.Core.{Athlete, Calculations, Data, Strava}
 
   @doc """
   Given an authorization code (from an oauth callback), request and return the

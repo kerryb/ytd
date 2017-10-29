@@ -1,6 +1,7 @@
 defmodule YTD.Core.AthleteTest do
   use ExUnit.Case
-  alias YTD.Core.{Athlete, Database}
+  alias YTD.Database
+  alias YTD.Core.Athlete
   doctest Athlete
 
   setup do

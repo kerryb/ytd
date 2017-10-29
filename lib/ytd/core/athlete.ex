@@ -5,18 +5,18 @@ defmodule YTD.Core.Athlete do
   values (currently only the API token and annual mileage target).
 
   These functions are a wrapper for the Amnesia table
-  `YTD.Core.Database.Athlete`.
+  `YTD.Database.Athlete`.
   """
 
   require Amnesia
   require Amnesia.Helper
   require Logger
-  alias YTD.Core.Database
+  alias YTD.Database
 
   @doc """
   Register a new athlete, given their Strava ID and API token.
   """
-  @spec register(%YTD.Core.Database.Athlete{}) :: :ok
+  @spec register(%YTD.Database.Athlete{}) :: :ok
   def register(athlete) do
     Logger.info fn -> "Registering athlete #{inspect athlete}" end
     Amnesia.transaction do
@@ -27,7 +27,7 @@ defmodule YTD.Core.Athlete do
   @doc """
   Return the athlete with the supplied ID, or nil if not found.
   """
-  @spec find(integer) :: %YTD.Core.Database.Athlete{} | nil
+  @spec find(integer) :: %YTD.Database.Athlete{} | nil
   def find(id) do
     Amnesia.transaction do
       Database.Athlete.read id

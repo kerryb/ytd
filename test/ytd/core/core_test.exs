@@ -1,7 +1,8 @@
 defmodule YTD.CoreTest do
   use ExUnit.Case
   import Mock
-  alias YTD.Core.{Athlete, Database, Strava}
+  alias YTD.Database
+  alias YTD.Core.{Athlete, Strava}
   doctest YTD.Core
 
   @code "strava-code-would-go-here"
