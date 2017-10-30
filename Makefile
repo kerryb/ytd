@@ -10,7 +10,7 @@ test:
 style:
 	mix credo --strict
 security:
-	mix sobelow --exit low
+	mix sobelow --exit low --router lib/ytd_web/router.ex
 dialyzer:
 	MIX_ENV=dev mix compile --debug-info
 	mix dialyzer --halt-exit-status
