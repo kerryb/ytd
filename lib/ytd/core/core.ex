@@ -5,8 +5,7 @@ defmodule YTD.Core do
 
   alias YTD.Database.Athlete, as: DBAthlete
   alias YTD.{Athlete, Strava}
-  alias YTD.Athlete.Data
-  alias YTD.Core.Calculations
+  alias YTD.Athlete.{Calculations, Data}
 
   @doc """
   Given an authorization code (from an oauth callback), request and return the

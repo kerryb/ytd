@@ -1,4 +1,4 @@
-defmodule YTD.Core.Calculations do
+defmodule YTD.Athlete.Calculations do
   @moduledoc false
 
   @spec projected_annual(float, %Date{}) :: float
