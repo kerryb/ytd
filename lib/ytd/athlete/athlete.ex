@@ -1,4 +1,4 @@
-defmodule YTD.Core.Athlete do
+defmodule YTD.Athlete do
   @moduledoc """
   Stores details of athletes, keyed by athlete ID. This is not intended to hold
   any data that can be obtained from Strava, but only application-specific
@@ -11,26 +11,26 @@ defmodule YTD.Core.Athlete do
   require Amnesia
   require Amnesia.Helper
   require Logger
-  alias YTD.Database
+  alias YTD.Database.Athlete, as: DBAthlete
 
   @doc """
   Register a new athlete, given their Strava ID and API token.
   """
-  @spec register(%YTD.Database.Athlete{}) :: :ok
+  @spec register(%DBAthlete{}) :: :ok
   def register(athlete) do
     Logger.info fn -> "Registering athlete #{inspect athlete}" end
     Amnesia.transaction do
-      Database.Athlete.write athlete
+      DBAthlete.write athlete
     end
   end
 
   @doc """
   Return the athlete with the supplied ID, or nil if not found.
   """
-  @spec find(integer) :: %YTD.Database.Athlete{} | nil
+  @spec find(integer) :: %DBAthlete{} | nil
   def find(id) do
     Amnesia.transaction do
-      Database.Athlete.read id
+      DBAthlete.read id
     end
   end
 
@@ -41,9 +41,9 @@ defmodule YTD.Core.Athlete do
   def set_target(id, target) do
     Amnesia.transaction do
       id
-      |> Database.Athlete.read
+      |> DBAthlete.read
       |> Map.put(:target, target)
-      |> Database.Athlete.write
+      |> DBAthlete.write
     end
     :ok
   end

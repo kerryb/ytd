@@ -3,8 +3,10 @@ defmodule YTD.Core do
   Public interface.
   """
 
-  alias YTD.Database
-  alias YTD.Core.{Athlete, Calculations, Data, Strava}
+  alias YTD.Database.Athlete, as: DBAthlete
+  alias YTD.Athlete
+  alias YTD.Athlete.Data
+  alias YTD.Core.{Calculations, Strava}
 
   @doc """
   Given an authorization code (from an oauth callback), request and return the
@@ -18,10 +20,10 @@ defmodule YTD.Core do
   end
 
   @doc """
-  Given an athlete ID, returns a `YTD.Core.Data` struct with the values to be
+  Given an athlete ID, returns a `YTD.Athlete.Data` struct with the values to be
   displayed
   """
-  @spec values(integer) :: %YTD.Core.Data{} | nil
+  @spec values(integer) :: %Athlete.Data{} | nil
   def values(athlete_id) do
     case Athlete.find(athlete_id) do
       nil -> nil
@@ -43,18 +45,18 @@ defmodule YTD.Core do
     end
   end
 
-  defp extra_needed_today(%Database.Athlete{target: nil}, _), do: nil
+  defp extra_needed_today(%DBAthlete{target: nil}, _), do: nil
   defp extra_needed_today(athlete, ytd) do
     Calculations.extra_needed_today(ytd, Date.utc_today, athlete.target)
   end
 
-  defp extra_needed_this_week(%Database.Athlete{target: nil}, _), do: nil
+  defp extra_needed_this_week(%DBAthlete{target: nil}, _), do: nil
   defp extra_needed_this_week(athlete, ytd) do
     Calculations.extra_needed_this_week(ytd, Date.utc_today,
                                         athlete.target, 1)
   end
 
-  defp estimated_completion(%Database.Athlete{target: nil}, _), do: nil
+  defp estimated_completion(%DBAthlete{target: nil}, _), do: nil
   defp estimated_completion(athlete, ytd) do
     Calculations.estimated_target_completion ytd, Date.utc_today, athlete.target
   end

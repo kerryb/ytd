@@ -1,7 +1,7 @@
 defmodule YTDWeb.IndexControllerTest do
   use YTDWeb.ConnCase
   import Mock
-  alias YTD.Core.Data
+  alias YTD.Athlete.Data
 
   @athlete_id 123
   @data %Data{

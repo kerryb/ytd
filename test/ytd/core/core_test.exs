@@ -1,14 +1,15 @@
 defmodule YTD.CoreTest do
   use ExUnit.Case
   import Mock
-  alias YTD.Database
-  alias YTD.Core.{Athlete, Strava}
+  alias YTD.Athlete
+  alias YTD.Database.Athlete, as: DBAthlete
+  alias YTD.Core.Strava
   doctest YTD.Core
 
   @code "strava-code-would-go-here"
   @id 123
   @token "strava-token-would-go-here"
-  @athlete %Database.Athlete{id: @id, token: @token, target: 650}
+  @athlete %DBAthlete{id: @id, token: @token, target: 650}
 
   describe "YTD.Core.find_or_register/1 for a new athlete" do
     test "retrieves and returns the athlete's ID" do

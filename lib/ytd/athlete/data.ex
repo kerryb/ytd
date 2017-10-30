@@ -1,4 +1,4 @@
-defmodule YTD.Core.Data do
+defmodule YTD.Athlete.Data do
   @moduledoc """
   A struct holding the data to be displayed for an athlete.
   """

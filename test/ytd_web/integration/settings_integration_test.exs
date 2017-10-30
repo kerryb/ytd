@@ -1,7 +1,7 @@
 defmodule YTDWeb.SettingsIntegrationTest do
   use YTDWeb.IntegrationCase
   import Mock
-  alias YTD.Core.Data
+  alias YTD.Athlete.Data
 
   @athlete_id 123
   @data %Data{

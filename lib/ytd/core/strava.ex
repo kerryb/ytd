@@ -12,7 +12,7 @@ defmodule YTD.Core.Strava do
     %Athlete{id: id, token: token}
   end
 
-  # @spec ytd(%YTD.Database.Athlete{}) :: float
+  @spec ytd(%Athlete{}) :: float
   def ytd(%Athlete{token: token}) do
     client = Client.new token
     distance = try do
