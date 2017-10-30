@@ -1,11 +1,11 @@
-defmodule YTD.Core.StravaTest do
+defmodule YTD.StravaTest do
   use ExUnit.Case
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
   alias YTD.Database.Athlete
-  alias YTD.Core.Strava
+  alias YTD.Strava
   doctest Strava
 
-  describe "YTD.Core.Strava.athlete_from_code/1" do
+  describe "YTD.Strava.athlete_from_code/1" do
     test "returns an athlete with the ID and token obtained from Strava using the code" do
       use_cassette "auth_code", match_requests_on: [:request_body] do
         assert Strava.athlete_from_code("auth-code-would-be-here") ==
@@ -14,7 +14,7 @@ defmodule YTD.Core.StravaTest do
     end
   end
 
-  describe "YTD.Core.Strava.ytd/1" do
+  describe "YTD.Strava.ytd/1" do
     test "returns the year-to-date mileage for the athlete provided" do
       athlete = %Athlete{token: "access-token-would-be-here"}
       use_cassette "ytd" do

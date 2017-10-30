@@ -3,7 +3,7 @@ defmodule YTD.CoreTest do
   import Mock
   alias YTD.Athlete
   alias YTD.Database.Athlete, as: DBAthlete
-  alias YTD.Core.Strava
+  alias YTD.Strava
   doctest YTD.Core
 
   @code "strava-code-would-go-here"

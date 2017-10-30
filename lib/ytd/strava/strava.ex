@@ -1,4 +1,4 @@
-defmodule YTD.Core.Strava do
+defmodule YTD.Strava do
   @moduledoc false
 
   alias Strava.{Auth, Client}
