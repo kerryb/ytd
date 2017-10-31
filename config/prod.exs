@@ -1,9 +1,9 @@
 use Mix.Config
 
-config :ytd_web, YTDWeb.Endpoint,
+config :ytd, YTDWeb.Endpoint,
   http: [port: 80],
   https: [port: 443,
-          otp_app: :ytd_web,
+          otp_app: :ytd,
           keyfile: "/etc/letsencrypt/live/ytd.kerryb.org/privkey.pem",
           certfile: "/etc/letsencrypt/live/ytd.kerryb.org/fullchain.pem"],
   force_ssl: [port: 443],

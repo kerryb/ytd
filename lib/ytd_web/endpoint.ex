@@ -1,5 +1,5 @@
 defmodule YTDWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :ytd_web
+  use Phoenix.Endpoint, otp_app: :ytd
 
   socket "/socket", YTDWeb.UserSocket
 
@@ -8,7 +8,7 @@ defmodule YTDWeb.Endpoint do
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/", from: :ytd_web, gzip: true,
+    at: "/", from: :ytd, gzip: true,
     only_matching: ~w(css fonts images js favicon apple-icon
                       robots.txt .well-known)
 
@@ -36,7 +36,7 @@ defmodule YTDWeb.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   plug Plug.Session,
     store: :cookie,
-    key: "_ytd_web",
+    key: "_ytd_key",
     signing_salt: "fYS/klK+",
     max_age: 100_000_000
 

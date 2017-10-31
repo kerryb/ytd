@@ -44,7 +44,7 @@ end
 # when running `mix release`, the first release in the file
 # will be used by default
 
-release :ytd_web do
+release :ytd do
   set version: "VERSION" |> File.read! |> String.trim
   set applications: [
     :runtime_tools

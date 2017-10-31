@@ -3,7 +3,7 @@ defmodule YTDWeb.Mixfile do
 
   def project do
     [
-      app: :ytd_web,
+      app: :ytd,
       version: version(),
       build_path: "_build",
       config_path: "config/config.exs",
