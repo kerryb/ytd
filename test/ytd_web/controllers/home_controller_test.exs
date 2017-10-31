@@ -1,7 +1,7 @@
 defmodule YTDWeb.IndexControllerTest do
   use YTDWeb.ConnCase
   import Mock
-  alias YTDCore.Data
+  alias YTD.Athlete.Data
 
   @athlete_id 123
   @data %Data{
@@ -17,7 +17,7 @@ defmodule YTDWeb.IndexControllerTest do
 
   describe "GET / with an athlete ID in the session" do
     test "renders the YTD page", %{conn: conn} do
-      with_mock YTDCore, [values: fn @athlete_id -> @data end] do
+      with_mock YTD.Athlete, [values: fn @athlete_id -> @data end] do
         conn = conn
                |> put_session(:athlete_id, @athlete_id)
                |> get("/")
@@ -34,7 +34,7 @@ defmodule YTDWeb.IndexControllerTest do
         extra_needed_this_week: -45.6,
         estimated_target_completion: ~D(2018-01-10),
       }
-      with_mock YTDCore, [values: fn @athlete_id -> data end] do
+      with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
         conn = conn
                |> put_session(:athlete_id, @athlete_id)
                |> get("/")
@@ -53,7 +53,7 @@ defmodule YTDWeb.IndexControllerTest do
         extra_needed_this_week: 3.4,
         estimated_target_completion: ~D(2018-01-10),
       }
-      with_mock YTDCore, [values: fn @athlete_id -> data end] do
+      with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
         conn = conn
                |> put_session(:athlete_id, @athlete_id)
                |> get("/")
@@ -70,7 +70,7 @@ defmodule YTDWeb.IndexControllerTest do
         extra_needed_this_week: 1.2,
         estimated_target_completion: ~D(2018-01-10),
       }
-      with_mock YTDCore, [values: fn @athlete_id -> data end] do
+      with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
         conn = conn
                |> put_session(:athlete_id, @athlete_id)
                |> get("/")
@@ -85,7 +85,7 @@ defmodule YTDWeb.IndexControllerTest do
         extra_needed_this_week: -3.4,
         estimated_target_completion: ~D(2017-12-15)
       }
-      with_mock YTDCore, [values: fn @athlete_id -> data end] do
+      with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
         conn = conn
                |> put_session(:athlete_id, @athlete_id)
                |> get("/")
@@ -96,7 +96,7 @@ defmodule YTDWeb.IndexControllerTest do
     end
 
     test "shows a 'set a target' link if there's no target-related data", %{conn: conn} do
-      with_mock YTDCore, [values: fn @athlete_id -> @data end] do
+      with_mock YTD.Athlete, [values: fn @athlete_id -> @data end] do
         conn = conn
                |> put_session(:athlete_id, @athlete_id)
                |> get("/")

@@ -42,8 +42,7 @@ release :ytd do
   set version: "VERSION" |> File.read! |> String.trim
   set applications: [
     :runtime_tools,
-    ytd_core: :permanent,
-    ytd_web: :permanent
+    ytd: :permanent,
   ]
   set output_dir: './releases/ytd'
 end

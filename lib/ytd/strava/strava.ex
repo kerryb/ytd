@@ -1,8 +1,8 @@
-defmodule YTDCore.Strava do
+defmodule YTD.Strava do
   @moduledoc false
 
   alias Strava.{Auth, Client}
-  alias YTDCore.Database.Athlete
+  alias YTD.Database.Athlete
 
   @spec athlete_from_code(String.t) :: %Athlete{}
   def athlete_from_code(code) do
@@ -12,7 +12,7 @@ defmodule YTDCore.Strava do
     %Athlete{id: id, token: token}
   end
 
-  # @spec ytd(%YTDCore.Database.Athlete{}) :: float
+  @spec ytd(%Athlete{}) :: float
   def ytd(%Athlete{token: token}) do
     client = Client.new token
     distance = try do

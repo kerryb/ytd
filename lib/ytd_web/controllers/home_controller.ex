@@ -1,12 +1,13 @@
 defmodule YTDWeb.HomeController do
   use YTDWeb, :controller
+  alias YTD.Athlete
 
   def index(conn, _params) do
     athlete_id = conn
     |> fetch_session
     |> get_session(:athlete_id)
 
-    case YTDCore.values(athlete_id) do
+    case Athlete.values(athlete_id) do
       nil -> redirect conn, to: auth_path(conn, :show)
       data -> render_index conn, data
     end

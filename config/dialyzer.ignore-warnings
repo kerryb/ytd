@@ -1,5 +1,6 @@
 web/templates/
 ytd_core/database.ex
+ytd/database/database.ex
 Unknown function mnesia
 Unknown type 'Elixir.Amnesia
 Unknown type 'Elixir.Selection
