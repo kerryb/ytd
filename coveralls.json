@@ -1,5 +1,4 @@
 {
   "skip_files": [
-    "lib/ytd/core/database.ex"
   ]
 }
