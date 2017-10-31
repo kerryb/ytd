@@ -17,22 +17,22 @@ dialyzer:
 docs:
 	mix docs
 build-release: assets docker-build
-	docker run -e YTD_ERLANG_COOKIE='${YTD_ERLANG_COOKIE}' \
-		-v $(shell pwd)/releases:/app/releases build-elixir mix release --env=prod
+	docker run -e MIX_ENV=prod -e YTD_ERLANG_COOKIE='${YTD_ERLANG_COOKIE}' \
+		-v `pwd`:`pwd` -w `pwd` build-elixir mix release
 build-upgrade: assets docker-build
-	docker run -e YTD_ERLANG_COOKIE='${YTD_ERLANG_COOKIE}' \
-		-v $(shell pwd)/releases:/app/releases build-elixir mix release --env=prod --upgrade
+	docker run -e MIX_ENV=prod -e YTD_ERLANG_COOKIE='${YTD_ERLANG_COOKIE}' \
+		-v `pwd`:`pwd` -w `pwd` build-elixir mix release --upgrade
 assets:
 	cd assets && npm install && ./node_modules/brunch/bin/brunch b -p
 	MIX_ENV=prod mix phx.digest
 docker-build:
 	docker build --tag=build-elixir -f docker/builder/Dockerfile .
 deploy-release:
-	ssh root@ytd.kerryb.org 'tar -C /opt/ytd/ -xzf -' < releases/ytd/releases/$(version)/ytd.tar.gz 
+	ssh root@ytd.kerryb.org 'tar -C /opt/ytd/ -xzf -' < _build/prod/rel/ytd/releases/$(version)/ytd.tar.gz 
 	ssh root@ytd.kerryb.org "bash -lc 'REPLACE_OS_VARS=true /opt/ytd/bin/ytd restart'"
 	ssh root@ytd.kerryb.org ln -s /etc/letsencrypt/webroot/.well-known /opt/ytd/lib/ytd_web-$(version)/priv/static/.well-known
 deploy-upgrade:
 	ssh root@ytd.kerryb.org mkdir -p /opt/ytd/releases/$(version)
-	scp releases/ytd/releases/$(version)/ytd.tar.gz root@ytd.kerryb.org:/opt/ytd/releases/$(version)
+	scp _build/prod/rel/ytd/releases/$(version)/ytd.tar.gz root@ytd.kerryb.org:/opt/ytd/releases/$(version)
 	ssh root@ytd.kerryb.org "bash -lc 'REPLACE_OS_VARS=true /opt/ytd/bin/ytd upgrade $(version)'"
 	ssh root@ytd.kerryb.org ln -s /etc/letsencrypt/webroot/.well-known /opt/ytd/lib/ytd_web-$(version)/priv/static/.well-known
