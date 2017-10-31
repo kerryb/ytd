@@ -22,9 +22,15 @@ use Mix.Releases.Config,
 # and environment configuration is called a profile
 
 environment :dev do
+  # If you are running Phoenix, you should make sure that
+  # server: true is set and the code reloader is disabled,
+  # even in dev mode.
+  # It is recommended that you build with MIX_ENV=prod and pass
+  # the --env flag to Distillery explicitly if you want to use
+  # dev mode.
   set dev_mode: true
   set include_erts: false
-  set cookie: :"AOvz0EqTLA0d9&K~*18naj$&6sD{}5PD07DGLjEJh>O[R~LMZW&uFy/*nZ?@L7*!"
+  set cookie: :"vIt[}8TMLt|Xz&RYoUo5=pDi<mR!k4k4z@zvczkCzCobml}Q_X57J_Cu!&Jy1,xM"
 end
 
 environment :prod do
@@ -38,6 +44,9 @@ end
 # when running `mix release`, the first release in the file
 # will be used by default
 
-release :ytd do
+release :ytd_web do
   set version: "VERSION" |> File.read! |> String.trim
+  set applications: [
+    :runtime_tools
+  ]
 end
