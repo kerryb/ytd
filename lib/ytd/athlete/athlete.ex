@@ -12,6 +12,18 @@ defmodule YTD.Athlete do
   require Amnesia.Helper
   require Logger
   alias YTD.Database.Athlete, as: DBAthlete
+  alias YTD.Strava
+
+  @doc """
+  Given a Strava authorization code (from an oauth callback), request and
+  return the corresponding athlete ID.
+  """
+  @spec find_or_register(String.t) :: integer
+  def find_or_register(code) do
+    athlete = Strava.athlete_from_code(code)
+    unless find(athlete.id), do: register athlete
+    athlete.id
+  end
 
   @doc """
   Register a new athlete, given their Strava ID and API token.

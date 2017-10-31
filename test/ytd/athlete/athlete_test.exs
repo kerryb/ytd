@@ -1,11 +1,56 @@
 defmodule YTD.AthleteTest do
   use ExUnit.Case
+  require Amnesia
+  require Amnesia.Helper
+  import Mock
   alias YTD.Database.Athlete, as: DBAthlete
-  alias YTD.Athlete
+  alias YTD.{Athlete, Strava}
   doctest Athlete
+
+  @code "strava-code-would-go-here"
+  @id 123
+  @token "strava-token-would-go-here"
+  @athlete %DBAthlete{id: @id, token: @token, target: 650}
 
   setup do
     DBAthlete.clear
+  end
+
+  describe "YTD.Athlete.find_or_register/1 for a new athlete" do
+    test "retrieves and returns the athlete's ID" do
+      with_mock Strava, [athlete_from_code: fn @code -> @athlete end] do
+        assert Athlete.find_or_register(@code) == @id
+      end
+    end
+
+    test "registers the athlete's API token" do
+      with_mock Strava, [athlete_from_code: fn @code -> @athlete end] do
+        Athlete.find_or_register @code
+        assert (Athlete.find @id).token == @token
+      end
+    end
+  end
+
+  describe "YTD.Athlete.find_or_register/1 for an existing athlete" do
+    setup do
+      Amnesia.transaction do
+        DBAthlete.write @athlete
+      end
+      :ok
+    end
+
+    test "retrieves and returns the athlete's ID" do
+      with_mock Strava, [athlete_from_code: fn @code -> @athlete end] do
+        assert Athlete.find_or_register(@code) == @id
+      end
+    end
+
+    test "doesn't override the saved athlete" do
+      with_mock Strava, [athlete_from_code: fn @code -> @athlete end] do
+        Athlete.find_or_register @code
+        assert (Athlete.find @id).target == 650
+      end
+    end
   end
 
   describe "YTD.Athlete.register/2 and .find/1" do

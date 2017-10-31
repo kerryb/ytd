@@ -6,50 +6,9 @@ defmodule YTD.CoreTest do
   alias YTD.Strava
   doctest YTD.Core
 
-  @code "strava-code-would-go-here"
   @id 123
   @token "strava-token-would-go-here"
   @athlete %DBAthlete{id: @id, token: @token, target: 650}
-
-  describe "YTD.Core.find_or_register/1 for a new athlete" do
-    test "retrieves and returns the athlete's ID" do
-      with_mocks [
-        {Strava, [], [athlete_from_code: fn @code -> @athlete end]},
-        {Athlete, [], [
-            find: fn @id -> nil end,
-            register: fn @athlete -> :ok end
-          ]
-        },
-      ] do
-        assert YTD.Core.find_or_register(@code) == @id
-      end
-    end
-
-    test "registers the athlete's API token" do
-      with_mocks [
-        {Strava, [], [athlete_from_code: fn @code -> @athlete end]},
-        {Athlete, [], [
-            find: fn @id -> nil end,
-            register: fn @athlete -> :ok end
-          ]
-        },
-      ] do
-        YTD.Core.find_or_register @code
-        assert called Athlete.register @athlete
-      end
-    end
-  end
-
-  describe "YTD.Core.find_or_register/1 for an existing athlete" do
-    test "retrieves and returns the athlete's ID" do
-      with_mocks [
-        {Strava, [], [athlete_from_code: fn @code -> @athlete end]},
-        {Athlete, [], [find: fn @id -> @athlete end]},
-      ] do
-        assert YTD.Core.find_or_register(@code) == @id
-      end
-    end
-  end
 
   describe "YTD.Core.values/1" do
     test "returns the profile URL and YTD figure from Strava and calculated values" do

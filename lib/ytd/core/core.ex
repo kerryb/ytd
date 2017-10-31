@@ -8,17 +8,6 @@ defmodule YTD.Core do
   alias YTD.Athlete.{Calculations, Data}
 
   @doc """
-  Given an authorization code (from an oauth callback), request and return the
-  corresponding athlete ID.
-  """
-  @spec find_or_register(String.t) :: integer
-  def find_or_register(code) do
-    athlete = Strava.athlete_from_code(code)
-    unless Athlete.find(athlete.id), do: Athlete.register athlete
-    athlete.id
-  end
-
-  @doc """
   Given an athlete ID, returns a `YTD.Athlete.Data` struct with the values to be
   displayed
   """
