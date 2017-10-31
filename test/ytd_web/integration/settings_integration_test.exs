@@ -17,7 +17,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
 
   describe "Setting a target" do
     test "stores the target for the athlete", %{conn: conn} do
-      with_mock YTD.Core, [
+      with_mock YTD.Athlete, [
         values: fn @athlete_id -> @data end,
         set_target: fn _, _ -> :ok end
       ] do
@@ -27,19 +27,19 @@ defmodule YTDWeb.SettingsIntegrationTest do
         |> follow_link("set a target")
         |> follow_form(%{settings: %{target: "1000"}})
         |> assert_response(path: home_path(conn, :index))
-        assert called YTD.Core.set_target(@athlete_id, 1000)
+        assert called YTD.Athlete.set_target(@athlete_id, 1000)
       end
     end
 
     test "does nothing if the target is empty", %{conn: conn} do
-      with_mock YTD.Core, [values: fn @athlete_id -> @data end] do
+      with_mock YTD.Athlete, [values: fn @athlete_id -> @data end] do
         conn
         |> put_session(:athlete_id, @athlete_id)
         |> get("/")
         |> follow_link("set a target")
         |> follow_form(%{settings: %{target: ""}})
         |> assert_response(path: home_path(conn, :index))
-        refute called YTD.Core.set_target
+        refute called YTD.Athlete.set_target
       end
     end
   end
@@ -51,7 +51,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
       extra_needed_this_week: 3.4,
       estimated_target_completion: ~D(2017-12-20),
     }
-    with_mock YTD.Core, [values: fn @athlete_id -> data end] do
+    with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
       conn
       |> put_session(:athlete_id, @athlete_id)
       |> get("/")
