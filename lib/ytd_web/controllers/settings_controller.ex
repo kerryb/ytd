@@ -1,6 +1,6 @@
 defmodule YTDWeb.SettingsController do
   use YTDWeb, :controller
-  alias YTD.{Athlete, Core}
+  alias YTD.Athlete
 
   def show(conn, _params) do
     data = conn
@@ -17,7 +17,7 @@ defmodule YTDWeb.SettingsController do
                  |> fetch_session
                  |> get_session(:athlete_id)
     case Integer.parse params["settings"]["target"] do
-      {target, _} -> Core.set_target athlete_id, target
+      {target, _} -> Athlete.set_target athlete_id, target
       _ -> nil
     end
     conn
