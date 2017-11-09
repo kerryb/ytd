@@ -60,28 +60,20 @@ defmodule YTD.Athlete do
         ytd = Strava.ytd athlete
         projected_annual = Calculations.projected_annual ytd, Date.utc_today
         weekly_average = Calculations.weekly_average ytd, Date.utc_today
+        on_target? = Calculations.on_target? ytd, Date.utc_today, athlete.target
+        required_average = Calculations.required_average(ytd, Date.utc_today,
+                                                         athlete.target)
         %Data{
           profile_url: profile_url,
           ytd: ytd,
           target: athlete.target,
           projected_annual: projected_annual,
           weekly_average: weekly_average,
-          extra_needed_today: extra_needed_today(athlete, ytd),
-          extra_needed_this_week: extra_needed_this_week(athlete, ytd),
           estimated_target_completion: estimated_completion(athlete, ytd),
+          on_target?: on_target?,
+          required_average: required_average,
         }
     end
-  end
-
-  defp extra_needed_today(%DBAthlete{target: nil}, _), do: nil
-  defp extra_needed_today(athlete, ytd) do
-    Calculations.extra_needed_today(ytd, Date.utc_today, athlete.target)
-  end
-
-  defp extra_needed_this_week(%DBAthlete{target: nil}, _), do: nil
-  defp extra_needed_this_week(athlete, ytd) do
-    Calculations.extra_needed_this_week(ytd, Date.utc_today,
-                                        athlete.target, 1)
   end
 
   defp estimated_completion(%DBAthlete{target: nil}, _), do: nil

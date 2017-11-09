@@ -47,9 +47,8 @@ defmodule YTDWeb.SettingsIntegrationTest do
   test "Shows the existing target if set", %{conn: conn} do
     data = %{@data |
       target: 123,
-      extra_needed_today: 1.2,
-      extra_needed_this_week: 3.4,
       estimated_target_completion: ~D(2017-12-20),
+      required_average: 10.2,
     }
     with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
       conn

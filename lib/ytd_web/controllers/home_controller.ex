@@ -23,12 +23,9 @@ defmodule YTDWeb.HomeController do
 
     conn = if data.target do
       conn
-      |> assign(:target_met, data.ytd > data.target)
-      |> assign(:extra_needed_today,
-                :io_lib.format("~.1f", [data.extra_needed_today]))
-      |> assign(:extra_needed_this_week,
-                :io_lib.format("~.1f", [data.extra_needed_this_week]))
-      |> assign(:extra_needed, data.extra_needed_today > 0)
+      |> assign(:target_met?, data.ytd > data.target)
+      |> assign(:on_target?, data.on_target?)
+      |> assign(:required_average, :io_lib.format("~.1f", [data.required_average]))
       |> assign(:estimated_target_completion,
                 Timex.format!(data.estimated_target_completion, "{D} {Mfull}"))
     else

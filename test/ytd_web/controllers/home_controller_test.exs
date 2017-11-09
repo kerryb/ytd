@@ -7,7 +7,7 @@ defmodule YTDWeb.IndexControllerTest do
   @data %Data{
     ytd: 123.456789,
     projected_annual: 456.789,
-    weekly_average: 12.345
+    weekly_average: 12.345,
   }
 
   setup do
@@ -30,9 +30,8 @@ defmodule YTDWeb.IndexControllerTest do
     test "indicates if target has been achieved", %{conn: conn} do
       data = %{@data |
         target: 100,
-        extra_needed_today: -12.3,
-        extra_needed_this_week: -45.6,
         estimated_target_completion: ~D(2018-01-10),
+        required_average: 22.222,
       }
       with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
         conn = conn
@@ -46,51 +45,20 @@ defmodule YTDWeb.IndexControllerTest do
       end
     end
 
-    test "shows extra needed if short of target", %{conn: conn} do
-      data = %{@data |
-        target: 1000,
-        extra_needed_today: 1.2,
-        extra_needed_this_week: 3.4,
-        estimated_target_completion: ~D(2018-01-10),
-      }
-      with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
-        conn = conn
-               |> put_session(:athlete_id, @athlete_id)
-               |> get("/")
-        refute html_response(conn, 200) =~ ~r/\bset a target\b>/
-        assert html_response(conn, 200) =~ ~r/\b1.2<\/span> miles today\b/
-        assert html_response(conn, 200) =~ ~r/\b3.4<\/span> this week\b/
-      end
-    end
-
-    test "omits extra this week if there's only one day left", %{conn: conn} do
-      data = %{@data |
-        target: 1000,
-        extra_needed_today: 1.2,
-        extra_needed_this_week: 1.2,
-        estimated_target_completion: ~D(2018-01-10),
-      }
-      with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
-        conn = conn
-               |> put_session(:athlete_id, @athlete_id)
-               |> get("/")
-        refute html_response(conn, 200) =~ ~r/\bthis week\b/
-      end
-    end
-
     test "shows estimated target completion date if on target", %{conn: conn} do
       data = %{@data |
         target: 1000,
-        extra_needed_today: -1.2,
-        extra_needed_this_week: -3.4,
-        estimated_target_completion: ~D(2017-12-15)
+        on_target?: true,
+        estimated_target_completion: ~D(2017-12-15),
+        required_average: 22.222,
       }
       with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
         conn = conn
                |> put_session(:athlete_id, @athlete_id)
                |> get("/")
-        refute html_response(conn, 200) =~ ~r/\b-1.2\b/
-        refute html_response(conn, 200) =~ ~r/\b-3.4\b/
+        refute html_response(conn, 200) =~ ~r/\b-1\.2\b/
+        refute html_response(conn, 200) =~ ~r/\b-3\.4\b/
+        assert html_response(conn, 200) =~ ~r/\b22\.2\b/
         assert html_response(conn, 200) =~ ~r/15 December/
       end
     end

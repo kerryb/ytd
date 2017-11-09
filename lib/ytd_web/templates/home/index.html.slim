@@ -19,32 +19,26 @@
     ' miles
   hr
   = if @target do
-    = cond do
-      - @target_met ->
+    = if @target_met? do
         .ytd-small
           ' You have hit your target of
           span.ytd-value> = @target
           ' miles!
-      - @extra_needed ->
+    - else
+      .ytd-small
+        ' To hit your target of
+        span.ytd-value> = @target
+        ' miles, you need to average
+        span.ytd-value> = @required_average
+        ' miles a week from now on
+      = if @on_target? do
         .ytd-small
-          ' You can get back on target for
-          span.ytd-value> = @target
-          ' miles
-        .ytd-small
-          ' by running another
-          span.ytd-value> = @extra_needed_today
-          | miles today
-        = unless @extra_needed_today == @extra_needed_this_week do
-          .ytd-small
-            ' (or another
-            span.ytd-value> = @extra_needed_this_week
-            ' this week)
-      - true ->
-        .ytd-small
-          ' You should hit
-          span.ytd-value> = @target
-          ' miles by
-          span.ytd-value> = @estimated_target_completion
+          | (
+          = @weekly_average
+          | &nbsp;
+          ' will get you there on
+          span.ytd-value = @estimated_target_completion
+          ' )
     .ytd-right-link
       = link "Change target", to: settings_path(@conn, :show)
   - else

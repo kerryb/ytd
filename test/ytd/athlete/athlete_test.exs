@@ -80,26 +80,8 @@ defmodule YTD.AthleteTest do
         assert data.target == 650
         assert_in_delta data.projected_annual, 608.9, 0.1
         assert_in_delta data.weekly_average, 11.7, 0.1
-        assert_in_delta data.extra_needed_today, 8.3, 0.1
-        assert_in_delta data.extra_needed_this_week, 15.4, 0.1
         assert data.estimated_target_completion == ~D(2018-01-20)
-      end
-    end
-
-    test "returns nil extra_needed values if there is no target" do
-      athlete = %{@athlete | target: nil}
-      Amnesia.transaction do
-        DBAthlete.write athlete
-      end
-
-      with_mocks [
-        {Strava, [], [ytd: fn ^athlete -> 123.456 end]},
-        {Date, [], [utc_today: fn -> ~D(2017-03-15) end]},
-      ] do
-        data = Athlete.values @id
-        assert is_nil data.target
-        assert is_nil data.extra_needed_today
-        assert is_nil data.extra_needed_this_week
+        assert_in_delta data.required_average, 12.6, 0.1
       end
     end
 

@@ -8,11 +8,18 @@ defmodule YTD.Athlete.Data do
                          projected_annual: float,
                          weekly_average: float,
                          target: integer,
-                         extra_needed_today: float,
-                         extra_needed_this_week: float,
                          estimated_target_completion: Date.t,
+                         on_target?: boolean,
+                         required_average: float,
                        }
-  defstruct [:profile_url, :ytd, :projected_annual, :weekly_average,
-             :target, :extra_needed_today, :extra_needed_this_week,
-             :estimated_target_completion]
+  defstruct [
+    :profile_url,
+    :ytd,
+    :projected_annual,
+    :weekly_average,
+    :target,
+    :estimated_target_completion,
+    :on_target?,
+    :required_average,
+  ]
 end
