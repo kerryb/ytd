@@ -44,5 +44,9 @@ defmodule YTD.Athlete.CalculationsTest do
       assert_in_delta(Calculations.required_average(123, ~D(2017-04-15), 400),
                       7.5, 0.1)
     end
+
+    test "returns zero if no target is set" do
+      assert Calculations.required_average(123, ~D(2017-04-15), nil) == 0
+    end
   end
 end

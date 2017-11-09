@@ -47,6 +47,7 @@ defmodule YTD.Athlete.Calculations do
   milage required from this point onwards to reach the target.
   """
   @spec required_average(float, %Date{}, integer) :: float
+  def required_average(_, _, nil), do: 0
   def required_average(miles, date, target) do
     days_left = Timex.diff(Timex.end_of_year(date), date, :days) + 1
     (target - miles) / days_left * 7
