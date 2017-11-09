@@ -1,7 +1,6 @@
 defmodule YTD.Strava do
   @moduledoc false
 
-  require Logger
   alias Strava.{Auth, Client}
   alias YTD.Database.Athlete
 
@@ -25,8 +24,7 @@ defmodule YTD.Strava do
     metres_to_miles distance
   end
   def ytd(athlete) do
-    Logger.error fn -> "Unexpected athlete: #{inspect athlete}" end
-    raise "Unexpected athlete"
+    raise "Unexpected athlete: #{inspect athlete}"
   end
 
   defp metres_to_miles(metres), do: metres / 1609.34
