@@ -1,5 +1,6 @@
 all: clean database test style security dialyzer docs
-.PHONY: clean database test style security dialyzer docs
+.PHONY: clean database test style security dialyzer docs build-release \
+  build-upgrade assets docker-build deploy-release deploy-upgrade
 clean:
 	mix clean
 database: Mnesia.nonode@nohost
