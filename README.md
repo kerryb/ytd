@@ -18,9 +18,7 @@ From `iex` or a remote console:
 
 ```elixir
 Amnesia.Schema.destroy # only if overwriting an existing db
-Amnesia.Schema.create [node()]
-Amnesia.start
-YTD.Database.create! disk: [node()]
+YTD.Database.setup
 ```
 
 Data can be exported and imported using `Amnesia.dump "some-file"` and
