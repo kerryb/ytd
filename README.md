@@ -1,12 +1,18 @@
 # YTDWeb
 
+[Strava year-to-date milage tracker](https://ytd.keryb.org)
+
+Built with [Elixir](https://elixir-lang.org/) and
+[Phoenix](http://phoenixframework.org/). Hosted on
+[DigitalOcean](https://www.digitalocean.com/).
+
 ## Compile, test, etc
 
 ```bash
 make
 ```
 
-## Initialise the database
+## Initialise the database
 
 From `iex` or a remote console:
 
