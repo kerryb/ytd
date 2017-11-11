@@ -23,9 +23,6 @@ defmodule YTD.Strava do
     end
     metres_to_miles distance
   end
-  def ytd(athlete) do
-    raise "Unexpected athlete: #{inspect athlete}"
-  end
 
   defp metres_to_miles(metres), do: metres / 1609.34
 end
