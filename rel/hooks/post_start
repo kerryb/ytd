@@ -1,0 +1,11 @@
+set +e
+
+while true; do
+  nodetool ping && break
+done
+
+set -e
+
+echo "Running migrations"
+bin/red_card rpc Elixir.YTD.Release.Tasks migrate
+echo "Migrations run successfully"

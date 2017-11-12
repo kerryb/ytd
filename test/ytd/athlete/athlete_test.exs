@@ -10,7 +10,7 @@ defmodule YTD.AthleteTest do
   @code "strava-code-would-go-here"
   @id 123
   @token "strava-token-would-go-here"
-  @athlete %DBAthlete{id: @id, token: @token, target: 650}
+  @athlete %DBAthlete{id: @id, token: @token, run_target: 650}
 
   setup do
     DBAthlete.clear
@@ -48,7 +48,7 @@ defmodule YTD.AthleteTest do
     test "doesn't override the saved athlete" do
       with_mock Strava, [athlete_from_code: fn @code -> @athlete end] do
         Athlete.find_or_register @code
-        assert (Athlete.find @id).target == 650
+        assert (Athlete.find @id).run_target == 650
       end
     end
   end
@@ -94,7 +94,7 @@ defmodule YTD.AthleteTest do
     test "allows setting of target mileage" do
       Athlete.register %DBAthlete{id: 123, token: "access-token"}
       Athlete.set_target 123, 1000
-      assert Athlete.find(123).target == 1000
+      assert Athlete.find(123).run_target == 1000
     end
 
     test "returns :ok on success" do

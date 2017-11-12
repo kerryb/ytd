@@ -26,6 +26,8 @@ Data can be exported and imported using `Amnesia.dump "some-file"` and
 
 ## Build and deploy a release or upgrade
 
+NB. if performing database migrations, it has to be a release.
+
 Update the `VERSION` file, then:
 
 ```bash

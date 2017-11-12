@@ -60,13 +60,15 @@ defmodule YTD.Athlete do
         ytd = Strava.ytd athlete
         projected_annual = Calculations.projected_annual ytd, Date.utc_today
         weekly_average = Calculations.weekly_average ytd, Date.utc_today
-        on_target? = Calculations.on_target? ytd, Date.utc_today, athlete.target
+        on_target? = Calculations.on_target?(ytd,
+                                             Date.utc_today,
+                                             athlete.run_target)
         required_average = Calculations.required_average(ytd, Date.utc_today,
-                                                         athlete.target)
+                                                         athlete.run_target)
         %Data{
           profile_url: profile_url,
           ytd: ytd,
-          target: athlete.target,
+          target: athlete.run_target,
           projected_annual: projected_annual,
           weekly_average: weekly_average,
           estimated_target_completion: estimated_completion(athlete, ytd),
@@ -76,9 +78,11 @@ defmodule YTD.Athlete do
     end
   end
 
-  defp estimated_completion(%DBAthlete{target: nil}, _), do: nil
+  defp estimated_completion(%DBAthlete{run_target: nil}, _), do: nil
   defp estimated_completion(athlete, ytd) do
-    Calculations.estimated_target_completion ytd, Date.utc_today, athlete.target
+    Calculations.estimated_target_completion(ytd,
+                                             Date.utc_today,
+                                             athlete.run_target)
   end
 
   @doc """
@@ -89,7 +93,7 @@ defmodule YTD.Athlete do
     Amnesia.transaction do
       id
       |> DBAthlete.read
-      |> Map.put(:target, target)
+      |> Map.put(:run_target, target)
       |> DBAthlete.write
     end
     :ok
