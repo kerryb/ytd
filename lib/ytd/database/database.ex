@@ -1,7 +1,7 @@
 use Amnesia
 
 defdatabase YTD.Database do
-  deftable Athlete, [:id, :token, :target], type: :set do
+  deftable Athlete, [:id, :token, :target], type: :set, index: [:token] do
     @type t :: %Athlete{id: integer, token: String.t, target: integer}
   end
 
