@@ -14,6 +14,7 @@ environment :prod do
   set include_erts: true
   set include_src: false
   set cookie: "YTD_ERLANG_COOKIE" |> System.get_env |> String.to_atom
+  set post_start_hook: "rel/hooks/post_start"
 end
 
 release :ytd do
