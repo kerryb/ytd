@@ -16,8 +16,6 @@ $link-color: white;
     font-weight: 300;
   }
 
-  padding-top: 10px;
-
   .ytd-connect {
     margin-top: 40px;
     text-align: center;
@@ -34,8 +32,17 @@ $link-color: white;
     }
   }
 
+  img.ytd-nav {
+    height: 40px;
+    margin: 10px;
+  }
+
   hr {
     margin: 20px 0;
+
+    &.top {
+      margin-top: 0;
+    }
   }
 
   .ytd-big {

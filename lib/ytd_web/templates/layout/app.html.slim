@@ -13,6 +13,9 @@ html lang="en"
     .container
       .row
         .col-xs-12.col-md-8.col-md-offset-2.col-lg-6.col-lg-offset-3
+          = img_tag static_path(@conn, "/images/run-active.png"), class: "ytd-nav"
+          = img_tag static_path(@conn, "/images/ride.png"), class: "ytd-nav"
+          = img_tag static_path(@conn, "/images/swim.png"), class: "ytd-nav"
           = render @view_module, @view_template, assigns
       .row
         footer.footer
