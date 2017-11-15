@@ -1,49 +1,48 @@
-.ytd
-  hr
-  div
-    | So far this year, you&rsquo;ve run
-  .ytd-big
-    span.ytd-value> = @ytd
-    ' miles
-  .ytd-small
-    ' (that's an average of
-    span.ytd-value> = @weekly_average
-    ' miles a week)
-  .ytd-right-link
-    a href="#{@profile_url}" View on Strava
-  hr
-  div
-    | You&rsquo;re heading for an annual total of
-  .ytd-big
-    span.ytd-value> = @projected_annual
-    ' miles
-  hr
-  = if @target do
-    = if @target_met? do
-        .ytd-small
-          ' You have hit your target of
-          span.ytd-value> = @target
-          ' miles!
-    - else
+hr.top
+div
+  | So far this year, you&rsquo;ve run
+.ytd-big
+  span.ytd-value> = @ytd
+  ' miles
+.ytd-small
+  ' (that's an average of
+  span.ytd-value> = @weekly_average
+  ' miles a week)
+.ytd-right-link
+  a href="#{@profile_url}" View on Strava
+hr
+div
+  | You&rsquo;re heading for an annual total of
+.ytd-big
+  span.ytd-value> = @projected_annual
+  ' miles
+hr
+= if @target do
+  = if @target_met? do
       .ytd-small
-        ' To hit your target of
+        ' You have hit your target of
         span.ytd-value> = @target
-        ' miles, you need to average
-        span.ytd-value> = @required_average
-        ' miles a week from now on
-      = if @on_target? do
-        .ytd-small
-          | (
-          = @weekly_average
-          | &nbsp;
-          ' will get you there on
-          span.ytd-value = @estimated_target_completion
-          ' )
-    .ytd-right-link
-      = link "Change target", to: settings_path(@conn, :show)
+        ' miles!
   - else
     .ytd-small
-      ' Why not
-      = link "set a target", to: settings_path(@conn, :show)
-      ' ?
-  hr
+      ' To hit your target of
+      span.ytd-value> = @target
+      ' miles, you need to average
+      span.ytd-value> = @required_average
+      ' miles a week from now on
+    = if @on_target? do
+      .ytd-small
+        | (
+        = @weekly_average
+        | &nbsp;
+        ' will get you there on
+        span.ytd-value = @estimated_target_completion
+        ' )
+  .ytd-right-link
+    = link "Change target", to: settings_path(@conn, :show)
+- else
+  .ytd-small
+    ' Why not
+    = link "set a target", to: settings_path(@conn, :show)
+    ' ?
+hr
