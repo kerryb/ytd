@@ -3,7 +3,7 @@ defmodule YTDWeb.SettingsController do
   alias YTD.Athlete
 
   def show(conn, _params) do
-    # TODO: don't really need to get all values; jsut the target
+    # TODO: don't really need to get all values; just the target
     data = conn
            |> fetch_session
            |> get_session(:athlete_id)
