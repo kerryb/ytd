@@ -76,12 +76,12 @@ defmodule YTD.AthleteTest do
       ] do
         data = Athlete.values @id
         assert data.profile_url == "https://www.strava.com/athletes/#{@id}"
-        assert data.ytd == 123.456
-        assert data.target == 650
-        assert_in_delta data.projected_annual, 608.9, 0.1
-        assert_in_delta data.weekly_average, 11.7, 0.1
-        assert data.estimated_target_completion == ~D(2018-01-20)
-        assert_in_delta data.required_average, 12.6, 0.1
+        assert data.running.ytd == 123.456
+        assert data.running.target == 650
+        assert_in_delta data.running.projected_annual, 608.9, 0.1
+        assert_in_delta data.running.weekly_average, 11.7, 0.1
+        assert data.running.estimated_target_completion == ~D(2018-01-20)
+        assert_in_delta data.running.required_average, 12.6, 0.1
       end
     end
 

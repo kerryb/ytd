@@ -12,7 +12,7 @@ defmodule YTD.Athlete do
   require Amnesia.Helper
   require Logger
   alias YTD.Database.Athlete, as: DBAthlete
-  alias YTD.Athlete.{Calculations, Data}
+  alias YTD.Athlete.{Calculations, Data, Values}
   alias YTD.Strava
 
   @doc """
@@ -67,13 +67,15 @@ defmodule YTD.Athlete do
                                                          athlete.run_target)
         %Data{
           profile_url: profile_url,
-          ytd: ytd,
-          target: athlete.run_target,
-          projected_annual: projected_annual,
-          weekly_average: weekly_average,
-          estimated_target_completion: estimated_completion(athlete, ytd),
-          on_target?: on_target?,
-          required_average: required_average,
+          running: %Values{
+            ytd: ytd,
+            target: athlete.run_target,
+            projected_annual: projected_annual,
+            weekly_average: weekly_average,
+            estimated_target_completion: estimated_completion(athlete, ytd),
+            on_target?: on_target?,
+            required_average: required_average,
+          }
         }
     end
   end

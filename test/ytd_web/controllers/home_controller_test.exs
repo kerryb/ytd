@@ -1,13 +1,15 @@
 defmodule YTDWeb.IndexControllerTest do
   use YTDWeb.ConnCase
   import Mock
-  alias YTD.Athlete.Data
+  alias YTD.Athlete.{Data, Values}
 
   @athlete_id 123
   @data %Data{
-    ytd: 123.456789,
-    projected_annual: 456.789,
-    weekly_average: 12.345,
+    running: %Values{
+      ytd: 123.456789,
+      projected_annual: 456.789,
+      weekly_average: 12.345,
+    }
   }
 
   setup do
@@ -29,9 +31,11 @@ defmodule YTDWeb.IndexControllerTest do
 
     test "indicates if target has been achieved", %{conn: conn} do
       data = %{@data |
-        target: 100,
-        estimated_target_completion: ~D(2018-01-10),
-        required_average: 22.222,
+        running: %{@data.running | 
+          target: 100,
+          estimated_target_completion: ~D(2018-01-10),
+          required_average: 22.222,
+        }
       }
       with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
         conn = conn
@@ -47,10 +51,12 @@ defmodule YTDWeb.IndexControllerTest do
 
     test "shows estimated target completion date if on target", %{conn: conn} do
       data = %{@data |
-        target: 1000,
-        on_target?: true,
-        estimated_target_completion: ~D(2017-12-15),
-        required_average: 22.222,
+        running: %{@data.running |
+          target: 1000,
+          on_target?: true,
+          estimated_target_completion: ~D(2017-12-15),
+          required_average: 22.222,
+        }
       }
       with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
         conn = conn
