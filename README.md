@@ -1,6 +1,6 @@
 # YTDWeb
 
-[Strava year-to-date milage tracker](https://ytd.keryb.org)
+[Strava year-to-date milage tracker](https://ytd.kerryb.org)
 
 Built with [Elixir](https://elixir-lang.org/) and
 [Phoenix](http://phoenixframework.org/). Hosted on
