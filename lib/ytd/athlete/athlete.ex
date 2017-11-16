@@ -67,7 +67,7 @@ defmodule YTD.Athlete do
                                                          athlete.run_target)
         %Data{
           profile_url: profile_url,
-          running: %Values{
+          run: %Values{
             ytd: ytd,
             target: athlete.run_target,
             projected_annual: projected_annual,

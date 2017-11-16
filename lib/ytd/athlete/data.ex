@@ -4,14 +4,14 @@ defmodule YTD.Athlete.Data do
   """
 
   @type t :: %__MODULE__{profile_url: String.t,
-    running: Values,
-    cycling: Values,
-    swimming: Values,
+    run: Values,
+    ride: Values,
+    swim: Values,
   }
   defstruct [
     :profile_url,
-    :running,
-    :cycling,
-    :swimming,
+    :run,
+    :ride,
+    :swim,
   ]
 end

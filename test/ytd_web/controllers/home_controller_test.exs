@@ -7,7 +7,7 @@ defmodule YTDWeb.HomeControllerTest do
 
   @athlete_id 123
   @data %Data{
-    running: %Values{
+    run: %Values{
       ytd: 123.456789,
       projected_annual: 456.789,
       weekly_average: 12.345,

@@ -5,7 +5,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
 
   @athlete_id 123
   @data %Data{
-    running: %Values{
+    run: %Values{
       ytd: 123.456789,
       projected_annual: 456.789,
       weekly_average: 12.345,
@@ -48,7 +48,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
 
   test "Shows the existing target if set", %{conn: conn} do
     data = %{@data |
-      running: %{@data.running |
+      run: %{@data.run |
         target: 123,
         estimated_target_completion: ~D(2017-12-20),
         required_average: 10.2,

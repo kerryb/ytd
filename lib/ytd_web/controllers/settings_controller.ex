@@ -9,7 +9,7 @@ defmodule YTDWeb.SettingsController do
            |> get_session(:athlete_id)
            |> Athlete.values
     conn
-    |> assign(:target, data.running.target)
+    |> assign(:target, data.run.target)
     |> render("show.html")
   end
 
