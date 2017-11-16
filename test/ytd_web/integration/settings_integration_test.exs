@@ -57,8 +57,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
     with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
       conn
       |> put_session(:athlete_id, @athlete_id)
-      |> get("/")
-      |> follow_link("Change target")
+      |> get("/settings")
       |> assert_response(html: "123")
     end
   end

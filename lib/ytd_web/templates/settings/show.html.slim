@@ -1,12 +1,13 @@
-.ytd
-  = form_for @conn, settings_path(@conn, :update), [as: :settings], fn f ->
-    .row
-      .col-sm-8
-        = label f, :target, "Annual mileage target:"
-      .col-sm-4
-        .form-group
-          = text_input f, :target, type: :number, class: "form-control input-lg", autofocus: true, value: @target
-      .col-sm-2.col-sm-offset-8
-        .form-group
-          = submit "Update", class: "btn btn-default btn-lg"
-        end
+hr
+= form_for @conn, settings_path(@conn, :update), [as: :settings], fn f ->
+  .row
+    .col-sm-8
+      = label f, :target, "Annual mileage target:"
+    .col-sm-4
+      .form-group
+        = text_input f, :target, type: :number, class: "form-control input-lg", autofocus: true, value: @target
+    .col-sm-2.col-sm-offset-8
+      .form-group
+        = submit "Update", class: "btn btn-default btn-lg"
+      end
+hr

@@ -1,0 +1,46 @@
+div
+  | So far this year, you&rsquo;ve run
+.ytd-big
+  span.ytd-value> = @values.ytd |> format_number
+  ' miles
+.ytd-small
+  ' (that's an average of
+  span.ytd-value> = @values.weekly_average |> format_number
+  ' miles a week)
+.ytd-right-link
+  a href="#{@profile_url}" View on Strava
+hr
+div
+  | You&rsquo;re heading for an annual total of
+.ytd-big
+  span.ytd-value> = @values.projected_annual |> format_number
+  ' miles
+hr
+= if @values.target do
+  = if @values.ytd > @values.target do
+      .ytd-small
+        ' You have hit your target of
+        span.ytd-value> = @values.target |> format_number
+        ' miles!
+  - else
+    .ytd-small
+      ' To hit your target of
+      span.ytd-value> = @values.target
+      ' miles, you need to average
+      span.ytd-value> = @values.required_average |> format_number
+      ' miles a week from now on
+    = if @values.on_target? do
+      .ytd-small
+        | (
+        = @values.weekly_average |> format_number
+        | &nbsp;
+        ' will get you there on
+        span.ytd-value = @values.estimated_target_completion |> format_date
+        ' )
+  .ytd-right-link
+    = link "Change target", to: settings_path(@conn, :show)
+- else
+  .ytd-small
+    ' Why not
+    = link "set a target", to: settings_path(@conn, :show)
+    ' ?
