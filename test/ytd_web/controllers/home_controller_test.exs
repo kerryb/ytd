@@ -38,6 +38,7 @@ defmodule YTDWeb.HomeControllerTest do
                |> put_session(:athlete_id, @athlete_id)
                |> put_view(HomeView)
                |> HomeController.index(%{})
+        assert view_template(conn) == "index.html"
       end
     end
   end

@@ -5,6 +5,7 @@ defmodule YTD.AthleteTest do
   import Mock
   alias YTD.Database.Athlete, as: DBAthlete
   alias YTD.{Athlete, Strava}
+  alias YTD.Athlete.Values
   doctest Athlete
 
   @code "strava-code-would-go-here"
@@ -70,18 +71,13 @@ defmodule YTD.AthleteTest do
         DBAthlete.write @athlete
       end
 
+      run_values = %Values{projected_annual: 608.9}
       with_mocks [
-        {Strava, [], [ytd: fn @athlete -> 123.456 end]},
-        {Date, [], [utc_today: fn -> ~D(2017-03-15) end]},
+        {Strava, [], [ytd: fn @athlete -> %{run: 123.456} end]},
+        {Values, [], [new: fn 123.456, 650 -> run_values end]},
       ] do
-        data = Athlete.values @id
-        assert data.profile_url == "https://www.strava.com/athletes/#{@id}"
-        assert data.run.ytd == 123.456
-        assert data.run.target == 650
-        assert_in_delta data.run.projected_annual, 608.9, 0.1
-        assert_in_delta data.run.weekly_average, 11.7, 0.1
-        assert data.run.estimated_target_completion == ~D(2018-01-20)
-        assert_in_delta data.run.required_average, 12.6, 0.1
+        values = Athlete.values @id
+        assert values.run == run_values
       end
     end
 

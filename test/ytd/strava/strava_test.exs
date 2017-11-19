@@ -15,10 +15,13 @@ defmodule YTD.StravaTest do
   end
 
   describe "YTD.Strava.ytd/1" do
-    test "returns the year-to-date mileage for the athlete provided" do
+    test "returns the year-to-date mileages for the athlete provided" do
       athlete = %Athlete{token: "access-token-would-be-here"}
       use_cassette "ytd" do
-        assert_in_delta Strava.ytd(athlete), 260.30, 0.01
+        %{run: run, ride: ride, swim: swim} = Strava.ytd athlete
+        assert_in_delta run, 260.30, 0.01
+        assert_in_delta ride, 718.53, 0.01
+        assert_in_delta swim, 0, 0.01
       end
     end
   end

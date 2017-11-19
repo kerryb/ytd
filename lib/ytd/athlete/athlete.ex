@@ -12,7 +12,7 @@ defmodule YTD.Athlete do
   require Amnesia.Helper
   require Logger
   alias YTD.Database.Athlete, as: DBAthlete
-  alias YTD.Athlete.{Calculations, Data, Values}
+  alias YTD.Athlete.{Data, Values}
   alias YTD.Strava
 
   @doc """
@@ -53,38 +53,17 @@ defmodule YTD.Athlete do
   """
   @spec values(integer) :: %Data{} | nil
   def values(athlete_id) do
+    # TODO: rename to data/1
     case find(athlete_id) do
       nil -> nil
       athlete ->
         profile_url = "https://www.strava.com/athletes/#{athlete_id}"
         ytd = Strava.ytd athlete
-        projected_annual = Calculations.projected_annual ytd, Date.utc_today
-        weekly_average = Calculations.weekly_average ytd, Date.utc_today
-        on_target? = Calculations.on_target?(ytd,
-                                             Date.utc_today,
-                                             athlete.run_target)
-        required_average = Calculations.required_average(ytd, Date.utc_today,
-                                                         athlete.run_target)
         %Data{
           profile_url: profile_url,
-          run: %Values{
-            ytd: ytd,
-            target: athlete.run_target,
-            projected_annual: projected_annual,
-            weekly_average: weekly_average,
-            estimated_target_completion: estimated_completion(athlete, ytd),
-            on_target?: on_target?,
-            required_average: required_average,
-          }
+          run: Values.new(ytd.run, athlete.run_target)
         }
     end
-  end
-
-  defp estimated_completion(%DBAthlete{run_target: nil}, _), do: nil
-  defp estimated_completion(athlete, ytd) do
-    Calculations.estimated_target_completion(ytd,
-                                             Date.utc_today,
-                                             athlete.run_target)
   end
 
   @doc """
