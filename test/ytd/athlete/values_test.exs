@@ -16,5 +16,9 @@ defmodule YTD.Athlete.ValuesTest do
         assert_in_delta data.required_average, 12.6, 0.1
       end
     end
+
+    test "doesn't die if no target is set" do
+      Values.new 123.456, nil
+    end
   end
 end

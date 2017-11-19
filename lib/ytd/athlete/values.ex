@@ -30,6 +30,8 @@ defmodule YTD.Athlete.Values do
   def new(ytd, target) do
     projected_annual = Calculations.projected_annual ytd, Date.utc_today
     weekly_average = Calculations.weekly_average ytd, Date.utc_today
+    estimated_completion = Calculations.estimated_target_completion(
+      ytd, Date.utc_today, target)
     on_target? = Calculations.on_target?(ytd, Date.utc_today, target)
     required_average = Calculations.required_average(
       ytd, Date.utc_today, target)
@@ -38,14 +40,9 @@ defmodule YTD.Athlete.Values do
       target: target,
       projected_annual: projected_annual,
       weekly_average: weekly_average,
-      estimated_target_completion: estimated_completion(ytd, target),
+      estimated_target_completion: estimated_completion,
       on_target?: on_target?,
       required_average: required_average,
     }
-  end
-
-  # TODO: push down
-  defp estimated_completion(ytd, target) do
-    Calculations.estimated_target_completion(ytd, Date.utc_today, target)
   end
 end
