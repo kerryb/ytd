@@ -20,7 +20,7 @@ hr
   = if @values.ytd > @values.target do
       .ytd-small
         ' You have hit your target of
-        span.ytd-value> = @values.target |> format_number
+        span.ytd-value> = @values.target
         ' miles!
   - else
     .ytd-small
