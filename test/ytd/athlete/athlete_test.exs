@@ -11,7 +11,7 @@ defmodule YTD.AthleteTest do
   @code "strava-code-would-go-here"
   @id 123
   @token "strava-token-would-go-here"
-  @athlete %DBAthlete{id: @id, token: @token, run_target: 650}
+  @athlete %DBAthlete{id: @id, token: @token, run_target: 650, ride_target: 2000, swim_target: 200}
 
   setup do
     DBAthlete.clear
@@ -72,12 +72,22 @@ defmodule YTD.AthleteTest do
       end
 
       run_values = %Values{projected_annual: 608.9}
+      ride_values = %Values{projected_annual: 2408.9}
+      swim_values = %Values{projected_annual: 308.9}
       with_mocks [
-        {Strava, [], [ytd: fn @athlete -> %{run: 123.456} end]},
-        {Values, [], [new: fn 123.456, 650 -> run_values end]},
+        {Strava, [], [ytd: fn @athlete -> %{run: 123.4, ride: 567.8, swim: 91.2} end]},
+        {Values, [], [new: fn ytd, target ->
+          case {ytd, target} do
+            {123.4, 650} -> run_values
+            {567.8, 2000} -> ride_values
+            {91.2, 200} -> swim_values
+          end
+        end]},
       ] do
         values = Athlete.values @id
         assert values.run == run_values
+        assert values.ride == ride_values
+        assert values.swim == swim_values
       end
     end
 

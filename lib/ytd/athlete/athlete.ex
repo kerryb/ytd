@@ -61,7 +61,9 @@ defmodule YTD.Athlete do
         ytd = Strava.ytd athlete
         %Data{
           profile_url: profile_url,
-          run: Values.new(ytd.run, athlete.run_target)
+          run: Values.new(ytd.run, athlete.run_target),
+          ride: Values.new(ytd.ride, athlete.ride_target),
+          swim: Values.new(ytd.swim, athlete.swim_target),
         }
     end
   end
