@@ -22,6 +22,6 @@ defmodule YTDWeb.SettingsController do
       _ -> nil
     end
     conn
-    |> redirect(to: home_path(conn, :index))
+    |> redirect(to: home_path(conn, :index, activity: "run"))
   end
 end

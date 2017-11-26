@@ -27,18 +27,28 @@ defmodule YTDWeb.HomeControllerTest do
         conn = conn
                |> put_session(:athlete_id, @athlete_id)
                |> put_view(HomeView)
-               |> HomeController.index(%{})
+               |> HomeController.index(%{activity: "run"})
         assert conn.assigns.data == @data
       end
     end
 
-    test "renders the index", %{conn: conn} do
+    test "renders the template for the right activity", %{conn: conn} do
+      with_mock YTD.Athlete, [values: fn @athlete_id -> @data end] do
+        conn = conn
+               |> put_session(:athlete_id, @athlete_id)
+               |> put_view(HomeView)
+               |> HomeController.index(%{activity: "run"})
+        assert view_template(conn) == "run.html"
+      end
+    end
+
+    test "defaults to 'run'", %{conn: conn} do
       with_mock YTD.Athlete, [values: fn @athlete_id -> @data end] do
         conn = conn
                |> put_session(:athlete_id, @athlete_id)
                |> put_view(HomeView)
                |> HomeController.index(%{})
-        assert view_template(conn) == "index.html"
+        assert view_template(conn) == "run.html"
       end
     end
   end

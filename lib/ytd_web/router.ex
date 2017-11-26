@@ -26,5 +26,6 @@ defmodule YTDWeb.Router do
     get "/", HomeController, :index
     get "/settings", SettingsController, :show
     post "/settings", SettingsController, :update
+    get "/:activity", HomeController, :index
   end
 end
