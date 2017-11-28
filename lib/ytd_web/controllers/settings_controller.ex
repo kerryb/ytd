@@ -26,7 +26,15 @@ defmodule YTDWeb.SettingsController do
                  |> fetch_session
                  |> get_session(:athlete_id)
     case Integer.parse params["settings"]["run_target"] do
-      {target, _} -> Athlete.set_target athlete_id, target
+      {target, _} -> Athlete.set_run_target athlete_id, target
+      _ -> nil
+    end
+    case Integer.parse params["settings"]["ride_target"] do
+      {target, _} -> Athlete.set_ride_target athlete_id, target
+      _ -> nil
+    end
+    case Integer.parse params["settings"]["swim_target"] do
+      {target, _} -> Athlete.set_swim_target athlete_id, target
       _ -> nil
     end
     conn
