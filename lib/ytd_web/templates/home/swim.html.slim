@@ -4,5 +4,5 @@ a href="#{home_path(@conn, :index, activity: "ride")}"
   = img_tag static_path(@conn, "/images/ride.png"), class: "ytd-nav"
 = img_tag static_path(@conn, "/images/swim-active.png"), class: "ytd-nav"
 hr.top
-= render "data.html", conn: @conn, profile_url: @data.profile_url, values: @data.swim
+= render "data.html", conn: @conn, profile_url: @data.profile_url, values: @data.swim, verb: "swum"
 hr

@@ -1,5 +1,6 @@
 div
-  | So far this year, you&rsquo;ve run
+  ' So far this year, you&rsquo;ve
+  = @verb
 .ytd-big
   span.ytd-value> = @values.ytd |> format_number
   ' miles
