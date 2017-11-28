@@ -10,6 +10,8 @@ defmodule YTDWeb.SettingsController do
            |> Athlete.values
     conn
     |> assign(:run_target, data.run.target)
+    |> assign(:ride_target, data.ride.target)
+    |> assign(:swim_target, data.swim.target)
     |> render("show.html")
   end
 

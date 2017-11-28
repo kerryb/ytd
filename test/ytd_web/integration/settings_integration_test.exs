@@ -9,7 +9,17 @@ defmodule YTDWeb.SettingsIntegrationTest do
       ytd: 123.456789,
       projected_annual: 456.789,
       weekly_average: 12.345,
-    }
+    },
+    ride: %Values{
+      ytd: 223.456789,
+      projected_annual: 556.789,
+      weekly_average: 22.345,
+    },
+    swim: %Values{
+      ytd: 12.3456789,
+      projected_annual: 45.678,
+      weekly_average: 1.234,
+    },
   }
 
   setup do
