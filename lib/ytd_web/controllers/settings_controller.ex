@@ -4,10 +4,16 @@ defmodule YTDWeb.SettingsController do
 
   def show(conn, _params) do
     # TODO: don't really need to get all values; just the target
-    data = conn
-           |> fetch_session
-           |> get_session(:athlete_id)
-           |> Athlete.values
+    case conn
+    |> fetch_session
+    |> get_session(:athlete_id)
+    |> Athlete.values do
+      nil -> redirect conn, to: auth_path(conn, :show)
+      data -> render_page conn, data
+    end
+  end
+
+  defp render_page(conn, data) do
     conn
     |> assign(:run_target, data.run.target)
     |> assign(:ride_target, data.ride.target)
