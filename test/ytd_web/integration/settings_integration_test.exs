@@ -27,7 +27,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
         |> put_session(:athlete_id, @athlete_id)
         |> get("/")
         |> follow_link("set a target")
-        |> follow_form(%{settings: %{target: "1000"}})
+        |> follow_form(%{settings: %{run_target: "1000"}})
         |> assert_response(path: home_path(conn, :index, activity: "run"))
         assert called YTD.Athlete.set_target(@athlete_id, 1000)
       end
@@ -39,7 +39,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
         |> put_session(:athlete_id, @athlete_id)
         |> get("/")
         |> follow_link("set a target")
-        |> follow_form(%{settings: %{target: ""}})
+        |> follow_form(%{settings: %{run_target: ""}})
         |> assert_response(path: home_path(conn, :index, activity: "run"))
         refute called YTD.Athlete.set_target
       end

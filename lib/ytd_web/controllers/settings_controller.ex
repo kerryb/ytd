@@ -9,7 +9,7 @@ defmodule YTDWeb.SettingsController do
            |> get_session(:athlete_id)
            |> Athlete.values
     conn
-    |> assign(:target, data.run.target)
+    |> assign(:run_target, data.run.target)
     |> render("show.html")
   end
 
@@ -17,7 +17,7 @@ defmodule YTDWeb.SettingsController do
     athlete_id = conn
                  |> fetch_session
                  |> get_session(:athlete_id)
-    case Integer.parse params["settings"]["target"] do
+    case Integer.parse params["settings"]["run_target"] do
       {target, _} -> Athlete.set_target athlete_id, target
       _ -> nil
     end
