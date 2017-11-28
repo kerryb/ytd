@@ -44,7 +44,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
           ride_target: "2000",
           swim_target: "100",
         }})
-        |> assert_response(path: home_path(conn, :index, activity: "run"))
+        |> assert_response(path: "/")
         assert called YTD.Athlete.set_run_target(@athlete_id, 1000)
         assert called YTD.Athlete.set_ride_target(@athlete_id, 2000)
         assert called YTD.Athlete.set_swim_target(@athlete_id, 100)
@@ -67,7 +67,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
           ride_target: "",
           swim_target: "100",
         }})
-        |> assert_response(path: home_path(conn, :index, activity: "run"))
+        |> assert_response(path: "/")
         refute called YTD.Athlete.set_ride_target
       end
     end
