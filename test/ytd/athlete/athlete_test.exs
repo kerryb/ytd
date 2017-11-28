@@ -5,12 +5,13 @@ defmodule YTD.AthleteTest do
   import Mock
   alias YTD.Database.Athlete, as: DBAthlete
   alias YTD.{Athlete, Strava}
+  alias YTD.Athlete.Values
   doctest Athlete
 
   @code "strava-code-would-go-here"
   @id 123
   @token "strava-token-would-go-here"
-  @athlete %DBAthlete{id: @id, token: @token, run_target: 650}
+  @athlete %DBAthlete{id: @id, token: @token, run_target: 650, ride_target: 2000, swim_target: 200}
 
   setup do
     DBAthlete.clear
@@ -70,18 +71,23 @@ defmodule YTD.AthleteTest do
         DBAthlete.write @athlete
       end
 
+      run_values = %Values{projected_annual: 608.9}
+      ride_values = %Values{projected_annual: 2408.9}
+      swim_values = %Values{projected_annual: 308.9}
       with_mocks [
-        {Strava, [], [ytd: fn @athlete -> 123.456 end]},
-        {Date, [], [utc_today: fn -> ~D(2017-03-15) end]},
+        {Strava, [], [ytd: fn @athlete -> %{run: 123.4, ride: 567.8, swim: 91.2} end]},
+        {Values, [], [new: fn ytd, target ->
+          case {ytd, target} do
+            {123.4, 650} -> run_values
+            {567.8, 2000} -> ride_values
+            {91.2, 200} -> swim_values
+          end
+        end]},
       ] do
-        data = Athlete.values @id
-        assert data.profile_url == "https://www.strava.com/athletes/#{@id}"
-        assert data.running.ytd == 123.456
-        assert data.running.target == 650
-        assert_in_delta data.running.projected_annual, 608.9, 0.1
-        assert_in_delta data.running.weekly_average, 11.7, 0.1
-        assert data.running.estimated_target_completion == ~D(2018-01-20)
-        assert_in_delta data.running.required_average, 12.6, 0.1
+        values = Athlete.values @id
+        assert values.run == run_values
+        assert values.ride == ride_values
+        assert values.swim == swim_values
       end
     end
 
@@ -90,16 +96,42 @@ defmodule YTD.AthleteTest do
     end
   end
 
-  describe "YTD.Athlete.set_target/2" do
-    test "allows setting of target mileage" do
+  describe "YTD.Athlete.set_run_target/2" do
+    test "allows setting of target run mileage" do
       Athlete.register %DBAthlete{id: 123, token: "access-token"}
-      Athlete.set_target 123, 1000
+      Athlete.set_run_target 123, 1000
       assert Athlete.find(123).run_target == 1000
     end
 
     test "returns :ok on success" do
       Athlete.register %DBAthlete{id: 123, token: "access-token"}
-      assert Athlete.set_target(123, 1000) == :ok
+      assert Athlete.set_run_target(123, 1000) == :ok
+    end
+  end
+
+  describe "YTD.Athlete.set_ride_target/2" do
+    test "allows setting of target ride mileage" do
+      Athlete.register %DBAthlete{id: 123, token: "access-token"}
+      Athlete.set_ride_target 123, 1000
+      assert Athlete.find(123).ride_target == 1000
+    end
+
+    test "returns :ok on success" do
+      Athlete.register %DBAthlete{id: 123, token: "access-token"}
+      assert Athlete.set_ride_target(123, 1000) == :ok
+    end
+  end
+
+  describe "YTD.Athlete.set_swim_target/2" do
+    test "allows setting of target swim mileage" do
+      Athlete.register %DBAthlete{id: 123, token: "access-token"}
+      Athlete.set_swim_target 123, 1000
+      assert Athlete.find(123).swim_target == 1000
+    end
+
+    test "returns :ok on success" do
+      Athlete.register %DBAthlete{id: 123, token: "access-token"}
+      assert Athlete.set_swim_target(123, 1000) == :ok
     end
   end
 end

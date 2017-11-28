@@ -1,11 +1,13 @@
-defmodule YTDWeb.IndexControllerTest do
-  use YTDWeb.ConnCase
+defmodule YTDWeb.HomeControllerTest do
+  use YTDWeb.ConnCase, async: false
   import Mock
+  import Phoenix.Controller
   alias YTD.Athlete.{Data, Values}
+  alias YTDWeb.{HomeController, HomeView}
 
   @athlete_id 123
   @data %Data{
-    running: %Values{
+    run: %Values{
       ytd: 123.456789,
       projected_annual: 456.789,
       weekly_average: 12.345,
@@ -13,68 +15,40 @@ defmodule YTDWeb.IndexControllerTest do
   }
 
   setup do
-    conn = build_conn() |> SessionHelper.prepare_session()
-    {:ok, conn: conn}
+    conn = build_conn()
+           |> SessionHelper.prepare_session()
+    # TODO: Why isn't phoenix_endpoint getting set automatically?
+    {:ok, conn: %{conn | private: conn.private |> Map.put(:phoenix_endpoint, YTDWeb.Endpoint)}}
   end
 
   describe "GET / with an athlete ID in the session" do
-    test "renders the YTD page", %{conn: conn} do
+    test "assigns the athlete data", %{conn: conn} do
       with_mock YTD.Athlete, [values: fn @athlete_id -> @data end] do
         conn = conn
                |> put_session(:athlete_id, @athlete_id)
-               |> get("/")
-        assert html_response(conn, 200) =~ ~r/\b123.5\b/
-        assert html_response(conn, 200) =~ ~r/\b456.8\b/
-        assert html_response(conn, 200) =~ ~r/\b12.3\b/
+               |> put_view(HomeView)
+               |> HomeController.index(%{activity: "run"})
+        assert conn.assigns.data == @data
       end
     end
 
-    test "indicates if target has been achieved", %{conn: conn} do
-      data = %{@data |
-        running: %{@data.running | 
-          target: 100,
-          estimated_target_completion: ~D(2018-01-10),
-          required_average: 22.222,
-        }
-      }
-      with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
-        conn = conn
-               |> put_session(:athlete_id, @athlete_id)
-               |> get("/")
-        refute html_response(conn, 200) =~ ~r/\bset a target\b>/
-        refute html_response(conn, 200) =~ ~r/\bYou should hit\b/
-        refute html_response(conn, 200) =~ ~r/\bYou can get back on target\b/
-        assert html_response(conn, 200) =~
-          ~r/\bYou have hit your target of <span.*>100<\/span> miles!/
-      end
-    end
-
-    test "shows estimated target completion date if on target", %{conn: conn} do
-      data = %{@data |
-        running: %{@data.running |
-          target: 1000,
-          on_target?: true,
-          estimated_target_completion: ~D(2017-12-15),
-          required_average: 22.222,
-        }
-      }
-      with_mock YTD.Athlete, [values: fn @athlete_id -> data end] do
-        conn = conn
-               |> put_session(:athlete_id, @athlete_id)
-               |> get("/")
-        refute html_response(conn, 200) =~ ~r/\b-1\.2\b/
-        refute html_response(conn, 200) =~ ~r/\b-3\.4\b/
-        assert html_response(conn, 200) =~ ~r/\b22\.2\b/
-        assert html_response(conn, 200) =~ ~r/15 December/
-      end
-    end
-
-    test "shows a 'set a target' link if there's no target-related data", %{conn: conn} do
+    test "renders the template for the right activity", %{conn: conn} do
       with_mock YTD.Athlete, [values: fn @athlete_id -> @data end] do
         conn = conn
                |> put_session(:athlete_id, @athlete_id)
-               |> get("/")
-        assert html_response(conn, 200) =~ ~r/<a.*?>set a target<\/a>/
+               |> put_view(HomeView)
+               |> HomeController.index(%{activity: "run"})
+        assert view_template(conn) == "run.html"
+      end
+    end
+
+    test "defaults to 'run'", %{conn: conn} do
+      with_mock YTD.Athlete, [values: fn @athlete_id -> @data end] do
+        conn = conn
+               |> put_session(:athlete_id, @athlete_id)
+               |> put_view(HomeView)
+               |> HomeController.index(%{})
+        assert view_template(conn) == "run.html"
       end
     end
   end

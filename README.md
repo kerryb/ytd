@@ -3,8 +3,10 @@
 [Strava year-to-date milage tracker](https://ytd.kerryb.org)
 
 Built with [Elixir](https://elixir-lang.org/) and
-[Phoenix](http://phoenixframework.org/). Hosted on
-[DigitalOcean](https://www.digitalocean.com/).
+[Phoenix](http://phoenixframework.org/), and hosted on
+[DigitalOcean](https://www.digitalocean.com/). The run/ride/swim icons are
+in the public domain, and made by [Edward
+Boatman](https://thenounproject.com/edward/collection/national-park-service/).
 
 ## Compile, test, etc
 

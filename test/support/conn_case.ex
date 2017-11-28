@@ -15,10 +15,10 @@ defmodule YTDWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
-  using do
+  using(opts) do
     quote do
       # Import conveniences for testing with connections
-      use Phoenix.ConnTest
+      use Phoenix.ConnTest, unquote(opts)
 
       import YTDWeb.Router.Helpers
 

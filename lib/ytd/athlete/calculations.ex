@@ -36,6 +36,7 @@ defmodule YTD.Athlete.Calculations do
   on which the target will be met.
   """
   @spec estimated_target_completion(float, %Date{}, integer) :: %Date{}
+  def estimated_target_completion(_, _, nil), do: nil
   def estimated_target_completion(miles, date, target) do
     days = Timex.day(date) - 1
     Timex.shift(Timex.beginning_of_year(date),
