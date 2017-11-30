@@ -7,5 +7,5 @@ done
 set -e
 
 echo "Running migrations"
-bin/red_card rpc Elixir.YTD.Release.Tasks migrate
+bin/ytd rpc Elixir.YTD.Release.Tasks migrate
 echo "Migrations run successfully"
