@@ -99,39 +99,24 @@ defmodule YTD.AthleteTest do
   describe "YTD.Athlete.set_run_target/2" do
     test "allows setting of target run mileage" do
       Athlete.register %DBAthlete{id: 123, token: "access-token"}
-      Athlete.set_run_target 123, 1000
+      :ok = Athlete.set_run_target 123, 1000
       assert Athlete.find(123).run_target == 1000
-    end
-
-    test "returns :ok on success" do
-      Athlete.register %DBAthlete{id: 123, token: "access-token"}
-      assert Athlete.set_run_target(123, 1000) == :ok
     end
   end
 
   describe "YTD.Athlete.set_ride_target/2" do
     test "allows setting of target ride mileage" do
       Athlete.register %DBAthlete{id: 123, token: "access-token"}
-      Athlete.set_ride_target 123, 1000
+      :ok = Athlete.set_ride_target 123, 1000
       assert Athlete.find(123).ride_target == 1000
-    end
-
-    test "returns :ok on success" do
-      Athlete.register %DBAthlete{id: 123, token: "access-token"}
-      assert Athlete.set_ride_target(123, 1000) == :ok
     end
   end
 
   describe "YTD.Athlete.set_swim_target/2" do
     test "allows setting of target swim mileage" do
       Athlete.register %DBAthlete{id: 123, token: "access-token"}
-      Athlete.set_swim_target 123, 1000
+      :ok = Athlete.set_swim_target 123, 1000
       assert Athlete.find(123).swim_target == 1000
-    end
-
-    test "returns :ok on success" do
-      Athlete.register %DBAthlete{id: 123, token: "access-token"}
-      assert Athlete.set_swim_target(123, 1000) == :ok
     end
   end
 end
