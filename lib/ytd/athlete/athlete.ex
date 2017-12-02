@@ -71,7 +71,8 @@ defmodule YTD.Athlete do
   @doc """
   Store a target mileage for the athlete with the specified ID.
   """
-  @spec set_run_target(integer, integer) :: :ok
+  @spec set_run_target(integer, integer | nil) :: :ok
+  def set_run_target(id, 0), do: set_run_target(id, nil)
   def set_run_target(id, target) do
     Amnesia.transaction do
       id
@@ -85,7 +86,8 @@ defmodule YTD.Athlete do
   @doc """
   Store a target mileage for the athlete with the specified ID.
   """
-  @spec set_ride_target(integer, integer) :: :ok
+  @spec set_ride_target(integer, integer | nil) :: :ok
+  def set_ride_target(id, 0), do: set_ride_target(id, nil)
   def set_ride_target(id, target) do
     Amnesia.transaction do
       id
@@ -99,7 +101,8 @@ defmodule YTD.Athlete do
   @doc """
   Store a target mileage for the athlete with the specified ID.
   """
-  @spec set_swim_target(integer, integer) :: :ok
+  @spec set_swim_target(integer, integer | nil) :: :ok
+  def set_swim_target(id, 0), do: set_swim_target(id, nil)
   def set_swim_target(id, target) do
     Amnesia.transaction do
       id

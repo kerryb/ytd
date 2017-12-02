@@ -102,6 +102,12 @@ defmodule YTD.AthleteTest do
       :ok = Athlete.set_run_target 123, 1000
       assert Athlete.find(123).run_target == 1000
     end
+
+    test "clears the target if set to zero" do
+      Athlete.register %DBAthlete{id: 123, token: "access-token"}
+      :ok = Athlete.set_run_target 123, 0
+      assert is_nil Athlete.find(123).run_target
+    end
   end
 
   describe "YTD.Athlete.set_ride_target/2" do
@@ -110,6 +116,12 @@ defmodule YTD.AthleteTest do
       :ok = Athlete.set_ride_target 123, 1000
       assert Athlete.find(123).ride_target == 1000
     end
+
+    test "clears the target if set to zero" do
+      Athlete.register %DBAthlete{id: 123, token: "access-token"}
+      :ok = Athlete.set_ride_target 123, 0
+      assert is_nil Athlete.find(123).ride_target
+    end
   end
 
   describe "YTD.Athlete.set_swim_target/2" do
@@ -117,6 +129,12 @@ defmodule YTD.AthleteTest do
       Athlete.register %DBAthlete{id: 123, token: "access-token"}
       :ok = Athlete.set_swim_target 123, 1000
       assert Athlete.find(123).swim_target == 1000
+    end
+
+    test "clears the target if set to zero" do
+      Athlete.register %DBAthlete{id: 123, token: "access-token"}
+      :ok = Athlete.set_swim_target 123, 0
+      assert is_nil Athlete.find(123).swim_target
     end
   end
 end
