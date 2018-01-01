@@ -12,7 +12,7 @@ defmodule YTD.Athlete.ValuesTest do
         assert data.target == 650
         assert_in_delta data.projected_annual, 608.9, 0.1
         assert_in_delta data.weekly_average, 11.7, 0.1
-        assert data.estimated_target_completion == ~D(2018-01-20)
+        assert data.estimated_target_completion == ~D(2018-01-26)
         assert_in_delta data.required_average, 12.6, 0.1
       end
     end

@@ -35,7 +35,7 @@ defmodule YTD.Athlete.CalculationsTest do
   describe "YTD.Athlete.Calculations.estimated_target_completion/3" do
     test "returns the date target would be hit at the current rate" do
       assert Calculations.estimated_target_completion(123, ~D(2017-04-15), 400)
-        == ~D(2017-12-05)
+        == ~D(2017-12-08)
     end
 
     test "returns nil if there's no target" do
