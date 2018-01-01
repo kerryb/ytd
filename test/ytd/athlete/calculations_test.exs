@@ -42,6 +42,11 @@ defmodule YTD.Athlete.CalculationsTest do
       assert Calculations.estimated_target_completion(123, ~D(2017-04-15), nil)
         == nil
     end
+
+    test "returns nil if there's no mileage yet" do
+      assert Calculations.estimated_target_completion(0.0, ~D(2017-04-15), 400)
+        == nil
+    end
   end
 
   describe "YTD.Athlete.Calculations.required_average/3" do
