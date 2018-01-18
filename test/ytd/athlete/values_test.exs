@@ -7,7 +7,7 @@ defmodule YTD.Athlete.ValuesTest do
   describe "YTD.Athlete.Values.new/2" do
     test "returns all the calculated values for display" do
       with_mock Date, utc_today: fn -> ~D(2017-03-15) end do
-        data = Values.new 123.456, 650
+        data = Values.new(123.456, 650)
         assert data.ytd == 123.456
         assert data.target == 650
         assert_in_delta data.projected_annual, 608.9, 0.1
@@ -18,7 +18,7 @@ defmodule YTD.Athlete.ValuesTest do
     end
 
     test "doesn't die if no target is set" do
-      Values.new 123.456, nil
+      Values.new(123.456, nil)
     end
   end
 end

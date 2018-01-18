@@ -10,10 +10,10 @@ defmodule YTDWeb.Mixfile do
       deps_path: "deps",
       lockfile: "mix.lock",
       elixir: "~> 1.2",
-      elixirc_paths: elixirc_paths(Mix.env),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers,
-      build_embedded: Mix.env == :prod,
-      start_permanent: Mix.env == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
       preferred_cli_env: preferred_cli_env(),
       elixirc_options: elixirc_options(),
       test_coverage: [tool: ExCoveralls],
@@ -22,32 +22,34 @@ defmodule YTDWeb.Mixfile do
     ]
   end
 
-  defp version, do: "VERSION" |> File.read! |> String.trim
+  defp version, do: "VERSION" |> File.read!() |> String.trim()
 
   # Configuration for the OTP application.
   #
   #  `mix help compile.app` for more information.
   def application do
-    [mod: {YTDWeb.Application, []},
-     extra_applications: [
-       :cowboy,
-       :gettext,
-       :hackney,
-       :httpoison,
-       :logger,
-       :phoenix,
-       :phoenix_html,
-       :phoenix_pubsub,
-       :phoenix_slime,
-       :plug,
-       :strava,
-       :timex,
-     ]]
+    [
+      mod: {YTDWeb.Application, []},
+      extra_applications: [
+        :cowboy,
+        :gettext,
+        :hackney,
+        :httpoison,
+        :logger,
+        :phoenix,
+        :phoenix_html,
+        :phoenix_pubsub,
+        :phoenix_slime,
+        :plug,
+        :strava,
+        :timex
+      ]
+    ]
   end
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_),     do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
   #
@@ -72,10 +74,11 @@ defmodule YTDWeb.Mixfile do
       {:phoenix_live_reload, ">= 1.0.0", only: :dev},
       {:phoenix_pubsub, ">= 1.0.0"},
       {:phoenix_slime, ">= 0.8.0"},
-      {:poison, ">= 3.0.0", override: true}, # strava conflicts with phoenix
+      #  strava conflicts with phoenix
+      {:poison, ">= 3.0.0", override: true},
       {:sobelow, ">= 0.3.0", only: :dev},
       {:strava, ">= 0.3.0"},
-      {:timex, ">= 0.19.0"},
+      {:timex, ">= 0.19.0"}
     ]
   end
 
@@ -87,18 +90,18 @@ defmodule YTDWeb.Mixfile do
       vcr: :test,
       "vcr.delete": :test,
       "vcr.check": :test,
-      "vcr.show": :test,
+      "vcr.show": :test
     ]
   end
 
   defp dialyzer do
     [
       plt_add_deps: :project,
-      ignore_warnings: "config/dialyzer.ignore-warnings",
+      ignore_warnings: "config/dialyzer.ignore-warnings"
     ]
   end
-  
+
   defp elixirc_options do
-    if Mix.env == :test, do: [], else: [warnings_as_errors: true]
+    if Mix.env() == :test, do: [], else: [warnings_as_errors: true]
   end
 end

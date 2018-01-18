@@ -3,15 +3,11 @@ defmodule YTD.Athlete.Data do
   A struct holding the data to be displayed for an athlete.
   """
 
-  @type t :: %__MODULE__{profile_url: String.t,
-    run: Values,
-    ride: Values,
-    swim: Values,
-  }
+  @type t :: %__MODULE__{profile_url: String.t(), run: Values, ride: Values, swim: Values}
   defstruct [
     :profile_url,
     :run,
     :ride,
-    :swim,
+    :swim
   ]
 end

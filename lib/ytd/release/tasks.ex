@@ -10,6 +10,6 @@ defmodule YTD.Release.Tasks do
 
   def migrate do
     {:ok, _} = Application.ensure_all_started(:ytd)
-    Database.migrate
+    Database.migrate()
   end
 end

@@ -11,7 +11,7 @@ defmodule YTDWeb.Application do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
-      supervisor(YTDWeb.Endpoint, []),
+      supervisor(YTDWeb.Endpoint, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

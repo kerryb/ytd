@@ -13,7 +13,7 @@ defmodule YTD.Athlete.Calculations do
     miles * days_in_year(date) / Timex.day(date)
   end
 
-  defp days_in_year(date), do: if Timex.is_leap?(date), do: 366, else: 365
+  defp days_in_year(date), do: if(Timex.is_leap?(date), do: 366, else: 365)
 
   @doc """
   Given the current mileage and today's date, return the average weekly mileage
@@ -38,10 +38,10 @@ defmodule YTD.Athlete.Calculations do
   @spec estimated_target_completion(float, %Date{}, integer) :: %Date{}
   def estimated_target_completion(_, _, nil), do: nil
   def estimated_target_completion(0.0, _, _), do: nil
+
   def estimated_target_completion(miles, date, target) do
     days = Timex.day(date)
-    Timex.shift(Timex.beginning_of_year(date),
-                days: round(days * target / miles))
+    Timex.shift(Timex.beginning_of_year(date), days: round(days * target / miles))
   end
 
   @doc """
@@ -50,6 +50,7 @@ defmodule YTD.Athlete.Calculations do
   """
   @spec required_average(float, %Date{}, integer) :: float
   def required_average(_, _, nil), do: 0
+
   def required_average(miles, date, target) do
     days_left = Timex.diff(Timex.end_of_year(date), date, :days) + 1
     (target - miles) / days_left * 7

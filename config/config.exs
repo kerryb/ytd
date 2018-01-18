@@ -6,16 +6,14 @@
 use Mix.Config
 
 # General application configuration
-config :ytd,
-  namespace: YTDWeb
+config :ytd, namespace: YTDWeb
 
 # Configures the endpoint
 config :ytd, YTDWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "qeLmxgJOWW6wI/5a/LuOrJXXFfADqnBfgaXx3zkPVM3DpO1ACTtY8O5qcAwZkIx6",
   render_errors: [view: YTDWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: YTDWeb.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: YTDWeb.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -28,4 +26,4 @@ config :phoenix, :template_engines,
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

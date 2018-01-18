@@ -15,7 +15,7 @@ defmodule YTDWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
-  using(opts) do
+  using opts do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest, unquote(opts)

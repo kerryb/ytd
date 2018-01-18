@@ -15,5 +15,4 @@ config :strava,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
-config :phoenix_integration,
-  endpoint: YTDWeb.Endpoint
+config :phoenix_integration, endpoint: YTDWeb.Endpoint

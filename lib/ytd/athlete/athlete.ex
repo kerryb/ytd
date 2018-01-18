@@ -19,10 +19,10 @@ defmodule YTD.Athlete do
   Given a Strava authorization code (from an oauth callback), request and
   return the corresponding athlete ID.
   """
-  @spec find_or_register(String.t) :: integer
+  @spec find_or_register(String.t()) :: integer
   def find_or_register(code) do
     athlete = Strava.athlete_from_code(code)
-    unless find(athlete.id), do: register athlete
+    unless find(athlete.id), do: register(athlete)
     athlete.id
   end
 
@@ -31,9 +31,10 @@ defmodule YTD.Athlete do
   """
   @spec register(%DBAthlete{}) :: :ok
   def register(athlete) do
-    Logger.info fn -> "Registering athlete #{inspect athlete}" end
+    Logger.info(fn -> "Registering athlete #{inspect(athlete)}" end)
+
     Amnesia.transaction do
-      DBAthlete.write athlete
+      DBAthlete.write(athlete)
     end
   end
 
@@ -43,7 +44,7 @@ defmodule YTD.Athlete do
   @spec find(integer) :: %DBAthlete{} | nil
   def find(id) do
     Amnesia.transaction do
-      DBAthlete.read id
+      DBAthlete.read(id)
     end
   end
 
@@ -53,17 +54,20 @@ defmodule YTD.Athlete do
   """
   @spec values(integer) :: %Data{} | nil
   def values(athlete_id) do
-    # TODO: rename to data/1
+    #  TODO: rename to data/1
     case find(athlete_id) do
-      nil -> nil
+      nil ->
+        nil
+
       athlete ->
         profile_url = "https://www.strava.com/athletes/#{athlete_id}"
-        ytd = Strava.ytd athlete
+        ytd = Strava.ytd(athlete)
+
         %Data{
           profile_url: profile_url,
           run: Values.new(ytd.run, athlete.run_target),
           ride: Values.new(ytd.ride, athlete.ride_target),
-          swim: Values.new(ytd.swim, athlete.swim_target),
+          swim: Values.new(ytd.swim, athlete.swim_target)
         }
     end
   end
@@ -73,13 +77,15 @@ defmodule YTD.Athlete do
   """
   @spec set_run_target(integer, integer | nil) :: :ok
   def set_run_target(id, 0), do: set_run_target(id, nil)
+
   def set_run_target(id, target) do
     Amnesia.transaction do
       id
-      |> DBAthlete.read
+      |> DBAthlete.read()
       |> Map.put(:run_target, target)
-      |> DBAthlete.write
+      |> DBAthlete.write()
     end
+
     :ok
   end
 
@@ -88,13 +94,15 @@ defmodule YTD.Athlete do
   """
   @spec set_ride_target(integer, integer | nil) :: :ok
   def set_ride_target(id, 0), do: set_ride_target(id, nil)
+
   def set_ride_target(id, target) do
     Amnesia.transaction do
       id
-      |> DBAthlete.read
+      |> DBAthlete.read()
       |> Map.put(:ride_target, target)
-      |> DBAthlete.write
+      |> DBAthlete.write()
     end
+
     :ok
   end
 
@@ -103,13 +111,15 @@ defmodule YTD.Athlete do
   """
   @spec set_swim_target(integer, integer | nil) :: :ok
   def set_swim_target(id, 0), do: set_swim_target(id, nil)
+
   def set_swim_target(id, target) do
     Amnesia.transaction do
       id
-      |> DBAthlete.read
+      |> DBAthlete.read()
       |> Map.put(:swim_target, target)
-      |> DBAthlete.write
+      |> DBAthlete.write()
     end
+
     :ok
   end
 end

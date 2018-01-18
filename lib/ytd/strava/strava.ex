@@ -4,23 +4,23 @@ defmodule YTD.Strava do
   alias Strava.{Auth, Client}
   alias YTD.Database.Athlete
 
-  @spec athlete_from_code(String.t) :: %Athlete{}
+  @spec athlete_from_code(String.t()) :: %Athlete{}
   def athlete_from_code(code) do
-    %{token: %{access_token: token, other_params: other_params}} =
-      Auth.get_token! code: code
+    %{token: %{access_token: token, other_params: other_params}} = Auth.get_token!(code: code)
     id = other_params["athlete"]["id"]
     %Athlete{id: id, token: token}
   end
 
   @spec ytd(%Athlete{}) :: %{run: float, ride: float, swim: float}
   def ytd(%Athlete{token: token}) do
-    client = Client.new token
-    %Strava.Athlete{id: id} = Strava.Athlete.retrieve_current client
+    client = Client.new(token)
+    %Strava.Athlete{id: id} = Strava.Athlete.retrieve_current(client)
     stats = Strava.Athlete.stats(id, client)
+
     %{
       run: metres_to_miles(stats.ytd_run_totals.distance),
       ride: metres_to_miles(stats.ytd_ride_totals.distance),
-      swim: metres_to_miles(stats.ytd_swim_totals.distance),
+      swim: metres_to_miles(stats.ytd_swim_totals.distance)
     }
   end
 

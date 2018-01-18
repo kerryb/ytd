@@ -11,13 +11,13 @@ defmodule YTDWeb.Plugs.SessionCheck do
 
   def init(opts), do: opts
 
-  @spec call(Plug.Conn.t, term) :: Plug.Conn.t
+  @spec call(Plug.Conn.t(), term) :: Plug.Conn.t()
   def call(conn, _opts) do
     if conn |> fetch_session |> get_session(:athlete_id) do
       conn
     else
       conn
-      |> assign(:auth_url, Auth.authorize_url!)
+      |> assign(:auth_url, Auth.authorize_url!())
       |> Controller.redirect(to: Helpers.auth_path(conn, :show))
       |> halt
     end
