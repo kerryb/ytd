@@ -1,4 +1,4 @@
-all: clean database style dialyzer test security docs
+all: clean database style dialyzer test security docs format
 .PHONY: clean database style dialyzer test security docs build-release \
   build-upgrade assets docker-build deploy-release deploy-upgrade
 clean:
@@ -9,7 +9,10 @@ Mnesia.nonode@nohost:
 test:
 	MIX_ENV=test mix coveralls.html
 style:
+	mix format --check-formatted
 	mix credo --strict
+format:
+	mix format
 security:
 	mix sobelow --exit low --router lib/ytd_web/router.ex
 dialyzer:
