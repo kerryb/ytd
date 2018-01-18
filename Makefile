@@ -1,4 +1,4 @@
-all: clean database style dialyzer test security docs format
+all: clean database style format dialyzer test security docs format
 .PHONY: clean database style dialyzer test security docs build-release \
   build-upgrade assets docker-build deploy-release deploy-upgrade
 clean:
