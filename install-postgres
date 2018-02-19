@@ -8,3 +8,4 @@ apt-get install -y postgresql-10
 
 sudo -u postgres bash -c 'createuser -d ${YTD_DATABASE_USER}'
 sudo -u postgres bash -c "echo \"alter user ytd with password '${YTD_DATABASE_PASSWORD}';\" | psql"
+sudo -u postgres bash -c "echo \"create database ytd owner ${YTD_DATABASE_USER};\" | psql"
