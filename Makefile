@@ -14,7 +14,7 @@ style:
 format:
 	mix format
 security:
-	mix sobelow --exit low --router lib/ytd_web/router.ex
+	mix sobelow --config
 dialyzer:
 	MIX_ENV=dev mix compile --debug-info
 	mix dialyzer --halt-exit-status

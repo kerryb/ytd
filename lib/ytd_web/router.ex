@@ -8,6 +8,7 @@ defmodule YTDWeb.Router do
     plug(:fetch_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
+    plug(YTDWeb.CSPHeader)
   end
 
   pipeline :api do
