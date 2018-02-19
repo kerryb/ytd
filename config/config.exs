@@ -7,6 +7,7 @@ use Mix.Config
 
 # General application configuration
 config :ytd, namespace: YTDWeb
+config :ytd, ecto_repos: [YTD.Repo]
 
 # Configures the endpoint
 config :ytd, YTDWeb.Endpoint,

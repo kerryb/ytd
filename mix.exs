@@ -16,6 +16,7 @@ defmodule YTDWeb.Mixfile do
       start_permanent: Mix.env() == :prod,
       preferred_cli_env: preferred_cli_env(),
       elixirc_options: elixirc_options(),
+      aliases: aliases(),
       test_coverage: [tool: ExCoveralls],
       dialyzer: dialyzer(),
       deps: deps()
@@ -69,6 +70,7 @@ defmodule YTDWeb.Mixfile do
       {:httpoison, ">= 0.10.0"},
       {:mock, ">= 0.2.0", only: :test},
       {:phoenix, ">= 1.3.0"},
+      {:phoenix_ecto, "~> 3.2"},
       {:phoenix_html, ">= 2.6.0"},
       {:phoenix_integration, ">= 0.2.0", only: :test},
       {:phoenix_live_reload, ">= 1.0.0", only: :dev},
@@ -76,6 +78,7 @@ defmodule YTDWeb.Mixfile do
       {:phoenix_slime, ">= 0.8.0"},
       #  strava conflicts with phoenix
       {:poison, ">= 3.0.0", override: true},
+      {:postgrex, ">= 0.0.0"},
       {:sobelow, ">= 0.3.0", only: :dev},
       {:strava, ">= 0.3.0"},
       {:timex, ">= 0.19.0"}
@@ -96,12 +99,22 @@ defmodule YTDWeb.Mixfile do
 
   defp dialyzer do
     [
-      plt_add_deps: :project,
+      plt_add_deps: :transitive,
       ignore_warnings: "config/dialyzer.ignore-warnings"
     ]
   end
 
   defp elixirc_options do
     if Mix.env() == :test, do: [], else: [warnings_as_errors: true]
+  end
+
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      "ecto.migrate": ["ecto.migrate", "ecto.dump"],
+      "ecto.rollback": ["ecto.rollback", "ecto.dump"],
+      "test.prepare": ["ecto.create --quiet", "ecto.migrate"]
+    ]
   end
 end

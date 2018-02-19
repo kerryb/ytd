@@ -16,3 +16,10 @@ config :strava,
 config :logger, level: :warn
 
 config :phoenix_integration, endpoint: YTDWeb.Endpoint
+
+# Configure your database
+config :ytd, YTD.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  database: "ytd_test",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox

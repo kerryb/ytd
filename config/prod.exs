@@ -26,3 +26,11 @@ config :strava,
 config :logger, level: :info
 
 config :phoenix, :serve_endpoints, true
+
+# Configure your database
+config :ytd, YTD.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "${YTD_DATABASE_USER}",
+  password: "${YTD_DATABASE_PASSWORD}",
+  database: "ytd_prod",
+  pool_size: 15
