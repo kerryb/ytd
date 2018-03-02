@@ -22,14 +22,14 @@ defmodule YTDWeb.AuthControllerTest do
       code = "authorisation-code-would-go-here"
       athlete_id = 123
 
-      with_mock YTD.Athlete, find_or_register: fn ^code -> athlete_id end do
+      with_mock YTD.Athletes, find_or_register: fn ^code -> athlete_id end do
         conn = get(conn, "/auth/callback?code=#{code}")
         assert get_session(conn, :athlete_id) == athlete_id
       end
     end
 
     test "redirects to the index", %{conn: conn} do
-      with_mock YTD.Athlete, find_or_register: fn _ -> 123 end do
+      with_mock YTD.Athletes, find_or_register: fn _ -> 123 end do
         conn = get(conn, "/auth/callback?code=")
         assert redirected_to(conn) == "/"
       end

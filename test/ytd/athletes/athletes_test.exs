@@ -1,12 +1,12 @@
-defmodule YTD.AthleteTest do
+defmodule YTD.AthletesTest do
   use ExUnit.Case
   require Amnesia
   require Amnesia.Helper
   import Mock
   alias YTD.Database.Athlete, as: DBAthlete
-  alias YTD.{Athlete, Strava}
-  alias YTD.Athlete.Values
-  doctest Athlete
+  alias YTD.{Athletes, Strava}
+  alias YTD.Athletes.Values
+  doctest Athletes
 
   @code "strava-code-would-go-here"
   @id 123
@@ -23,22 +23,22 @@ defmodule YTD.AthleteTest do
     DBAthlete.clear()
   end
 
-  describe "YTD.Athlete.find_or_register/1 for a new athlete" do
+  describe "YTD.Athletes.find_or_register/1 for a new athlete" do
     test "retrieves and returns the athlete's ID" do
       with_mock Strava, athlete_from_code: fn @code -> @athlete end do
-        assert Athlete.find_or_register(@code) == @id
+        assert Athletes.find_or_register(@code) == @id
       end
     end
 
     test "registers the athlete's API token" do
       with_mock Strava, athlete_from_code: fn @code -> @athlete end do
-        Athlete.find_or_register(@code)
-        assert Athlete.find(@id).token == @token
+        Athletes.find_or_register(@code)
+        assert Athletes.find(@id).token == @token
       end
     end
   end
 
-  describe "YTD.Athlete.find_or_register/1 for an existing athlete" do
+  describe "YTD.Athletes.find_or_register/1 for an existing athlete" do
     setup do
       Amnesia.transaction do
         DBAthlete.write(@athlete)
@@ -49,30 +49,30 @@ defmodule YTD.AthleteTest do
 
     test "retrieves and returns the athlete's ID" do
       with_mock Strava, athlete_from_code: fn @code -> @athlete end do
-        assert Athlete.find_or_register(@code) == @id
+        assert Athletes.find_or_register(@code) == @id
       end
     end
 
     test "doesn't override the saved athlete" do
       with_mock Strava, athlete_from_code: fn @code -> @athlete end do
-        Athlete.find_or_register(@code)
-        assert Athlete.find(@id).run_target == 650
+        Athletes.find_or_register(@code)
+        assert Athletes.find(@id).run_target == 650
       end
     end
   end
 
-  describe "YTD.Athlete.register/2 and .find/1" do
+  describe "YTD.Athletes.register/2 and .find/1" do
     test "register and find athletes by ID" do
-      Athlete.register(%DBAthlete{id: 123, token: "access-token"})
-      assert Athlete.find(123) == %DBAthlete{id: 123, token: "access-token"}
+      Athletes.register(%DBAthlete{id: 123, token: "access-token"})
+      assert Athletes.find(123) == %DBAthlete{id: 123, token: "access-token"}
     end
 
     test "returns nil when trying to find an unregistered athlete" do
-      assert Athlete.find(999) == nil
+      assert Athletes.find(999) == nil
     end
   end
 
-  describe "YTD.Athlete.values/1" do
+  describe "YTD.Athletes.values/1" do
     test "returns the profile URL and YTD figure from Strava and calculated values" do
       Amnesia.transaction do
         DBAthlete.write(@athlete)
@@ -95,7 +95,7 @@ defmodule YTD.AthleteTest do
            end
          ]}
       ] do
-        values = Athlete.values(@id)
+        values = Athletes.values(@id)
         assert values.run == run_values
         assert values.ride == ride_values
         assert values.swim == swim_values
@@ -103,49 +103,49 @@ defmodule YTD.AthleteTest do
     end
 
     test "returns nil if the athlete is not registered" do
-      assert YTD.Athlete.values(999) == nil
+      assert YTD.Athletes.values(999) == nil
     end
   end
 
-  describe "YTD.Athlete.set_run_target/2" do
+  describe "YTD.Athletes.set_run_target/2" do
     test "allows setting of target run mileage" do
-      Athlete.register(%DBAthlete{id: 123, token: "access-token"})
-      :ok = Athlete.set_run_target(123, 1000)
-      assert Athlete.find(123).run_target == 1000
+      Athletes.register(%DBAthlete{id: 123, token: "access-token"})
+      :ok = Athletes.set_run_target(123, 1000)
+      assert Athletes.find(123).run_target == 1000
     end
 
     test "clears the target if set to zero" do
-      Athlete.register(%DBAthlete{id: 123, token: "access-token"})
-      :ok = Athlete.set_run_target(123, 0)
-      assert is_nil(Athlete.find(123).run_target)
+      Athletes.register(%DBAthlete{id: 123, token: "access-token"})
+      :ok = Athletes.set_run_target(123, 0)
+      assert is_nil(Athletes.find(123).run_target)
     end
   end
 
-  describe "YTD.Athlete.set_ride_target/2" do
+  describe "YTD.Athletes.set_ride_target/2" do
     test "allows setting of target ride mileage" do
-      Athlete.register(%DBAthlete{id: 123, token: "access-token"})
-      :ok = Athlete.set_ride_target(123, 1000)
-      assert Athlete.find(123).ride_target == 1000
+      Athletes.register(%DBAthlete{id: 123, token: "access-token"})
+      :ok = Athletes.set_ride_target(123, 1000)
+      assert Athletes.find(123).ride_target == 1000
     end
 
     test "clears the target if set to zero" do
-      Athlete.register(%DBAthlete{id: 123, token: "access-token"})
-      :ok = Athlete.set_ride_target(123, 0)
-      assert is_nil(Athlete.find(123).ride_target)
+      Athletes.register(%DBAthlete{id: 123, token: "access-token"})
+      :ok = Athletes.set_ride_target(123, 0)
+      assert is_nil(Athletes.find(123).ride_target)
     end
   end
 
-  describe "YTD.Athlete.set_swim_target/2" do
+  describe "YTD.Athletes.set_swim_target/2" do
     test "allows setting of target swim mileage" do
-      Athlete.register(%DBAthlete{id: 123, token: "access-token"})
-      :ok = Athlete.set_swim_target(123, 1000)
-      assert Athlete.find(123).swim_target == 1000
+      Athletes.register(%DBAthlete{id: 123, token: "access-token"})
+      :ok = Athletes.set_swim_target(123, 1000)
+      assert Athletes.find(123).swim_target == 1000
     end
 
     test "clears the target if set to zero" do
-      Athlete.register(%DBAthlete{id: 123, token: "access-token"})
-      :ok = Athlete.set_swim_target(123, 0)
-      assert is_nil(Athlete.find(123).swim_target)
+      Athletes.register(%DBAthlete{id: 123, token: "access-token"})
+      :ok = Athletes.set_swim_target(123, 0)
+      assert is_nil(Athletes.find(123).swim_target)
     end
   end
 end

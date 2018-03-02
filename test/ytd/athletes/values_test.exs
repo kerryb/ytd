@@ -1,10 +1,10 @@
-defmodule YTD.Athlete.ValuesTest do
+defmodule YTD.Athletes.ValuesTest do
   use ExUnit.Case, async: true
   import Mock
-  alias YTD.Athlete.Values
+  alias YTD.Athletes.Values
   doctest Values
 
-  describe "YTD.Athlete.Values.new/2" do
+  describe "YTD.Athletes.Values.new/2" do
     test "returns all the calculated values for display" do
       with_mock Date, utc_today: fn -> ~D(2017-03-15) end do
         data = Values.new(123.456, 650)

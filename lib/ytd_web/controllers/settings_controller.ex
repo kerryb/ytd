@@ -1,13 +1,13 @@
 defmodule YTDWeb.SettingsController do
   use YTDWeb, :controller
-  alias YTD.Athlete
+  alias YTD.Athletes
 
   def show(conn, _params) do
     # TODO: don't really need to get all values; just the target
     case conn
          |> fetch_session
          |> get_session(:athlete_id)
-         |> Athlete.values() do
+         |> Athletes.values() do
       nil -> redirect(conn, to: auth_path(conn, :show))
       data -> render_page(conn, data)
     end
@@ -28,17 +28,17 @@ defmodule YTDWeb.SettingsController do
       |> get_session(:athlete_id)
 
     case Integer.parse(params["settings"]["run_target"]) do
-      {target, _} -> Athlete.set_run_target(athlete_id, target)
+      {target, _} -> Athletes.set_run_target(athlete_id, target)
       _ -> nil
     end
 
     case Integer.parse(params["settings"]["ride_target"]) do
-      {target, _} -> Athlete.set_ride_target(athlete_id, target)
+      {target, _} -> Athletes.set_ride_target(athlete_id, target)
       _ -> nil
     end
 
     case Integer.parse(params["settings"]["swim_target"]) do
-      {target, _} -> Athlete.set_swim_target(athlete_id, target)
+      {target, _} -> Athletes.set_swim_target(athlete_id, target)
       _ -> nil
     end
 

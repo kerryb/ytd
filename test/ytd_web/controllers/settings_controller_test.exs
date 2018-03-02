@@ -2,7 +2,7 @@ defmodule YTDWeb.SettingsControllerTest do
   use YTDWeb.ConnCase, async: false
   import Mock
   import Phoenix.Controller
-  alias YTD.Athlete.{Data, Values}
+  alias YTD.Athletes.{Data, Values}
   alias YTDWeb.{SettingsController, SettingsView}
 
   @athlete_id 123
@@ -29,7 +29,7 @@ defmodule YTDWeb.SettingsControllerTest do
 
   describe "show, with an athlete ID in the session" do
     test "assigns the targets", %{conn: conn} do
-      with_mock YTD.Athlete, values: fn @athlete_id -> @data end do
+      with_mock YTD.Athletes, values: fn @athlete_id -> @data end do
         conn =
           conn
           |> put_session(:athlete_id, @athlete_id)
@@ -45,7 +45,7 @@ defmodule YTDWeb.SettingsControllerTest do
 
   describe "show, when the athlete is not found" do
     test "redirects to the auth page", %{conn: conn} do
-      with_mock YTD.Athlete, values: fn @athlete_id -> nil end do
+      with_mock YTD.Athletes, values: fn @athlete_id -> nil end do
         conn =
           conn
           |> put_session(:athlete_id, @athlete_id)

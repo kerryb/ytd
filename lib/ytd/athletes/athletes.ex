@@ -1,4 +1,4 @@
-defmodule YTD.Athlete do
+defmodule YTD.Athletes do
   @moduledoc """
   Stores details of athletes, keyed by athlete ID. This is not intended to hold
   any data that can be obtained from Strava, but only application-specific
@@ -12,7 +12,7 @@ defmodule YTD.Athlete do
   require Amnesia.Helper
   require Logger
   alias YTD.Database.Athlete, as: DBAthlete
-  alias YTD.Athlete.{Data, Values}
+  alias YTD.Athletes.{Data, Values}
   alias YTD.Strava
 
   @doc """
@@ -49,7 +49,7 @@ defmodule YTD.Athlete do
   end
 
   @doc """
-  Given an athlete ID, returns a `YTD.Athlete.Data` struct with the values to be
+  Given an athlete ID, returns a `YTD.Athletes.Data` struct with the values to be
   displayed
   """
   @spec values(integer) :: %Data{} | nil

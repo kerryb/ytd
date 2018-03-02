@@ -1,9 +1,9 @@
-defmodule YTD.Athlete.Values do
+defmodule YTD.Athletes.Values do
   @moduledoc """
   A struct holding the YTD and calculated values for a particular sport.
   """
 
-  alias YTD.Athlete.Calculations
+  alias YTD.Athletes.Calculations
 
   @type t :: %__MODULE__{
           ytd: float,

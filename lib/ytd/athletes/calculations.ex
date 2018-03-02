@@ -1,4 +1,4 @@
-defmodule YTD.Athlete.Calculations do
+defmodule YTD.Athletes.Calculations do
   @moduledoc """
   Perform various calculations based on the current date and actual and total
   mileage.

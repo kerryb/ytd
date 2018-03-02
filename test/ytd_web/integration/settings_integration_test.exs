@@ -1,7 +1,7 @@
 defmodule YTDWeb.SettingsIntegrationTest do
   use YTDWeb.IntegrationCase
   import Mock
-  alias YTD.Athlete.{Data, Values}
+  alias YTD.Athletes.{Data, Values}
 
   @athlete_id 123
   @data %Data{
@@ -29,7 +29,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
 
   describe "Setting a target" do
     test "stores the target for the athlete", %{conn: conn} do
-      with_mock YTD.Athlete,
+      with_mock YTD.Athletes,
         values: fn @athlete_id -> @data end,
         set_run_target: fn _, _ -> :ok end,
         set_ride_target: fn _, _ -> :ok end,
@@ -47,14 +47,14 @@ defmodule YTDWeb.SettingsIntegrationTest do
         })
         |> assert_response(path: "/")
 
-        assert called(YTD.Athlete.set_run_target(@athlete_id, 1000))
-        assert called(YTD.Athlete.set_ride_target(@athlete_id, 2000))
-        assert called(YTD.Athlete.set_swim_target(@athlete_id, 100))
+        assert called(YTD.Athletes.set_run_target(@athlete_id, 1000))
+        assert called(YTD.Athletes.set_ride_target(@athlete_id, 2000))
+        assert called(YTD.Athletes.set_swim_target(@athlete_id, 100))
       end
     end
 
     test "does nothing if a target is empty", %{conn: conn} do
-      with_mock YTD.Athlete,
+      with_mock YTD.Athletes,
         values: fn @athlete_id -> @data end,
         set_run_target: fn _, _ -> :ok end,
         set_ride_target: fn _, _ -> :ok end,
@@ -72,7 +72,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
         })
         |> assert_response(path: "/")
 
-        refute called(YTD.Athlete.set_ride_target())
+        refute called(YTD.Athletes.set_ride_target())
       end
     end
   end
@@ -100,7 +100,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
         }
     }
 
-    with_mock YTD.Athlete, values: fn @athlete_id -> data end do
+    with_mock YTD.Athletes, values: fn @athlete_id -> data end do
       conn
       |> put_session(:athlete_id, @athlete_id)
       |> get("/settings")
