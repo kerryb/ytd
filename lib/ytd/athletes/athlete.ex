@@ -1,4 +1,4 @@
-defmodule YTD.Athlete do
+defmodule YTD.Athletes.Athlete do
   @moduledoc """
   Schema for ahtlete record.
   """
