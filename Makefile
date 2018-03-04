@@ -33,7 +33,8 @@ docker-build:
 	docker build --tag=build-elixir -f docker/builder/Dockerfile .
 deploy-release:
 	ssh root@ytd.kerryb.org 'tar -C /opt/ytd/ -xzf -' < _build/prod/rel/ytd/releases/$(version)/ytd.tar.gz
-	ssh root@ytd.kerryb.org "bash -lc 'REPLACE_OS_VARS=true /opt/ytd/bin/ytd restart'"
+	ssh root@ytd.kerryb.org "bash -lc 'REPLACE_OS_VARS=true /opt/ytd/bin/ytd stop'"
+	ssh root@ytd.kerryb.org "bash -lc 'REPLACE_OS_VARS=true /opt/ytd/bin/ytd start'"
 	ssh root@ytd.kerryb.org ln -s /etc/letsencrypt/webroot/.well-known /opt/ytd/lib/ytd-$(version)/priv/static/.well-known
 deploy-upgrade:
 	ssh root@ytd.kerryb.org mkdir -p /opt/ytd/releases/$(version)
