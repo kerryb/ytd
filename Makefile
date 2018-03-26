@@ -3,9 +3,6 @@ all: clean database style format dialyzer test security docs format
   build-upgrade assets docker-build deploy-release deploy-upgrade
 clean:
 	mix clean
-database: Mnesia.nonode@nohost
-Mnesia.nonode@nohost:
-	mix amnesia.create -d YTD.Database --disk
 test:
 	MIX_ENV=test mix coveralls.html
 style:

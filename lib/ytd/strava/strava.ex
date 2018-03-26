@@ -2,13 +2,13 @@ defmodule YTD.Strava do
   @moduledoc false
 
   alias Strava.{Auth, Client}
-  alias YTD.Database.Athlete
+  alias YTD.Athletes.Athlete
 
   @spec athlete_from_code(String.t()) :: %Athlete{}
   def athlete_from_code(code) do
     %{token: %{access_token: token, other_params: other_params}} = Auth.get_token!(code: code)
     id = other_params["athlete"]["id"]
-    %Athlete{id: id, token: token}
+    %Athlete{strava_id: id, token: token}
   end
 
   @spec ytd(%Athlete{}) :: %{run: float, ride: float, swim: float}

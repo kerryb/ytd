@@ -58,7 +58,6 @@ defmodule YTDWeb.Mixfile do
   #  `mix help deps` for examples and options.
   defp deps do
     [
-      {:amnesia, "~> 0.2.7"},
       {:cowboy, ">= 1.0.0"},
       {:credo, ">= 0.7.0", only: [:dev, :test]},
       {:dialyxir, ">= 0.5.0", only: [:dev], runtime: false},

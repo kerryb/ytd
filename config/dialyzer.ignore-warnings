@@ -1,6 +1,2 @@
 web/templates/
-ytd/database/database.ex
 lib/ytd_web/controllers/home_controller.ex
-Unknown function mnesia
-Unknown type 'Elixir.Amnesia
-Unknown type 'Elixir.Selection

@@ -1,19 +1,14 @@
 defmodule YTD.Athletes do
   @moduledoc """
-  Stores details of athletes, keyed by athlete ID. This is not intended to hold
-  any data that can be obtained from Strava, but only application-specific
-  values (currently only the API token and annual mileage target).
-
-  These functions are a wrapper for the Amnesia table
-  `YTD.Database.Athlete`.
+  API for interacting with athletes. Some data comes from the database, and
+  some from Strava.
   """
 
-  require Amnesia
-  require Amnesia.Helper
   require Logger
-  alias YTD.Database.Athlete, as: DBAthlete
-  alias YTD.Athletes.{Data, Values}
-  alias YTD.Strava
+  import Ecto.Query
+  alias Ecto.Changeset
+  alias YTD.Athletes.{Athlete, Data, Values}
+  alias YTD.{Repo, Strava}
 
   @doc """
   Given a Strava authorization code (from an oauth callback), request and
@@ -22,45 +17,40 @@ defmodule YTD.Athletes do
   @spec find_or_register(String.t()) :: integer
   def find_or_register(code) do
     athlete = Strava.athlete_from_code(code)
-    unless find(athlete.id), do: register(athlete)
-    athlete.id
+    unless find_by_strava_id(athlete.strava_id), do: register(athlete)
+    athlete.strava_id
   end
 
   @doc """
   Register a new athlete, given their Strava ID and API token.
   """
-  @spec register(%DBAthlete{}) :: :ok
+  @spec register(%Athlete{}) :: :ok
   def register(athlete) do
     Logger.info(fn -> "Registering athlete #{inspect(athlete)}" end)
-
-    Amnesia.transaction do
-      DBAthlete.write(athlete)
-    end
+    Repo.insert(athlete)
   end
 
   @doc """
   Return the athlete with the supplied ID, or nil if not found.
   """
-  @spec find(integer) :: %DBAthlete{} | nil
-  def find(id) do
-    Amnesia.transaction do
-      DBAthlete.read(id)
-    end
+  @spec find_by_strava_id(integer) :: %Athlete{} | nil
+  def find_by_strava_id(id) do
+    from(a in Athlete, where: a.strava_id == ^id) |> Repo.one()
   end
 
   @doc """
-  Given an athlete ID, returns a `YTD.Athletes.Data` struct with the values to be
-  displayed
+  Given a Strava athlete ID, returns a `YTD.Athletes.Data` struct with the
+  values to be displayed
   """
   @spec values(integer) :: %Data{} | nil
-  def values(athlete_id) do
+  def values(strava_id) do
     #  TODO: rename to data/1
-    case find(athlete_id) do
+    case find_by_strava_id(strava_id) do
       nil ->
         nil
 
       athlete ->
-        profile_url = "https://www.strava.com/athletes/#{athlete_id}"
+        profile_url = "https://www.strava.com/athletes/#{strava_id}"
         ytd = Strava.ytd(athlete)
 
         %Data{
@@ -79,12 +69,10 @@ defmodule YTD.Athletes do
   def set_run_target(id, 0), do: set_run_target(id, nil)
 
   def set_run_target(id, target) do
-    Amnesia.transaction do
-      id
-      |> DBAthlete.read()
-      |> Map.put(:run_target, target)
-      |> DBAthlete.write()
-    end
+    id
+    |> find_by_strava_id()
+    |> Changeset.change(run_target: target)
+    |> Repo.update()
 
     :ok
   end
@@ -96,12 +84,10 @@ defmodule YTD.Athletes do
   def set_ride_target(id, 0), do: set_ride_target(id, nil)
 
   def set_ride_target(id, target) do
-    Amnesia.transaction do
-      id
-      |> DBAthlete.read()
-      |> Map.put(:ride_target, target)
-      |> DBAthlete.write()
-    end
+    id
+    |> find_by_strava_id()
+    |> Changeset.change(ride_target: target)
+    |> Repo.update()
 
     :ok
   end
@@ -113,12 +99,10 @@ defmodule YTD.Athletes do
   def set_swim_target(id, 0), do: set_swim_target(id, nil)
 
   def set_swim_target(id, target) do
-    Amnesia.transaction do
-      id
-      |> DBAthlete.read()
-      |> Map.put(:swim_target, target)
-      |> DBAthlete.write()
-    end
+    id
+    |> find_by_strava_id()
+    |> Changeset.change(swim_target: target)
+    |> Repo.update()
 
     :ok
   end

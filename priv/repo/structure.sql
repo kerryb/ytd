@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.2
+-- Dumped from database version 10.3
 -- Dumped by pg_dump version 10.3
 
 SET statement_timeout = 0;
@@ -105,5 +105,5 @@ ALTER TABLE ONLY public.schema_migrations
 -- PostgreSQL database dump complete
 --
 
-INSERT INTO "schema_migrations" (version) VALUES (20180301120201);
+INSERT INTO public."schema_migrations" (version) VALUES (20180301120201);
 
