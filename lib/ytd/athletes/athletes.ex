@@ -5,8 +5,7 @@ defmodule YTD.Athletes do
   """
 
   import Ecto.Query
-  alias Ecto.Changeset
-  alias YTD.Athletes.{Athlete, Data, Values}
+  alias YTD.Athletes.{Athlete, Data, Targets, Values}
   alias YTD.{Repo, Strava}
 
   @doc """
@@ -65,44 +64,17 @@ defmodule YTD.Athletes do
   Store a target mileage for the athlete with the specified ID.
   """
   @spec set_run_target(integer, integer | nil) :: :ok
-  def set_run_target(id, 0), do: set_run_target(id, nil)
-
-  def set_run_target(id, target) do
-    id
-    |> find_by_strava_id()
-    |> Changeset.change(run_target: target)
-    |> Repo.update()
-
-    :ok
-  end
+  defdelegate set_run_target(id, target), to: Targets
 
   @doc """
   Store a target mileage for the athlete with the specified ID.
   """
   @spec set_ride_target(integer, integer | nil) :: :ok
-  def set_ride_target(id, 0), do: set_ride_target(id, nil)
-
-  def set_ride_target(id, target) do
-    id
-    |> find_by_strava_id()
-    |> Changeset.change(ride_target: target)
-    |> Repo.update()
-
-    :ok
-  end
+  defdelegate set_ride_target(id, target), to: Targets
 
   @doc """
   Store a target mileage for the athlete with the specified ID.
   """
   @spec set_swim_target(integer, integer | nil) :: :ok
-  def set_swim_target(id, 0), do: set_swim_target(id, nil)
-
-  def set_swim_target(id, target) do
-    id
-    |> find_by_strava_id()
-    |> Changeset.change(swim_target: target)
-    |> Repo.update()
-
-    :ok
-  end
+  defdelegate set_swim_target(id, target), to: Targets
 end
