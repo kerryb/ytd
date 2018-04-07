@@ -1,6 +1,7 @@
-all: clean database style format dialyzer test security docs
+all: clean database style format dialyzer test security docs bumbailiff
 .PHONY: clean database style dialyzer test security docs build-release \
-  build-upgrade assets docker-build deploy-release deploy-upgrade format
+  build-upgrade assets docker-build deploy-release deploy-upgrade format \
+  bumbailiff
 clean:
 	mix clean
 test:
@@ -17,6 +18,8 @@ dialyzer:
 	mix dialyzer --halt-exit-status
 docs:
 	mix docs
+bumbailiff:
+	./bumbailiff
 build-release: assets docker-build
 	docker run -e MIX_ENV=prod -e YTD_ERLANG_COOKIE='${YTD_ERLANG_COOKIE}' \
 		-v `pwd`:`pwd` -w `pwd` build-elixir mix release

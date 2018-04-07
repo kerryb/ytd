@@ -44,7 +44,7 @@ defmodule YTD.Athletes do
   """
   @spec values(integer) :: %Data{} | nil
   def values(strava_id) do
-    #  TODO: rename to data/1
+    # TODO: rename to data/1
     case find_by_strava_id(strava_id) do
       nil ->
         nil
