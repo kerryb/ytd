@@ -28,7 +28,7 @@ BOLD='\033[1m'
 NC='\033[0m'
 LIGHT_GRAY='\033[0;37m'
 
-MAX_AGE=150
+MAX_AGE=50
 OK_AGE=$(($MAX_AGE / 2))
 
 todos=$((git grep --files-with-matches "\(\/\|\#\)\s*TODO" -- "*.js" "*.slim" "*.ex*" || echo "") | xargs -I % sh -c 'echo %; git blame --date=raw % | grep "\(\/\|\#\)\s*TODO"')
