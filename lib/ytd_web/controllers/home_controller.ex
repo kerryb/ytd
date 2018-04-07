@@ -8,7 +8,7 @@ defmodule YTDWeb.HomeController do
       |> fetch_session
       |> get_session(:athlete_id)
 
-    case Athletes.values(athlete_id) do
+    case Athletes.athlete_data(athlete_id) do
       nil -> redirect(conn, to: auth_path(conn, :show))
       data -> render_page(conn, Map.get(params, "activity", "run"), data)
     end

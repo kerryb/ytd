@@ -7,7 +7,7 @@ defmodule YTDWeb.SettingsController do
     case conn
          |> fetch_session
          |> get_session(:athlete_id)
-         |> Athletes.values() do
+         |> Athletes.athlete_data() do
       nil -> redirect(conn, to: auth_path(conn, :show))
       data -> render_page(conn, data)
     end

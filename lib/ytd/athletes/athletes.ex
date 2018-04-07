@@ -4,7 +4,6 @@ defmodule YTD.Athletes do
   some from Strava.
   """
 
-  require Logger
   import Ecto.Query
   alias Ecto.Changeset
   alias YTD.Athletes.{Athlete, Data, Values}
@@ -26,7 +25,6 @@ defmodule YTD.Athletes do
   """
   @spec register(%Athlete{}) :: :ok
   def register(athlete) do
-    Logger.info(fn -> "Registering athlete #{inspect(athlete)}" end)
     Repo.insert(athlete)
   end
 
@@ -42,8 +40,8 @@ defmodule YTD.Athletes do
   Given a Strava athlete ID, returns a `YTD.Athletes.Data` struct with the
   values to be displayed
   """
-  @spec values(integer) :: %Data{} | nil
-  def values(strava_id) do
+  @spec athlete_data(integer) :: %Data{} | nil
+  def athlete_data(strava_id) do
     strava_id
     |> find_by_strava_id()
     |> data_for_athlete()

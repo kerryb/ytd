@@ -30,7 +30,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
   describe "Setting a target" do
     test "stores the target for the athlete", %{conn: conn} do
       with_mock YTD.Athletes,
-        values: fn @athlete_id -> @data end,
+        athlete_data: fn @athlete_id -> @data end,
         set_run_target: fn _, _ -> :ok end,
         set_ride_target: fn _, _ -> :ok end,
         set_swim_target: fn _, _ -> :ok end do
@@ -55,7 +55,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
 
     test "does nothing if a target is empty", %{conn: conn} do
       with_mock YTD.Athletes,
-        values: fn @athlete_id -> @data end,
+        athlete_data: fn @athlete_id -> @data end,
         set_run_target: fn _, _ -> :ok end,
         set_ride_target: fn _, _ -> :ok end,
         set_swim_target: fn _, _ -> :ok end do
@@ -100,7 +100,7 @@ defmodule YTDWeb.SettingsIntegrationTest do
         }
     }
 
-    with_mock YTD.Athletes, values: fn @athlete_id -> data end do
+    with_mock YTD.Athletes, athlete_data: fn @athlete_id -> data end do
       conn
       |> put_session(:athlete_id, @athlete_id)
       |> get("/settings")

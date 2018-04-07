@@ -62,7 +62,7 @@ defmodule YTD.AthletesTest do
     end
   end
 
-  describe "YTD.Athletes.values/1" do
+  describe "YTD.Athletes.athlete_data/1" do
     test "returns the profile URL and YTD figure from Strava and calculated values" do
       @athlete |> Repo.insert()
 
@@ -82,15 +82,15 @@ defmodule YTD.AthletesTest do
            end
          ]}
       ] do
-        values = Athletes.values(@strava_id)
-        assert values.run == run_values
-        assert values.ride == ride_values
-        assert values.swim == swim_values
+        data = Athletes.athlete_data(@strava_id)
+        assert data.run == run_values
+        assert data.ride == ride_values
+        assert data.swim == swim_values
       end
     end
 
     test "returns nil if the athlete is not registered" do
-      assert YTD.Athletes.values(999) == nil
+      assert YTD.Athletes.athlete_data(999) == nil
     end
   end
 

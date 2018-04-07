@@ -25,7 +25,7 @@ defmodule YTDWeb.HomeControllerTest do
 
   describe "GET / with an athlete ID in the session" do
     test "assigns the athlete data", %{conn: conn} do
-      with_mock YTD.Athletes, values: fn @athlete_id -> @data end do
+      with_mock YTD.Athletes, athlete_data: fn @athlete_id -> @data end do
         conn =
           conn
           |> put_session(:athlete_id, @athlete_id)
@@ -37,7 +37,7 @@ defmodule YTDWeb.HomeControllerTest do
     end
 
     test "renders the template for the right activity", %{conn: conn} do
-      with_mock YTD.Athletes, values: fn @athlete_id -> @data end do
+      with_mock YTD.Athletes, athlete_data: fn @athlete_id -> @data end do
         conn =
           conn
           |> put_session(:athlete_id, @athlete_id)
@@ -49,7 +49,7 @@ defmodule YTDWeb.HomeControllerTest do
     end
 
     test "defaults to 'run'", %{conn: conn} do
-      with_mock YTD.Athletes, values: fn @athlete_id -> @data end do
+      with_mock YTD.Athletes, athlete_data: fn @athlete_id -> @data end do
         conn =
           conn
           |> put_session(:athlete_id, @athlete_id)
