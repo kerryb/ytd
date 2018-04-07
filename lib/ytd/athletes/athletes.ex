@@ -44,22 +44,23 @@ defmodule YTD.Athletes do
   """
   @spec values(integer) :: %Data{} | nil
   def values(strava_id) do
-    # TODO: rename to data/1
-    case find_by_strava_id(strava_id) do
-      nil ->
-        nil
+    strava_id
+    |> find_by_strava_id()
+    |> data_for_athlete()
+  end
 
-      athlete ->
-        profile_url = "https://www.strava.com/athletes/#{strava_id}"
-        ytd = Strava.ytd(athlete)
+  defp data_for_athlete(nil), do: nil
 
-        %Data{
-          profile_url: profile_url,
-          run: Values.new(ytd.run, athlete.run_target),
-          ride: Values.new(ytd.ride, athlete.ride_target),
-          swim: Values.new(ytd.swim, athlete.swim_target)
-        }
-    end
+  defp data_for_athlete(athlete) do
+    profile_url = "https://www.strava.com/athletes/#{athlete.strava_id}"
+    ytd = Strava.ytd(athlete)
+
+    %Data{
+      profile_url: profile_url,
+      run: Values.new(ytd.run, athlete.run_target),
+      ride: Values.new(ytd.ride, athlete.ride_target),
+      swim: Values.new(ytd.swim, athlete.swim_target)
+    }
   end
 
   @doc """
