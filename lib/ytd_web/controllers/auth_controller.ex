@@ -1,7 +1,7 @@
 defmodule YTDWeb.AuthController do
   use YTDWeb, :controller
-  alias YTD.Athletes
   alias Strava.Auth
+  alias YTD.Athletes
 
   def show(conn, _params) do
     strava_auth_url = Auth.authorize_url!(redirect_uri: auth_url(conn, :create))

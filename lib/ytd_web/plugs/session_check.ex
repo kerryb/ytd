@@ -6,8 +6,8 @@ defmodule YTDWeb.Plugs.SessionCheck do
   """
   import Plug.Conn
   alias Phoenix.Controller
-  alias YTDWeb.Router.Helpers
   alias Strava.Auth
+  alias YTDWeb.Router.Helpers
 
   def init(opts), do: opts
 
