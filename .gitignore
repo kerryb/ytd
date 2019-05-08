@@ -40,3 +40,4 @@ assets/node_modules
 # variables.
 /config/prod.secret.exs
 tags.*
+*.coverdata
