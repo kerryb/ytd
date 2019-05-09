@@ -69,20 +69,19 @@ defmodule YTDWeb.Mixfile do
       {:hackney, "~> 1.8.6"},
       {:httpoison, ">= 0.10.0"},
       {:mock, ">= 0.2.0", only: :test},
-      {:phoenix, ">= 1.3.0"},
+      {:phoenix, "~> 1.3.0"},
       {:phoenix_ecto, "~> 3.2"},
       {:phoenix_html, ">= 2.6.0"},
       {:phoenix_integration, ">= 0.2.0", only: :test},
       {:phoenix_live_reload, ">= 1.0.0", only: :dev},
       {:phoenix_pubsub, ">= 1.0.0"},
       {:phoenix_slime, ">= 0.8.0"},
-      # TODO: upgrade when Plug stops giving deprecation warnings from Router
-      {:plug, "1.5.0"},
+      {:plug, "~> 1.8"},
       #  strava conflicts with phoenix
       {:poison, ">= 3.0.0", override: true},
       {:postgrex, ">= 0.0.0"},
       {:sobelow, ">= 0.3.0", only: :dev},
-      {:strava, ">= 0.3.0"},
+      {:strava, "~> 0.3.0"},
       {:timex, ">= 0.19.0"}
     ]
   end
