@@ -81,7 +81,7 @@ defmodule YTDWeb.Mixfile do
       {:poison, ">= 3.0.0", override: true},
       {:postgrex, ">= 0.0.0"},
       {:sobelow, ">= 0.3.0", only: :dev},
-      {:strava, "~> 0.3.0"},
+      {:strava, "~> 1.0"},
       {:timex, ">= 0.19.0"}
     ]
   end
