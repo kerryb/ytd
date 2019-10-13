@@ -31,6 +31,12 @@ config :ytd, YTDWeb.Endpoint,
     ]
   ]
 
+config :strava,
+  client_id: "16264",
+  client_secret: System.get_env("YTD_CLIENT_SECRET"),
+  access_token: System.get_env("YTD_ACCESS_TOKEN"),
+  redirect_uri: "http://localhost:4000/auth"
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 

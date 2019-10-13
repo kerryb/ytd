@@ -8,9 +8,9 @@ config :ytd, YTDWeb.Endpoint,
 
 config :strava,
   client_id: "16264",
-  client_secret: "client-secret-would-be-here",
-  access_token: "access-token-would-be-here",
-  redirect_uri: "http://localhost:4000/auth"
+  client_secret: System.get_env("YTD_CLIENT_SECRET"),
+  access_token: System.get_env("YTD_ACCESS_TOKEN"),
+  redirect_uri: "http://localhost:4001/auth"
 
 # Print only warnings and errors during test
 config :logger, level: :warn
