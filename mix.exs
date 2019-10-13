@@ -77,6 +77,7 @@ defmodule YTDWeb.Mixfile do
       {:phoenix_pubsub, ">= 1.0.0"},
       {:phoenix_slime, ">= 0.8.0"},
       {:plug, "~> 1.8"},
+      {:plug_cowboy, "~> 1.0"},
       #  strava conflicts with phoenix
       {:poison, ">= 3.0.0", override: true},
       {:postgrex, ">= 0.0.0"},

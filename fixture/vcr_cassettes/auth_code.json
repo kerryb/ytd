@@ -1,7 +1,7 @@
 [
   {
     "request": {
-      "body": "client_id=16264&client_secret=client-secret-would-be-here&code=auth-code-would-be-here&grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fauth",
+      "body": "client_id=16264&client_secret=a7a29edf0330cd375ca8c37e7f2faba7549dd902&code=auth-code-would-be-here&grant_type=&redirect_uri=http%3A%2F%2Flocalhost%3A4001%2Fauth",
       "headers": {
         "content-type": "application/x-www-form-urlencoded",
         "accept": "application/json"
@@ -12,21 +12,26 @@
       "url": "https://www.strava.com/oauth/token"
     },
     "response": {
-      "body": "{\"access_token\":\"access-token-would-be-here\",\"token_type\":\"Bearer\",\"athlete\":{\"id\":5324239,\"username\":\"kerry_buckley\",\"resource_state\":3,\"firstname\":\"Kerry\",\"lastname\":\"Buckley\",\"city\":\"Ipswich\",\"state\":\"England\",\"country\":\"United Kingdom\",\"sex\":\"M\",\"premium\":false,\"created_at\":\"2014-06-21T11:35:08Z\",\"updated_at\":\"2017-04-13T06:05:07Z\",\"badge_type_id\":0,\"profile_medium\":\"https://dgalywyr863hv.cloudfront.net/pictures/athletes/5324239/2836814/5/medium.jpg\",\"profile\":\"https://dgalywyr863hv.cloudfront.net/pictures/athletes/5324239/2836814/5/large.jpg\",\"friend\":null,\"follower\":null,\"follower_count\":91,\"friend_count\":92,\"mutual_friend_count\":0,\"athlete_type\":1,\"date_preference\":\"%m/%d/%Y\",\"measurement_preference\":\"feet\",\"clubs\":[{\"id\":135099,\"resource_state\":2,\"name\":\"Ipswich parkrun\",\"profile_medium\":\"https://dgalywyr863hv.cloudfront.net/pictures/clubs/135099/2699341/2/medium.jpg\",\"profile\":\"https://dgalywyr863hv.cloudfront.net/pictures/clubs/135099/2699341/2/large.jpg\",\"cover_photo\":\"https://dgalywyr863hv.cloudfront.net/pictures/clubs/135099/5057078/2/large.jpg\",\"cover_photo_small\":\"https://dgalywyr863hv.cloudfront.net/pictures/clubs/135099/5057078/2/small.jpg\",\"sport_type\":\"running\",\"city\":\"Ipswich\",\"state\":\"England\",\"country\":\"United Kingdom\",\"private\":false,\"member_count\":271,\"featured\":false,\"verified\":true,\"url\":\"ipswich-parkrun\"},{\"id\":88515,\"resource_state\":2,\"name\":\"Run For Your Life\",\"profile_medium\":\"https://dgalywyr863hv.cloudfront.net/pictures/clubs/88515/4743376/1/medium.jpg\",\"profile\":\"https://dgalywyr863hv.cloudfront.net/pictures/clubs/88515/4743376/1/large.jpg\",\"cover_photo\":\"https://dgalywyr863hv.cloudfront.net/pictures/clubs/88515/4743377/2/large.jpg\",\"cover_photo_small\":\"https://dgalywyr863hv.cloudfront.net/pictures/clubs/88515/4743377/2/small.jpg\",\"sport_type\":\"running\",\"city\":\"Ipswich\",\"state\":\"England\",\"country\":\"United Kingdom\",\"private\":false,\"member_count\":194,\"featured\":false,\"verified\":false,\"url\":\"RFYL\"}],\"email\":\"kerryjbuckley@gmail.com\",\"ftp\":null,\"weight\":73.7,\"bikes\":[{\"id\":\"b2043362\",\"primary\":true,\"name\":\"Fixie\",\"resource_state\":2,\"distance\":8263220.0},{\"id\":\"b2572097\",\"primary\":false,\"name\":\"Mountain bike\",\"resource_state\":2,\"distance\":8447.0}],\"shoes\":[{\"id\":\"g2013520\",\"primary\":false,\"name\":\"ASICS J33\",\"resource_state\":2,\"distance\":78529.0},{\"id\":\"g1220502\",\"primary\":false,\"name\":\"adidas kanadia\",\"resource_state\":2,\"distance\":215786.0},{\"id\":\"g1220505\",\"primary\":false,\"name\":\"Brooks Glycerin\",\"resource_state\":2,\"distance\":556726.0},{\"id\":\"g1707823\",\"primary\":true,\"name\":\"ASICS GT-1000 GT1000 (black)\",\"resource_state\":2,\"distance\":546243.0},{\"id\":\"g2065412\",\"primary\":false,\"name\":\"ASICS GT1000 GT1000 (red)\",\"resource_state\":2,\"distance\":45134.0}]}}",
+      "binary": false,
+      "body": "{\"message\":\"Bad Request\",\"errors\":[{\"resource\":\"RequestToken\",\"field\":\"code\",\"code\":\"invalid\"}]}",
       "headers": {
-        "Cache-Control": "max-age=0, private, must-revalidate",
-        "Content-Type": "application/json; charset=UTF-8",
-        "Date": "Thu, 13 Apr 2017 17:08:25 GMT",
-        "ETag": "\"9560dca14edd8d25aaeb0776ca20db1a\"",
-        "Set-Cookie": "_strava3_session=BAh7B0kiD3Nlc3Npb25faWQGOgZFVEkiJTkxYzc5OTgyMjI0YTA2ZWRkYTlhNmFjNzg0ZWMzNTc4BjsAVEkiEGNsZWFyX2NsaWNrBjsARlQ%3D--6d0d9880affedc92e8b04e117dd4007bb3ee0994; domain=strava.com; path=/; HttpOnly",
-        "Status": "200 OK",
-        "X-FRAME-OPTIONS": "DENY",
-        "X-Request-Id": "539bc54ffd2da05cd7518a63dde78f75",
-        "X-UA-Compatible": "IE=Edge,chrome=1",
-        "Content-Length": "2742",
-        "Connection": "keep-alive"
+        "Date": "Sat, 12 Oct 2019 13:20:09 GMT",
+        "Content-Type": "application/json; charset=utf-8",
+        "Transfer-Encoding": "chunked",
+        "Connection": "keep-alive",
+        "Cache-Control": "no-cache",
+        "Via": "1.1 linkerd",
+        "X-Download-Options": "noopen",
+        "Status": "400 Bad Request",
+        "X-Request-Id": "20aedbe4-7eb1-4f6b-9731-a7a25e91c051",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "X-Frame-Options": "SAMEORIGIN,DENY",
+        "X-Permitted-Cross-Domain-Policies": "none",
+        "X-Content-Type-Options": "nosniff",
+        "Vary": "Origin",
+        "X-XSS-Protection": "1; mode=block"
       },
-      "status_code": 200,
+      "status_code": 400,
       "type": "ok"
     }
   }

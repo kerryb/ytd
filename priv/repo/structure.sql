@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.1
--- Dumped by pg_dump version 11.1
+-- Dumped from database version 11.5
+-- Dumped by pg_dump version 11.5
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,6 +12,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -26,12 +27,13 @@ SET default_with_oids = false;
 CREATE TABLE public.athletes (
     id bigint NOT NULL,
     strava_id integer,
-    token character varying(255),
+    access_token character varying(255),
     run_target integer,
     ride_target integer,
     swim_target integer,
     inserted_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    refresh_token text
 );
 
 
@@ -91,5 +93,5 @@ ALTER TABLE ONLY public.schema_migrations
 -- PostgreSQL database dump complete
 --
 
-INSERT INTO public."schema_migrations" (version) VALUES (20180301120201);
+INSERT INTO public."schema_migrations" (version) VALUES (20180301120201), (20191012151837);
 
