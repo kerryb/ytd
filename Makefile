@@ -22,7 +22,7 @@ bumbailiff:
 	./bumbailiff
 build-release: docker-build
 	docker run -e MIX_ENV=prod -e YTD_ERLANG_COOKIE='${YTD_ERLANG_COOKIE}' \
-		-v `pwd`:`pwd` -w `pwd` build-elixir mix release
+		-v `pwd`:`pwd` -w `pwd` build-elixir mix distillery.release
 build-upgrade: assets docker-build
 	docker run -e MIX_ENV=prod -e YTD_ERLANG_COOKIE='${YTD_ERLANG_COOKIE}' \
 		-v `pwd`:`pwd` -w `pwd` build-elixir mix release --upgrade

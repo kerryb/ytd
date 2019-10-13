@@ -61,7 +61,7 @@ defmodule YTDWeb.Mixfile do
       {:cowboy, ">= 1.0.0"},
       {:credo, ">= 0.7.0", only: [:dev, :test]},
       {:dialyxir, ">= 0.5.0", only: [:dev], runtime: false},
-      {:distillery, ">= 1.3.2"},
+      {:distillery, "~> 1.3"},
       {:ex_doc, ">= 0.14.0", only: :dev, runtime: false},
       {:excoveralls, ">= 0.6.0", only: :test},
       {:exvcr, ">= 0.8.0", runtime: false, only: [:test]},
