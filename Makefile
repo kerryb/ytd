@@ -20,7 +20,7 @@ docs:
 	mix docs
 bumbailiff:
 	./bumbailiff
-build-release: assets docker-build
+build-release: docker-build
 	docker run -e MIX_ENV=prod -e YTD_ERLANG_COOKIE='${YTD_ERLANG_COOKIE}' \
 		-v `pwd`:`pwd` -w `pwd` build-elixir mix release
 build-upgrade: assets docker-build
