@@ -29,19 +29,7 @@ Run `install-letsencrypt` and `install-postgres`
 
 Build a release, and unpack into `/opt/ytd`
 
-## Initialise the database
-
-_Note: currently migrating from mnesia to postgres._
-
-From `iex` or a remote console:
-
-```elixir
-Amnesia.Schema.destroy # only if overwriting an existing db
-YTD.Database.setup
-```
-
-Data can be exported and imported using `Amnesia.dump "some-file"` and
-`Amnesia.load "some-file"`.
+**Note:** Currently running in `/opt/ytd4`. I should really clean that up.
 
 ## Build and deploy a release or upgrade
 
