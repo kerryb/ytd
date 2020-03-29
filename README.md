@@ -48,3 +48,24 @@ or
 make build-upgrade
 make deploy-upgrade version=x.y.z
 ```
+
+## Renew SSL cert
+
+There must be better ways, but this works for now:
+
+```bash
+/opt/ytd/bin/ytd stop
+certbot certonly --config /etc/letsencrypt/letsencrypt.conf
+/opt/ytd4/bin/ytd start
+```
+
+That's with the config file changed to the following (not sure how it worked
+before, but now it can't find the secret file with the initial config):
+
+```
+rsa-key-size = 4096
+email = kerryjbuckley@gmail.com
+domains = ytd.kerryb.org
+text = True
+authenticator = standalone
+```
