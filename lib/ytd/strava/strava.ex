@@ -27,7 +27,6 @@ defmodule YTD.Strava do
         refresh_token: athlete.refresh_token,
         token_refreshed: &update_tokens(&1, athlete)
       )
-      |> IO.inspect()
 
     {:ok, %{id: id}} = Athletes.get_logged_in_athlete(client)
     {:ok, stats} = Athletes.get_stats(client, id)
@@ -40,8 +39,6 @@ defmodule YTD.Strava do
   end
 
   defp update_tokens(client, athlete) do
-    IO.inspect(client)
-
     athlete
     |> Changeset.change(
       access_token: client.token.access_token,
