@@ -1,8 +1,0 @@
-= img_tag static_path(@conn, "/images/run-active.png"), class: "ytd-nav"
-a href="/ride"
-  = img_tag static_path(@conn, "/images/ride.png"), class: "ytd-nav"
-a href="/swim"
-  = img_tag static_path(@conn, "/images/swim.png"), class: "ytd-nav"
-hr.top
-= render "data.html", conn: @conn, profile_url: @data.profile_url, values: @data.run, verb: "run"
-hr
