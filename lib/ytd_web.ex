@@ -1,3 +1,6 @@
+# credo:disable-for-this-file Credo.Check.Consistency.MultiAliasImportRequireUse
+# credo:disable-for-this-file Credo.Check.Readability.AliasAs
+# credo:disable-for-this-file Credo.Check.Refactor.ModuleDependencies
 defmodule YtdWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such

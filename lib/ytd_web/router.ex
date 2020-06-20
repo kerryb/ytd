@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Warning.MixEnv
 defmodule YtdWeb.Router do
   use YtdWeb, :router
 

@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Readability.AliasAs
 defmodule YtdWeb.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
@@ -17,6 +18,8 @@ defmodule YtdWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
+  alias Ecto.Adapters.SQL.Sandbox
+
   using do
     quote do
       # Import conveniences for testing with connections
@@ -32,10 +35,10 @@ defmodule YtdWeb.ConnCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Ytd.Repo)
+    :ok = Sandbox.checkout(Ytd.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Ytd.Repo, {:shared, self()})
+      Sandbox.mode(Ytd.Repo, {:shared, self()})
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
