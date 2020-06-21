@@ -11,20 +11,11 @@ defmodule YtdWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
-
   scope "/", YtdWeb do
     pipe_through :browser
 
-    live "/", PageLive, :index
+    live "/", IndexLive, :index
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", YtdWeb do
-  #   pipe_through :api
-  # end
 
   # Enables LiveDashboard only for development
   #
