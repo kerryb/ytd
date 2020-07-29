@@ -7,9 +7,6 @@ defmodule YtdWeb.IndexLive do
 
   @impl true
   def mount(params, session, socket) do
-    IO.inspect(params, label: "params")
-    IO.inspect(session, label: "session")
-
     if connected?(socket) do
       if params["code"] do
         client = Strava.Auth.get_token!(code: params["code"], grant_type: "authorization_code")
