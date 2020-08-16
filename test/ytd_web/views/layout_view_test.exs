@@ -1,5 +1,5 @@
-defmodule YtdWeb.LayoutViewTest do
-  use YtdWeb.ConnCase, async: true
+defmodule YTDWeb.LayoutViewTest do
+  use YTDWeb.ConnCase, async: true
 
   # When testing helpers, you may want to import Phoenix.HTML and
   # use functions such as safe_to_string() to convert the helper

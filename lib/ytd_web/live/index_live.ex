@@ -1,31 +1,18 @@
-defmodule YtdWeb.IndexLive do
+defmodule YTDWeb.IndexLive do
   @moduledoc """
-  Live view for main index page."
+  Live view for main index page.
   """
 
-  use YtdWeb, :live_view
+  use YTDWeb, :live_view
+
+  alias YTD.Users
+  alias Strava.{Athletes, Client}
 
   @impl true
-  def mount(params, session, socket) do
-    if connected?(socket) do
-      if params["code"] do
-        client = Strava.Auth.get_token!(code: params["code"], grant_type: "authorization_code")
-        athlete = Strava.Auth.get_athlete!(client)
-        {:ok, assign(socket, name: athlete.firstname)}
-      else
-        send(self(), :auth)
-        {:ok, assign(socket, name: "")}
-      end
-    else
-      {:ok, assign(socket, name: "")}
-    end
-  end
-
-  @impl true
-  def handle_info(:auth, socket) do
-    {:noreply,
-     redirect(socket,
-       external: Strava.Auth.authorize_url!(scope: "activity:read,activity:read_all")
-     )}
+  def mount(_params, session, socket) do
+    user = Users.get_user_from_athlete_id(session["athlete_id"])
+    client = Client.new(user.access_token, refresh_token: user.refresh_token)
+    {:ok, athlete} = Athletes.get_logged_in_athlete(client)
+    {:ok, assign(socket, user: user, athlete: athlete, client: client)}
   end
 end

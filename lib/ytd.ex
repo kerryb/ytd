@@ -1,6 +1,6 @@
-defmodule Ytd do
+defmodule YTD do
   @moduledoc """
-  Ytd keeps the contexts that define your domain
+  YTD keeps the contexts that define your domain
   and business logic.
 
   Contexts are also responsible for managing your data, regardless

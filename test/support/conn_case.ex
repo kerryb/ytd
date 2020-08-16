@@ -1,5 +1,5 @@
 # credo:disable-for-this-file Credo.Check.Readability.AliasAs
-defmodule YtdWeb.ConnCase do
+defmodule YTDWeb.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -12,7 +12,7 @@ defmodule YtdWeb.ConnCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use YtdWeb.ConnCase, async: true`, although
+  by setting `use YTDWeb.ConnCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -25,20 +25,20 @@ defmodule YtdWeb.ConnCase do
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
-      import YtdWeb.ConnCase
+      import YTDWeb.ConnCase
 
-      alias YtdWeb.Router.Helpers, as: Routes
+      alias YTDWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
-      @endpoint YtdWeb.Endpoint
+      @endpoint YTDWeb.Endpoint
     end
   end
 
   setup tags do
-    :ok = Sandbox.checkout(Ytd.Repo)
+    :ok = Sandbox.checkout(YTD.Repo)
 
     unless tags[:async] do
-      Sandbox.mode(Ytd.Repo, {:shared, self()})
+      Sandbox.mode(YTD.Repo, {:shared, self()})
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}

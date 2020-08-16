@@ -1,3 +1,3 @@
-defmodule YtdWeb.LayoutView do
-  use YtdWeb, :view
+defmodule YTDWeb.LayoutView do
+  use YTDWeb, :view
 end

@@ -1,4 +1,4 @@
-defmodule Ytd.DataCase do
+defmodule YTD.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -10,7 +10,7 @@ defmodule Ytd.DataCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use Ytd.DataCase, async: true`, although
+  by setting `use YTD.DataCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -20,20 +20,20 @@ defmodule Ytd.DataCase do
 
   using do
     quote do
-      alias Ytd.Repo
+      alias YTD.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Ytd.DataCase
+      import YTD.DataCase
     end
   end
 
   setup tags do
-    :ok = Sandbox.checkout(Ytd.Repo)
+    :ok = Sandbox.checkout(YTD.Repo)
 
     unless tags[:async] do
-      Sandbox.mode(Ytd.Repo, {:shared, self()})
+      Sandbox.mode(YTD.Repo, {:shared, self()})
     end
 
     :ok

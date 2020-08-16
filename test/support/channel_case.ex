@@ -1,4 +1,4 @@
-defmodule YtdWeb.ChannelCase do
+defmodule YTDWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -11,7 +11,7 @@ defmodule YtdWeb.ChannelCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use YtdWeb.ChannelCase, async: true`, although
+  by setting `use YTDWeb.ChannelCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -23,18 +23,18 @@ defmodule YtdWeb.ChannelCase do
     quote do
       # Import conveniences for testing with channels
       import Phoenix.ChannelTest
-      import YtdWeb.ChannelCase
+      import YTDWeb.ChannelCase
 
       # The default endpoint for testing
-      @endpoint YtdWeb.Endpoint
+      @endpoint YTDWeb.Endpoint
     end
   end
 
   setup tags do
-    :ok = Sandbox.checkout(Ytd.Repo)
+    :ok = Sandbox.checkout(YTD.Repo)
 
     unless tags[:async] do
-      Sandbox.mode(Ytd.Repo, {:shared, self()})
+      Sandbox.mode(YTD.Repo, {:shared, self()})
     end
 
     :ok

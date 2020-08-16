@@ -1,17 +1,18 @@
 # credo:disable-for-this-file Credo.Check.Warning.MixEnv
-defmodule YtdWeb.Router do
-  use YtdWeb, :router
+defmodule YTDWeb.Router do
+  use YTDWeb, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {YtdWeb.LayoutView, :root}
+    plug :put_root_layout, {YTDWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug YTDWeb.AuthPlug
   end
 
-  scope "/", YtdWeb do
+  scope "/", YTDWeb do
     pipe_through :browser
 
     live "/", IndexLive, :index
@@ -29,7 +30,7 @@ defmodule YtdWeb.Router do
 
     scope "/" do
       pipe_through :browser
-      live_dashboard "/dashboard", metrics: YtdWeb.Telemetry
+      live_dashboard "/dashboard", metrics: YTDWeb.Telemetry
     end
   end
 end

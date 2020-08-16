@@ -1,4 +1,4 @@
-# Ytd
+# YTD
 
 To start your Phoenix server:
 

@@ -1,5 +1,5 @@
 # credo:disable-for-this-file Credo.Check.Readability.Specs
-defmodule YtdWeb.ErrorHelpers do
+defmodule YTDWeb.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
@@ -40,9 +40,9 @@ defmodule YtdWeb.ErrorHelpers do
     # should be written to the errors.po file. The :count option is
     # set by Ecto and indicates we should also apply plural rules.
     if count = opts[:count] do
-      Gettext.dngettext(YtdWeb.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(YTDWeb.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(YtdWeb.Gettext, "errors", msg, opts)
+      Gettext.dgettext(YTDWeb.Gettext, "errors", msg, opts)
     end
   end
 end

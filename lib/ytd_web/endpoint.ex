@@ -1,5 +1,5 @@
 # credo:disable-for-this-file Credo.Check.Refactor.ModuleDependencies
-defmodule YtdWeb.Endpoint do
+defmodule YTDWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :ytd
 
   # The session will be stored in the cookie and signed,
@@ -11,7 +11,7 @@ defmodule YtdWeb.Endpoint do
     signing_salt: "kFsSXZ68"
   ]
 
-  socket "/socket", YtdWeb.UserSocket,
+  socket "/socket", YTDWeb.UserSocket,
     websocket: true,
     longpoll: false
 
@@ -51,5 +51,5 @@ defmodule YtdWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug YtdWeb.Router
+  plug YTDWeb.Router
 end

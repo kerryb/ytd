@@ -1,4 +1,4 @@
-defmodule Ytd.MixProject do
+defmodule YTD.MixProject do
   use Mix.Project
 
   def project do
@@ -21,7 +21,7 @@ defmodule Ytd.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {Ytd.Application, []},
+      mod: {YTD.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

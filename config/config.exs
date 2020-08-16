@@ -8,14 +8,14 @@
 use Mix.Config
 
 config :ytd,
-  ecto_repos: [Ytd.Repo]
+  ecto_repos: [YTD.Repo]
 
 # Configures the endpoint
-config :ytd, YtdWeb.Endpoint,
+config :ytd, YTDWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "7doapOrfFIlllbrpZYxU9N/dPYI9z6Ruxmu5ZQAQfSXDICtTTZTl0g0fBmqrXkZh",
-  render_errors: [view: YtdWeb.ErrorView, accepts: ~w(html json), layout: false],
-  pubsub_server: Ytd.PubSub,
+  render_errors: [view: YTDWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: YTD.PubSub,
   live_view: [signing_salt: "5X4BW26y"]
 
 # Configures Elixir's Logger

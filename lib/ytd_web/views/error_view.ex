@@ -1,6 +1,6 @@
 # credo:disable-for-this-file Credo.Check.Readability.Specs
-defmodule YtdWeb.ErrorView do
-  use YtdWeb, :view
+defmodule YTDWeb.ErrorView do
+  use YTDWeb, :view
 
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.

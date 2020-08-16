@@ -1,4 +1,4 @@
-defmodule Ytd.Repo.Migrations.ChangeAccessCodeColumnToText do
+defmodule YTD.Repo.Migrations.ChangeAccessCodeColumnToText do
   use Ecto.Migration
 
   def change do

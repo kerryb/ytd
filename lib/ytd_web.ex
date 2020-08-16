@@ -1,15 +1,15 @@
 # credo:disable-for-this-file Credo.Check.Consistency.MultiAliasImportRequireUse
 # credo:disable-for-this-file Credo.Check.Readability.AliasAs
 # credo:disable-for-this-file Credo.Check.Refactor.ModuleDependencies
-defmodule YtdWeb do
+defmodule YTDWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, views, channels and so on.
 
   This can be used in your application as:
 
-      use YtdWeb, :controller
-      use YtdWeb, :view
+      use YTDWeb, :controller
+      use YTDWeb, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -22,11 +22,11 @@ defmodule YtdWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: YtdWeb
+      use Phoenix.Controller, namespace: YTDWeb
 
       import Plug.Conn
-      import YtdWeb.Gettext
-      alias YtdWeb.Router.Helpers, as: Routes
+      import YTDWeb.Gettext
+      alias YTDWeb.Router.Helpers, as: Routes
     end
   end
 
@@ -34,7 +34,7 @@ defmodule YtdWeb do
     quote do
       use Phoenix.View,
         root: "lib/ytd_web/templates",
-        namespace: YtdWeb
+        namespace: YTDWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller,
@@ -48,7 +48,7 @@ defmodule YtdWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {YtdWeb.LayoutView, "live.html"}
+        layout: {YTDWeb.LayoutView, "live.html"}
 
       unquote(view_helpers())
     end
@@ -75,7 +75,7 @@ defmodule YtdWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import YtdWeb.Gettext
+      import YTDWeb.Gettext
     end
   end
 
@@ -90,9 +90,9 @@ defmodule YtdWeb do
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
-      import YtdWeb.ErrorHelpers
-      import YtdWeb.Gettext
-      alias YtdWeb.Router.Helpers, as: Routes
+      import YTDWeb.ErrorHelpers
+      import YTDWeb.Gettext
+      alias YTDWeb.Router.Helpers, as: Routes
     end
   end
 
