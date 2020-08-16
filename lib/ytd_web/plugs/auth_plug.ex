@@ -1,11 +1,25 @@
 defmodule YTDWeb.AuthPlug do
+  @moduledoc """
+  A plug to handle authentication before calling the live view.
+
+  If there is a strava athlete ID in the session, then it is assigned as
+  `:athlete_id`.
+
+  Otherwise the user is redirected to the Strava auth page, and the oAuth dance
+  is handled, which eventually results in a user being created or updated in
+  the database, and the athlete ID being added to the session to trigger the
+  first case above.
+  """
+
   use Plug.Builder
 
+  alias Plug.Conn
   alias YTD.Users
 
   plug :get_user_if_signed_in
   plug :authorise_with_strava_if_not_signed_in
 
+  @spec get_user_if_signed_in(Conn.t(), keyword()) :: Conn.t()
   def get_user_if_signed_in(conn, _opts) do
     conn
     |> fetch_session()
@@ -16,6 +30,7 @@ defmodule YTDWeb.AuthPlug do
     end
   end
 
+  @spec authorise_with_strava_if_not_signed_in(Conn.t(), keyword()) :: Conn.t()
   def authorise_with_strava_if_not_signed_in(%{assigns: %{athlete_id: _}} = conn, _opts), do: conn
 
   def authorise_with_strava_if_not_signed_in(conn, _opts) do

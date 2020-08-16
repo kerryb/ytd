@@ -23,8 +23,7 @@ defmodule YTD.DataCase do
       alias YTD.Repo
 
       import Ecto
-      import Ecto.Changeset
-      import Ecto.Query
+      import Ecto.{Changeset, Query}
       import YTD.DataCase
     end
   end

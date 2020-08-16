@@ -5,8 +5,8 @@ defmodule YTDWeb.IndexLive do
 
   use YTDWeb, :live_view
 
-  alias YTD.Users
   alias Strava.{Athletes, Client}
+  alias YTD.Users
 
   @impl true
   def mount(_params, session, socket) do

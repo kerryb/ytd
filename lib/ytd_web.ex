@@ -67,8 +67,7 @@ defmodule YTDWeb do
       use Phoenix.Router
 
       import Plug.Conn
-      import Phoenix.Controller
-      import Phoenix.LiveView.Router
+      import Phoenix.{Controller, LiveView.Router}
     end
   end
 
@@ -90,8 +89,7 @@ defmodule YTDWeb do
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
-      import YTDWeb.ErrorHelpers
-      import YTDWeb.Gettext
+      import YTDWeb.{ErrorHelpers, Gettext}
       alias YTDWeb.Router.Helpers, as: Routes
     end
   end
