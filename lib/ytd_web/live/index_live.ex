@@ -5,6 +5,8 @@ defmodule YTDWeb.IndexLive do
 
   use YTDWeb, :live_view
 
+  require Logger
+
   alias Strava.{Athletes, Client}
   alias YTD.Users
 
@@ -14,5 +16,11 @@ defmodule YTDWeb.IndexLive do
     client = Client.new(user.access_token, refresh_token: user.refresh_token)
     {:ok, athlete} = Athletes.get_logged_in_athlete(client)
     {:ok, assign(socket, user: user, athlete: athlete, client: client)}
+  end
+
+  @impl true
+  def handle_info(message, socket) do
+    Logger.warn("Received unexpected message: #{inspect(message)}")
+    {:noreply, socket}
   end
 end
