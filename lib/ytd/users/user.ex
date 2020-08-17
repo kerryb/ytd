@@ -5,6 +5,8 @@ defmodule YTD.Users.User do
 
   use Ecto.Schema
 
+  alias YTD.Activities.Activity
+
   @type t :: %__MODULE__{
           id: integer() | nil,
           athlete_id: integer() | nil,
@@ -23,5 +25,6 @@ defmodule YTD.Users.User do
     field :ride_target, :integer
     field :swim_target, :integer
     timestamps()
+    has_many :activities, Activity
   end
 end
