@@ -1,13 +1,21 @@
 defmodule YTDWeb.AuthPlugTest do
   use YTDWeb.ConnCase
 
-  alias Ecto.Multi
   alias Plug.Conn
+  alias YTD.Users
+  alias YTD.Users.User
   alias YTDWeb.AuthPlug
 
-  @athlete_id 123
+  import Hammox
+
+  @athlete_id "123"
   @access_token "456"
   @refresh_token "789"
+  @code "9999"
+
+  setup :verify_on_exit!
+
+  defmock(UsersMock, for: Users.API)
 
   describe "YTDWeb.AuthPlug.get_user_if_signed_in/2" do
     test "assigns the athlete ID if it is present in the session", %{conn: conn} do
@@ -50,41 +58,33 @@ defmodule YTDWeb.AuthPlugTest do
         }
       }
 
-      get_token = fn [code: "9999", grant_type: "authorization_code"] -> client end
-      pid = self()
-
-      save_tokens = fn @athlete_id, @access_token, @refresh_token ->
-        send(pid, :save_tokens_called)
-        Multi.new()
-      end
+      get_token = fn [code: @code, grant_type: "authorization_code"] -> client end
+      stub(UsersMock, :save_user_tokens, fn _, _, _ -> {:ok, %User{}} end)
 
       # credo:disable-for-next-line /Pipe/
-      conn = build_conn(:get, "/", %{"code" => "9999"}) |> init_test_session([])
-      %{conn: conn, get_token: get_token, save_tokens: save_tokens}
+      conn = build_conn(:get, "/", %{"code" => @code}) |> init_test_session([])
+      %{conn: conn, get_token: get_token}
     end
 
     test "retrieves and saves the access and refresh tokens from Strava", %{
       conn: conn,
-      get_token: get_token,
-      save_tokens: save_tokens
+      get_token: get_token
     } do
-      AuthPlug.authorise_with_strava_if_not_signed_in(conn,
-        get_token: get_token,
-        save_tokens: save_tokens
-      )
+      expect(UsersMock, :save_user_tokens, fn @athlete_id, @access_token, @refresh_token ->
+        {:ok, %User{}}
+      end)
 
-      assert_receive :save_tokens_called
+      AuthPlug.authorise_with_strava_if_not_signed_in(conn, get_token: get_token, users: UsersMock)
     end
 
     test "puts the athlete ID in the session", %{
       conn: conn,
-      get_token: get_token,
-      save_tokens: save_tokens
+      get_token: get_token
     } do
       conn =
         AuthPlug.authorise_with_strava_if_not_signed_in(conn,
           get_token: get_token,
-          save_tokens: save_tokens
+          users: UsersMock
         )
 
       assert get_session(conn, "athlete_id") == @athlete_id
@@ -92,13 +92,12 @@ defmodule YTDWeb.AuthPlugTest do
 
     test "redirects to the index page", %{
       conn: conn,
-      get_token: get_token,
-      save_tokens: save_tokens
+      get_token: get_token
     } do
       conn =
         AuthPlug.authorise_with_strava_if_not_signed_in(conn,
           get_token: get_token,
-          save_tokens: save_tokens
+          users: UsersMock
         )
 
       assert redirected_to(conn) == "/"
