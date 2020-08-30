@@ -34,13 +34,16 @@ defmodule YTDWeb.AuthPlug do
   @spec authorise_with_strava_if_not_signed_in(Conn.t(), keyword()) :: Conn.t()
   def authorise_with_strava_if_not_signed_in(%{assigns: %{athlete_id: _}} = conn, _opts), do: conn
 
-  def authorise_with_strava_if_not_signed_in(conn, _opts) do
+  def authorise_with_strava_if_not_signed_in(conn, opts) do
+    get_token = Keyword.get(opts, :get_token, &Strava.Auth.get_token!/1)
+    save_tokens = Keyword.get(opts, :save_tokens, &SaveTokens.call/3)
+
     conn
     |> fetch_query_params()
     |> case do
       %{query_params: %{"code" => code}} = conn ->
-        client = Strava.Auth.get_token!(code: code, grant_type: "authorization_code")
-        save_user_tokens(client)
+        client = get_token.(code: code, grant_type: "authorization_code")
+        save_user_tokens(client, save_tokens)
 
         conn
         |> put_session("athlete_id", client.token.other_params["athlete"]["id"])
@@ -56,9 +59,9 @@ defmodule YTDWeb.AuthPlug do
     end
   end
 
-  defp save_user_tokens(client) do
+  defp save_user_tokens(client, save_tokens) do
     Repo.transaction(
-      SaveTokens.call(
+      save_tokens.(
         client.token.other_params["athlete"]["id"],
         client.token.access_token,
         client.token.refresh_token
