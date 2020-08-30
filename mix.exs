@@ -39,6 +39,7 @@ defmodule YTD.MixProject do
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:excoveralls, "~> 0.13", only: :test},
       {:ex_doc, "~> 0.21", only: :dev},
+      {:ex_machina, "~> 2.4", only: :test},
       {:ecto_sql, "~> 3.4"},
       {:floki, ">= 0.0.0", only: :test},
       {:gettext, "~> 0.11"},

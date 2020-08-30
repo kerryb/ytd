@@ -1,6 +1,6 @@
 defmodule YTD.Users.SaveTokens do
   @moduledoc """
-  Use case for saving a user's strava tokens
+  Use case for saving a user's strava tokens.
   """
 
   alias Ecto.{Changeset, Multi}
@@ -11,7 +11,8 @@ defmodule YTD.Users.SaveTokens do
   def call(athlete_id, access_token, refresh_token) do
     change =
       Changeset.change(
-        athlete_id |> Queries.get_user_from_athlete_id() |> Repo.one() || %User{},
+        athlete_id |> Queries.get_user_from_athlete_id() |> Repo.one() ||
+          %User{athlete_id: athlete_id},
         access_token: access_token,
         refresh_token: refresh_token
       )

@@ -24,7 +24,7 @@ defmodule YTD.DataCase do
 
       import Ecto
       import Ecto.{Changeset, Query}
-      import YTD.DataCase
+      import YTD.{DataCase, Factory}
     end
   end
 

@@ -26,6 +26,7 @@ defmodule YTDWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import YTDWeb.ConnCase
+      import YTD.Factory
 
       alias YTDWeb.Router.Helpers, as: Routes
 
