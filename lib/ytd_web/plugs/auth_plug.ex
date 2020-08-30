@@ -14,7 +14,8 @@ defmodule YTDWeb.AuthPlug do
   use Plug.Builder
 
   alias Plug.Conn
-  alias YTD.Users
+  alias YTD.Repo
+  alias YTD.Users.SaveTokens
 
   plug :get_user_if_signed_in
   plug :authorise_with_strava_if_not_signed_in
@@ -56,10 +57,12 @@ defmodule YTDWeb.AuthPlug do
   end
 
   defp save_user_tokens(client) do
-    Users.save_tokens(
-      client.token.other_params["athlete"]["id"],
-      client.token.access_token,
-      client.token.refresh_token
+    Repo.transaction(
+      SaveTokens.call(
+        client.token.other_params["athlete"]["id"],
+        client.token.access_token,
+        client.token.refresh_token
+      )
     )
   end
 end

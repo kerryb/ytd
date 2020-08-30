@@ -6,13 +6,14 @@ defmodule YTDWeb.IndexLive do
   use YTDWeb, :live_view
 
   alias Strava.{Athletes, Client}
-  alias YTD.Users
+  alias YTD.Repo
+  alias YTD.Users.Queries
 
   require Logger
 
   @impl true
   def mount(_params, session, socket) do
-    user = Users.get_user_from_athlete_id(session["athlete_id"])
+    user = session["athlete_id"] |> Queries.get_user_from_athlete_id() |> Repo.one()
     client = Client.new(user.access_token, refresh_token: user.refresh_token)
     {:ok, athlete} = Athletes.get_logged_in_athlete(client)
     {:ok, assign(socket, user: user, athlete: athlete, client: client)}
