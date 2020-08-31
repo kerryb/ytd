@@ -14,7 +14,7 @@ defmodule YTDWeb.AuthPlug do
   use Plug.Builder
 
   alias Plug.Conn
-  alias YTD.Users
+  alias YTD.{Strava, Users}
 
   plug :get_user_if_signed_in
   plug :authorise_with_strava_if_not_signed_in
@@ -34,35 +34,23 @@ defmodule YTDWeb.AuthPlug do
   def authorise_with_strava_if_not_signed_in(%{assigns: %{athlete_id: _}} = conn, _opts), do: conn
 
   def authorise_with_strava_if_not_signed_in(conn, opts) do
-    get_token = Keyword.get(opts, :get_token, &Strava.Auth.get_token!/1)
     users = Keyword.get(opts, :users, Users)
+    strava = Keyword.get(opts, :strava, Strava)
 
     conn
     |> fetch_query_params()
     |> case do
       %{query_params: %{"code" => code}} = conn ->
-        client = get_token.(code: code, grant_type: "authorization_code")
-        save_user_tokens(client, users)
+        tokens = strava.get_tokens_from_code(code)
+        users.save_user_tokens(tokens)
 
         conn
-        |> put_session("athlete_id", client.token.other_params["athlete"]["id"])
+        |> put_session("athlete_id", tokens.athlete_id)
         |> Phoenix.Controller.redirect(to: "/")
         |> halt()
 
       conn ->
-        conn
-        |> Phoenix.Controller.redirect(
-          external: Strava.Auth.authorize_url!(scope: "activity:read,activity:read_all")
-        )
-        |> halt()
+        conn |> Phoenix.Controller.redirect(external: strava.authorize_url()) |> halt()
     end
-  end
-
-  defp save_user_tokens(client, users) do
-    users.save_user_tokens(
-      client.token.other_params["athlete"]["id"],
-      client.token.access_token,
-      client.token.refresh_token
-    )
   end
 end

@@ -4,11 +4,12 @@ defmodule YTD.Users.API do
   """
 
   alias Ecto.Multi
+  alias YTD.Strava.Tokens
   alias YTD.Users.User
 
-  @callback get_user_from_athlete_id(String.t()) :: User.t() | nil
+  @callback get_user_from_athlete_id(integer()) :: User.t() | nil
 
-  @callback save_user_tokens(String.t(), String.t(), String.t()) ::
+  @callback save_user_tokens(Tokens.t()) ::
               {:ok, any()}
               | {:error, any()}
               | {:error, Multi.name(), any(), %{required(Multi.name()) => any()}}
