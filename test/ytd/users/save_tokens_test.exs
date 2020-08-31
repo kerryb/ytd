@@ -1,5 +1,5 @@
 defmodule YTD.Users.SaveTokensTest do
-  use YTD.DataCase
+  use YTD.DataCase, async: true
 
   alias YTD.Repo
   alias YTD.Strava.Tokens

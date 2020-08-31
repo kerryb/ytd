@@ -1,5 +1,5 @@
 defmodule YTDWeb.AuthPlugTest do
-  use YTDWeb.ConnCase
+  use YTDWeb.ConnCase, async: true
 
   import Hammox
 

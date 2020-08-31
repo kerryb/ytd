@@ -1,5 +1,5 @@
 defmodule YTD.Users.QueriesTest do
-  use YTD.DataCase
+  use YTD.DataCase, async: true
 
   alias YTD.Repo
   alias YTD.Users.Queries
