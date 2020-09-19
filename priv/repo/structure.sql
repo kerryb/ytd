@@ -65,8 +65,8 @@ CREATE TABLE public.users (
     run_target integer,
     ride_target integer,
     swim_target integer,
-    inserted_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL,
     refresh_token text
 );
 
@@ -96,7 +96,7 @@ ALTER SEQUENCE public.athletes_id_seq OWNED BY public.users.id;
 
 CREATE TABLE public.schema_migrations (
     version bigint NOT NULL,
-    inserted_at timestamp without time zone
+    inserted_at timestamp(0) without time zone
 );
 
 
