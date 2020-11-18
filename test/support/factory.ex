@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Readability.Specs
 defmodule YTD.Factory do
   @moduledoc """
   Test tactories, using ex_machina.
