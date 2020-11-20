@@ -18,7 +18,7 @@ defmodule YTD.Strava.Tokens do
   @spec new(OAuth2.Client.t()) :: t()
   def new(client) do
     %__MODULE__{
-      athlete_id: String.to_integer(client.token.other_params["athlete"]["id"]),
+      athlete_id: client.token.other_params["athlete"]["id"],
       access_token: client.token.access_token,
       refresh_token: client.token.refresh_token
     }

@@ -17,23 +17,33 @@ defmodule YTDWeb.AuthPlug do
   alias YTD.{Strava, Users}
 
   plug :get_user_if_signed_in
-  plug :authorise_with_strava_if_not_signed_in
+  plug :authorize_with_strava_if_not_signed_in
 
   @spec get_user_if_signed_in(Conn.t(), keyword()) :: Conn.t()
-  def get_user_if_signed_in(conn, _opts) do
+  def get_user_if_signed_in(conn, opts) do
     conn
     |> fetch_session()
     |> get_session("athlete_id")
     |> case do
       nil -> conn
-      athlete_id -> assign(conn, :athlete_id, athlete_id)
+      athlete_id -> assign_athlete_id_if_user_exists(conn, athlete_id, opts)
     end
   end
 
-  @spec authorise_with_strava_if_not_signed_in(Conn.t(), keyword()) :: Conn.t()
-  def authorise_with_strava_if_not_signed_in(%{assigns: %{athlete_id: _}} = conn, _opts), do: conn
+  defp assign_athlete_id_if_user_exists(conn, athlete_id, opts) do
+    users = Keyword.get(opts, :users, Users)
 
-  def authorise_with_strava_if_not_signed_in(conn, opts) do
+    if users.get_user_from_athlete_id(athlete_id) do
+      assign(conn, :athlete_id, athlete_id)
+    else
+      conn
+    end
+  end
+
+  @spec authorize_with_strava_if_not_signed_in(Conn.t(), keyword()) :: Conn.t()
+  def authorize_with_strava_if_not_signed_in(%{assigns: %{athlete_id: _}} = conn, _opts), do: conn
+
+  def authorize_with_strava_if_not_signed_in(conn, opts) do
     users = Keyword.get(opts, :users, Users)
     strava = Keyword.get(opts, :strava, Strava)
 

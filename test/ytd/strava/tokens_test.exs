@@ -14,7 +14,7 @@ defmodule YTD.Strava.TokensTest do
       }
 
       assert Tokens.new(client) == %Tokens{
-               athlete_id: 123,
+               athlete_id: "123",
                access_token: "456",
                refresh_token: "789"
              }

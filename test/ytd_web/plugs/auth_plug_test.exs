@@ -21,13 +21,28 @@ defmodule YTDWeb.AuthPlugTest do
   defmock(StravaMock, for: Strava.API)
 
   describe "YTDWeb.AuthPlug.get_user_if_signed_in/2" do
-    test "assigns the athlete ID if it is present in the session", %{conn: conn} do
+    test "assigns the athlete ID if it is present in the session and the user is in the database",
+         %{conn: conn} do
+      stub(UsersMock, :get_user_from_athlete_id, fn @athlete_id -> %User{} end)
+
       conn =
         conn
         |> init_test_session(athlete_id: @athlete_id)
-        |> AuthPlug.get_user_if_signed_in([])
+        |> AuthPlug.get_user_if_signed_in(users: UsersMock)
 
       assert conn.assigns.athlete_id == @athlete_id
+    end
+
+    test "does nothing if the user is not in the database",
+         %{conn: conn} do
+      stub(UsersMock, :get_user_from_athlete_id, fn _athlete_id -> nil end)
+
+      conn =
+        conn
+        |> init_test_session(athlete_id: @athlete_id)
+        |> AuthPlug.get_user_if_signed_in(users: UsersMock)
+
+      refute Map.has_key?(conn.assigns, :athlete_id)
     end
 
     test "does nothing if the athlete ID is not present in the session", %{conn: conn} do
@@ -40,18 +55,18 @@ defmodule YTDWeb.AuthPlugTest do
     end
   end
 
-  describe "YTDWeb.AuthPlug.authorise_with_strava_if_not_signed_in/2, when there's an assigned athlete ID" do
+  describe "YTDWeb.AuthPlug.authorize_with_strava_if_not_signed_in/2, when there's an assigned athlete ID" do
     test "does nothing", %{conn: conn} do
       conn =
         conn
         |> Conn.assign(:athlete_id, @athlete_id)
-        |> AuthPlug.authorise_with_strava_if_not_signed_in([])
+        |> AuthPlug.authorize_with_strava_if_not_signed_in([])
 
       refute conn.status
     end
   end
 
-  describe "YTDWeb.AuthPlug.authorise_with_strava_if_not_signed_in/2, when there's a code param" do
+  describe "YTDWeb.AuthPlug.authorize_with_strava_if_not_signed_in/2, when there's a code param" do
     setup do
       tokens = %Tokens{
         athlete_id: @athlete_id,
@@ -73,7 +88,7 @@ defmodule YTDWeb.AuthPlugTest do
     } do
       expect(UsersMock, :save_user_tokens, fn ^tokens -> {:ok, %User{}} end)
 
-      AuthPlug.authorise_with_strava_if_not_signed_in(conn,
+      AuthPlug.authorize_with_strava_if_not_signed_in(conn,
         users: UsersMock,
         strava: StravaMock
       )
@@ -81,25 +96,25 @@ defmodule YTDWeb.AuthPlugTest do
 
     test "puts the athlete ID in the session", %{conn: conn} do
       conn =
-        AuthPlug.authorise_with_strava_if_not_signed_in(conn, users: UsersMock, strava: StravaMock)
+        AuthPlug.authorize_with_strava_if_not_signed_in(conn, users: UsersMock, strava: StravaMock)
 
       assert get_session(conn, "athlete_id") == @athlete_id
     end
 
     test "redirects to the index page", %{conn: conn} do
       conn =
-        AuthPlug.authorise_with_strava_if_not_signed_in(conn, users: UsersMock, strava: StravaMock)
+        AuthPlug.authorize_with_strava_if_not_signed_in(conn, users: UsersMock, strava: StravaMock)
 
       assert redirected_to(conn) == "/"
     end
   end
 
-  describe "YTDWeb.AuthPlug.authorise_with_strava_if_not_signed_in/2, when there's neither an assigned athlete ID nor a code param" do
+  describe "YTDWeb.AuthPlug.authorize_with_strava_if_not_signed_in/2, when there's neither an assigned athlete ID nor a code param" do
     test "redirects to the Strava authentication page", %{conn: conn} do
       stub(StravaMock, :authorize_url, fn -> @strava_auth_url end)
 
       conn =
-        AuthPlug.authorise_with_strava_if_not_signed_in(conn, users: UsersMock, strava: StravaMock)
+        AuthPlug.authorize_with_strava_if_not_signed_in(conn, users: UsersMock, strava: StravaMock)
 
       assert redirected_to(conn) == @strava_auth_url
     end

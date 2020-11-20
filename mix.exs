@@ -37,14 +37,15 @@ defmodule YTD.MixProject do
     [
       {:credo, "~> 1.4", only: [:dev, :test]},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
-      {:excoveralls, "~> 0.13", only: :test},
+      {:ecto_sql, "~> 3.4"},
       {:ex_doc, "~> 0.21", only: :dev},
       {:ex_machina, "~> 2.4", only: :test},
-      {:ecto_sql, "~> 3.4"},
+      {:excoveralls, "~> 0.13", only: :test},
+      {:exvcr, "~> 0.11", only: :test},
       {:floki, ">= 0.0.0", only: :test},
       {:gettext, "~> 0.11"},
-      {:jason, "~> 1.0"},
       {:hammox, "~> 0.2", only: :test},
+      {:jason, "~> 1.0"},
       {:phoenix, "~> 1.5"},
       {:phoenix_ecto, "~> 4.1"},
       {:phoenix_html, "~> 2.11"},
@@ -55,7 +56,8 @@ defmodule YTD.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:strava, "~> 1.0"},
       {:telemetry_metrics, "~> 0.4"},
-      {:telemetry_poller, "~> 0.4"}
+      {:telemetry_poller, "~> 0.4"},
+      {:wallaby, "~> 0.26.0", runtime: false, only: :test}
     ]
   end
 
