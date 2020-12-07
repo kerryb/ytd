@@ -54,7 +54,7 @@ make deploy-upgrade version=x.y.z
 There must be better ways, but this works for now:
 
 ```bash
-/opt/ytd/bin/ytd stop
+/opt/ytd4/bin/ytd stop
 certbot certonly --config /etc/letsencrypt/letsencrypt.conf
 /opt/ytd4/bin/ytd start
 ```
