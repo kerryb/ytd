@@ -17,10 +17,4 @@ defmodule YTDWeb.IndexLive do
     {:ok, athlete} = Athletes.get_logged_in_athlete(client)
     {:ok, assign(socket, user: user, athlete: athlete, client: client)}
   end
-
-  @impl true
-  def handle_info(message, socket) do
-    Logger.warn("Received unexpected message: #{inspect(message)}")
-    {:noreply, socket}
-  end
 end
