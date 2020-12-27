@@ -15,4 +15,4 @@ docs:
 	mix docs
 update-deps:
 	mix deps.update --all
-	npm upgrade --prefix assets
+	cd assets && yarn up
