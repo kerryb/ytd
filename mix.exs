@@ -56,7 +56,7 @@ defmodule YTD.MixProject do
       {:strava, "~> 1.0"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
-      {:wallaby, "~> 0.26.0", runtime: false, only: :test}
+      {:wallaby, "~> 0.26", runtime: false, only: :test}
     ]
   end
 
