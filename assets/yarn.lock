@@ -5601,9 +5601,9 @@ fsevents@~2.1.2:
   linkType: hard
 
 "phoenix_live_view@file:../deps/phoenix_live_view::locator=root-workspace-0b6124%40workspace%3A.":
-  version: 0.15.1
-  resolution: "phoenix_live_view@file:../deps/phoenix_live_view#../deps/phoenix_live_view::hash=9bcb32&locator=root-workspace-0b6124%40workspace%3A."
-  checksum: 543a672379a20c66b784fbd35a5d335e1cff7c461c0649ddf6f538baacfca3fe91e966116609ba8aebe87d876945ac4467ae353855319895c69525bb47905eb9
+  version: 0.15.3
+  resolution: "phoenix_live_view@file:../deps/phoenix_live_view#../deps/phoenix_live_view::hash=2a4a09&locator=root-workspace-0b6124%40workspace%3A."
+  checksum: f60dcb3c31b3c1f306c46d89e79b62b4b486ee33bd2a874430886ae48e73773d6c1e48d875faaea5952c0727f7f12568dd87232574cb43c17f384767e6b8ae61
   languageName: node
   linkType: hard
 
