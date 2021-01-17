@@ -5,6 +5,8 @@ defmodule YTD.Strava.Activities do
 
   use GenServer
 
+  alias Phoenix.PubSub
+
   @spec start_link(any()) :: GenServer.on_start()
   def start_link(_arg) do
     GenServer.start_link(__MODULE__, [])
@@ -12,7 +14,7 @@ defmodule YTD.Strava.Activities do
 
   @impl GenServer
   def init(_arg) do
-    Phoenix.PubSub.subscribe(YTD.PubSub, "strava")
+    PubSub.subscribe(:ytd, "strava")
     {:ok, []}
   end
 
@@ -37,18 +39,18 @@ defmodule YTD.Strava.Activities do
   end
 
   defp publish_token_refreshed(user, client) do
-    Phoenix.PubSub.broadcast(
-      YTD.PubSub,
+    PubSub.broadcast!(
+      :ytd,
       "user:#{user.id}",
       {:token_refreshed, client.token.access_token, client.token.refresh_token}
     )
   end
 
   defp publish_activity(user, activity) do
-    Phoenix.PubSub.broadcast(YTD.PubSub, "user:#{user.id}", {:new_activity, activity})
+    PubSub.broadcast!(:ytd, "activities", {:new_activity, user, activity})
   end
 
   defp publish_all_activities_fetched(user) do
-    Phoenix.PubSub.broadcast(YTD.PubSub, "user:#{user.id}", {:all_activities_fetched})
+    PubSub.broadcast!(:ytd, "activities", {:all_activities_fetched, user})
   end
 end

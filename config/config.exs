@@ -15,7 +15,7 @@ config :ytd, YTDWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "7doapOrfFIlllbrpZYxU9N/dPYI9z6Ruxmu5ZQAQfSXDICtTTZTl0g0fBmqrXkZh",
   render_errors: [view: YTDWeb.ErrorView, accepts: ~w(html json), layout: false],
-  pubsub_server: YTD.PubSub,
+  pubsub_server: :ytd,
   live_view: [signing_salt: "5X4BW26y"]
 
 # Configures Elixir's Logger

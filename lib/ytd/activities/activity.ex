@@ -5,18 +5,10 @@ defmodule YTD.Activities.Activity do
 
   use Ecto.Schema
 
+  alias Strava.SummaryActivity
   alias YTD.Users.User
 
-  @type t :: %__MODULE__{
-          id: integer() | nil,
-          user_id: integer() | nil,
-          user: User.t() | nil,
-          strava_id: integer() | nil,
-          type: String.t() | nil,
-          name: String.t() | nil,
-          distance: float() | nil,
-          start_date: DateTime.t() | nil
-        }
+  @type t :: %__MODULE__{}
 
   schema "activities" do
     field :strava_id, :integer
@@ -26,5 +18,17 @@ defmodule YTD.Activities.Activity do
     field :start_date, :utc_datetime
     timestamps()
     belongs_to :user, User
+  end
+
+  @spec from_strava_activity_summary(SummaryActivity.t(), User.t()) :: t()
+  def from_strava_activity_summary(summary, user) do
+    %__MODULE__{
+      user_id: user.id,
+      strava_id: summary.id,
+      type: summary.type,
+      name: "Morning run",
+      distance: summary.distance,
+      start_date: summary.start_date
+    }
   end
 end

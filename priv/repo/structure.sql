@@ -31,7 +31,9 @@ CREATE TABLE public.activities (
     type text,
     name text,
     distance double precision,
-    start_date timestamp(0) without time zone
+    start_date timestamp(0) without time zone,
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
 );
 
 
@@ -155,3 +157,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20191012151837);
 INSERT INTO public."schema_migrations" (version) VALUES (20200816140355);
 INSERT INTO public."schema_migrations" (version) VALUES (20200816184009);
 INSERT INTO public."schema_migrations" (version) VALUES (20200817213538);
+INSERT INTO public."schema_migrations" (version) VALUES (20210117224541);

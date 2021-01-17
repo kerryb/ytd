@@ -13,10 +13,11 @@ defmodule YTD.Application do
       # Start the Telemetry supervisor
       YTDWeb.Telemetry,
       # Start the PubSub system
-      {Phoenix.PubSub, name: YTD.PubSub},
+      {Phoenix.PubSub, name: :ytd},
       # Start the Endpoint (http/https)
       YTDWeb.Endpoint,
       # Start a worker by calling: YTD.Worker.start_link(arg)
+      YTD.Activities,
       YTD.Strava.Activities
     ]
 
