@@ -1,4 +1,4 @@
-.PHONY: clean dialyzer integration-test setup style test unit-test update-deps
+.PHONY: clean dialyzer setup style test unit-test update-deps
 all: style dialyzer test docs
 setup:
 	mix deps.get
@@ -15,10 +15,6 @@ dialyzer:
 	mix dialyzer
 test:
 	mix coveralls.html
-unit-test:
-	mix test --exclude=integration
-integration-test:
-	mix test --only=integration
 docs:
 	mix docs
 update-deps:

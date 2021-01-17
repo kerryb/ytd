@@ -22,33 +22,3 @@ config :strava, redirect_uri: "http://localhost:4001"
 
 # Print only warnings and errors during test
 config :logger, level: :warn
-
-config :wallaby,
-  screenshot_on_failure: true,
-  chromedriver: [
-    capabilities: %{
-      javascriptEnabled: false,
-      loadImages: false,
-      version: "",
-      rotatable: false,
-      takesScreenshot: true,
-      cssSelectorsEnabled: true,
-      nativeEvents: false,
-      platform: "ANY",
-      unhandledPromptBehavior: "accept",
-      loggingPrefs: %{
-        browser: "DEBUG"
-      },
-      chromeOptions: %{
-        args: [
-          "--no-sandbox",
-          "window-size=1280,800",
-          "--disable-gpu",
-          "--headless",
-          "--fullscreen",
-          "--disable-web-security",
-          "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36"
-        ]
-      }
-    }
-  ]
