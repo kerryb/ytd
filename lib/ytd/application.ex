@@ -15,9 +15,9 @@ defmodule YTD.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: YTD.PubSub},
       # Start the Endpoint (http/https)
-      YTDWeb.Endpoint
+      YTDWeb.Endpoint,
       # Start a worker by calling: YTD.Worker.start_link(arg)
-      # {YTD.Worker, arg}
+      YTD.Strava.Activities
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

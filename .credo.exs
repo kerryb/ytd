@@ -172,7 +172,7 @@
         {Credo.Check.Refactor.DoubleBooleanNegation, []},
         {Credo.Check.Refactor.ModuleDependencies, []},
         {Credo.Check.Refactor.NegatedIsNil, []},
-        {Credo.Check.Refactor.PipeChainStart, []},
+        {Credo.Check.Refactor.PipeChainStart, false},
         {Credo.Check.Refactor.VariableRebinding, []},
         {Credo.Check.Warning.MapGetUnsafePass, []},
         {Credo.Check.Warning.UnsafeToAtom, []},
