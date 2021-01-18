@@ -6,6 +6,7 @@ defmodule YTD.Factory do
 
   use ExMachina.Ecto, repo: YTD.Repo
 
+  alias YTD.Activities.Activity
   alias YTD.Users.User
 
   def user_factory do
@@ -13,6 +14,17 @@ defmodule YTD.Factory do
       athlete_id: sequence(:athlete_id, &(10_000_000 + &1)),
       access_token: sequence(:access_token, &"#{20_000_000 + &1}"),
       refresh_token: sequence(:refresh_token, &"#{30_000_000 + &1}")
+    }
+  end
+
+  def activity_factory do
+    %Activity{
+      user: build(:user),
+      strava_id: sequence(:strava_activity_id, &(40_000_000 + &1)),
+      type: Enum.random(["Run", "Ride", "Swim"]),
+      name: Faker.Lorem.sentence(3),
+      distance: :rand.uniform_real() * 100,
+      start_date: DateTime.add(DateTime.utc_now(), -:rand.uniform(10_000_000), :second)
     }
   end
 end

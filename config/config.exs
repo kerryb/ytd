@@ -8,7 +8,8 @@
 use Mix.Config
 
 config :ytd,
-  ecto_repos: [YTD.Repo]
+  ecto_repos: [YTD.Repo],
+  env: Mix.env()
 
 # Configures the endpoint
 config :ytd, YTDWeb.Endpoint,

@@ -35,12 +35,14 @@ defmodule YTD.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:assertions, "~> 0.10", only: :test},
       {:credo, "~> 1.4", only: [:dev, :test]},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:ecto_sql, "~> 3.4"},
       {:ex_doc, "~> 0.21", only: :dev},
       {:ex_machina, "~> 2.4", only: :test},
       {:excoveralls, "~> 0.13", only: :test},
+      {:faker, "~> 0.16", only: :test},
       {:floki, ">= 0.0.0", only: :test},
       {:gettext, "~> 0.11"},
       {:hammox, "~> 0.2", only: :test},

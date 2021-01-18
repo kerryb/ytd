@@ -5,6 +5,8 @@ defmodule YTD.Activities do
 
   use GenServer
 
+  import Ecto.Query
+
   alias Phoenix.PubSub
   alias YTD.Activities.Activity
   alias YTD.Repo
@@ -21,6 +23,12 @@ defmodule YTD.Activities do
   end
 
   @impl GenServer
+  def handle_info({:get_activities, user}, state) do
+    user |> get_existing_activities() |> publish_existing_activities(user)
+    publish_get_new_activities(user)
+    {:noreply, state}
+  end
+
   def handle_info({:new_activity, user, summary}, state) do
     activity =
       summary
@@ -34,6 +42,18 @@ defmodule YTD.Activities do
   def handle_info({:all_activities_fetched, user}, state) do
     publish_all_activities_fetched(user)
     {:noreply, state}
+  end
+
+  defp get_existing_activities(user) do
+    Repo.all(from a in Activity, where: a.user_id == ^user.id)
+  end
+
+  defp publish_existing_activities(activities, user) do
+    PubSub.broadcast!(:ytd, "user#{user.id}", {:existing_activities, activities})
+  end
+
+  defp publish_get_new_activities(user) do
+    PubSub.broadcast!(:ytd, "strava", {:get_new_activities, user})
   end
 
   defp publish_activity(activity) do
