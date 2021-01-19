@@ -12,6 +12,6 @@ defmodule YTDWeb.IndexLive do
   @impl true
   def mount(_params, session, socket) do
     user = Users.get_user_from_athlete_id(session["athlete_id"])
-    {:ok, assign(socket, user: user, info: "Loading activities &hellip;")}
+    {:ok, assign(socket, user: user, info: "Loading activities …")}
   end
 end

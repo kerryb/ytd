@@ -27,6 +27,11 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :phoenix, :template_engines,
+  slim: PhoenixSlime.Engine,
+  slime: PhoenixSlime.Engine,
+  slimleex: PhoenixSlime.LiveViewEngine
+
 config :strava,
   client_id: System.get_env("YTD_CLIENT_ID"),
   client_secret: System.get_env("YTD_CLIENT_SECRET"),

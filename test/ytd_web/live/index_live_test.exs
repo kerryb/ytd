@@ -20,7 +20,7 @@ defmodule YTDWeb.IndexLiveTest do
 
     test "initially displays a 'loading activities' message", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
-      assert has_element?(view, "#ytd-info", "Loading activities &hellip;")
+      assert has_element?(view, "#ytd-info", "Loading activities …")
     end
   end
 end
