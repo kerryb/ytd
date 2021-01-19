@@ -1,1 +1,3 @@
-<p>Hello <%= @athlete.firstname %>!</p>
+<%= if @info do %>
+  <span id="ytd-info"><%= @info %></span>
+<% end %>
