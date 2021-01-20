@@ -28,17 +28,17 @@ defmodule YTD.Strava.Activities do
     client =
       Strava.Client.new(user.access_token,
         refresh_token: user.refresh_token,
-        token_refreshed: &publish_token_refreshed(user, &1)
+        token_refreshed: &broadcast_token_refreshed(user, &1)
       )
 
     Strava.Paginator.stream(&Strava.Activities.get_logged_in_athlete_activities(client, &1))
     |> Stream.take_while(&(DateTime.compare(&1.start_date, timestamp) == :gt))
-    |> Enum.each(&publish_activity(user, &1))
+    |> Enum.each(&broadcast_activity(user, &1))
 
-    publish_all_activities_fetched(user)
+    broadcast_all_activities_fetched(user)
   end
 
-  defp publish_token_refreshed(user, client) do
+  defp broadcast_token_refreshed(user, client) do
     PubSub.broadcast!(
       :ytd,
       "user:#{user.id}",
@@ -46,11 +46,11 @@ defmodule YTD.Strava.Activities do
     )
   end
 
-  defp publish_activity(user, activity) do
+  defp broadcast_activity(user, activity) do
     PubSub.broadcast!(:ytd, "activities", {:new_activity, user, activity})
   end
 
-  defp publish_all_activities_fetched(user) do
+  defp broadcast_all_activities_fetched(user) do
     PubSub.broadcast!(:ytd, "activities", {:all_activities_fetched, user})
   end
 end

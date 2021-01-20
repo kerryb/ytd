@@ -24,8 +24,8 @@ defmodule YTD.Activities do
 
   @impl GenServer
   def handle_info({:get_activities, user}, state) do
-    user |> get_existing_activities() |> publish_existing_activities(user)
-    publish_get_new_activities(user)
+    user |> get_existing_activities() |> broadcast_existing_activities(user)
+    broadcast_get_new_activities(user)
     {:noreply, state}
   end
 
@@ -35,12 +35,12 @@ defmodule YTD.Activities do
       |> Activity.from_strava_activity_summary(user)
       |> Repo.insert!()
 
-    publish_activity(activity)
+    broadcast_activity(activity)
     {:noreply, state}
   end
 
   def handle_info({:all_activities_fetched, user}, state) do
-    publish_all_activities_fetched(user)
+    broadcast_all_activities_fetched(user)
     {:noreply, state}
   end
 
@@ -48,19 +48,19 @@ defmodule YTD.Activities do
     Repo.all(from a in Activity, where: a.user_id == ^user.id)
   end
 
-  defp publish_existing_activities(activities, user) do
+  defp broadcast_existing_activities(activities, user) do
     PubSub.broadcast!(:ytd, "user#{user.id}", {:existing_activities, activities})
   end
 
-  defp publish_get_new_activities(user) do
+  defp broadcast_get_new_activities(user) do
     PubSub.broadcast!(:ytd, "strava", {:get_new_activities, user})
   end
 
-  defp publish_activity(activity) do
+  defp broadcast_activity(activity) do
     PubSub.broadcast!(:ytd, "user:#{activity.user_id}", {:new_activity, activity})
   end
 
-  defp publish_all_activities_fetched(user) do
+  defp broadcast_all_activities_fetched(user) do
     PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
   end
 end
