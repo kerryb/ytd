@@ -27,7 +27,7 @@ SET default_table_access_method = heap;
 CREATE TABLE public.activities (
     id bigint NOT NULL,
     user_id bigint,
-    strava_id integer,
+    strava_id numeric,
     type text,
     name text,
     distance double precision,
@@ -141,6 +141,13 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: activities_strava_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX activities_strava_id_index ON public.activities USING btree (strava_id);
+
+
+--
 -- Name: activities activities_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -157,4 +164,3 @@ INSERT INTO public."schema_migrations" (version) VALUES (20191012151837);
 INSERT INTO public."schema_migrations" (version) VALUES (20200816140355);
 INSERT INTO public."schema_migrations" (version) VALUES (20200816184009);
 INSERT INTO public."schema_migrations" (version) VALUES (20200817213538);
-INSERT INTO public."schema_migrations" (version) VALUES (20210117224541);

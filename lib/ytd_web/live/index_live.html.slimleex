@@ -1,2 +1,3 @@
+#ytd-miles = @ytd
 = if @info do
-  span#ytd-info>= @info
+  #ytd-info = @info

@@ -15,20 +15,33 @@ defmodule YTD.ActivitiesTest do
       :ok
     end
 
-    test "broadcasts a get_new_activities message to the strava channel" do
-      user = %{id: 1}
-      PubSub.subscribe(:ytd, "strava")
-      PubSub.broadcast!(:ytd, "activities", {:get_activities, user})
-      assert_receive {:get_new_activities, ^user}
-    end
-
     test "broadcasts existing activities to the user channel" do
       user = insert(:user)
       activities = [insert(:activity, user: user), insert(:activity, user: user)]
-      PubSub.subscribe(:ytd, "user#{user.id}")
+      PubSub.subscribe(:ytd, "user:#{user.id}")
       PubSub.broadcast!(:ytd, "activities", {:get_activities, user})
       assert_receive {:existing_activities, broadcast_activities}
       assert_lists_equal(activities, broadcast_activities, &assert_structs_equal(&1, &2, [:id]))
+    end
+
+    test "broadcasts a get_new_activities message, with the latest activity timestamp, to the strava channel" do
+      user = insert(:user)
+      insert(:activity, user: user, start_date: ~U[2021-01-19 14:00:00Z])
+      insert(:activity, user: user, start_date: ~U[2021-01-20 21:00:00Z])
+      PubSub.subscribe(:ytd, "strava")
+      PubSub.broadcast!(:ytd, "activities", {:get_activities, user})
+      assert_receive {:get_new_activities, ^user, ~U[2021-01-20 21:00:00Z]}
+    end
+
+    test "requests all activities for the year if there are no saved activities" do
+      user = insert(:user)
+      PubSub.subscribe(:ytd, "strava")
+      PubSub.broadcast!(:ytd, "activities", {:get_activities, user})
+
+      {:ok, beginning_of_year, _offset} =
+        DateTime.from_iso8601("#{Date.utc_today().year}-01-01T00:00:00Z")
+
+      assert_receive {:get_new_activities, ^user, ^beginning_of_year}
     end
   end
 
