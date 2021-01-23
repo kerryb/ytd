@@ -1,6 +1,6 @@
 defmodule YTD.Strava.Activities do
   @moduledoc """
-  API wrapper for retrieving an athlete's activities from Strava.
+  Server and API wrapper for retrieving an athlete's activities from Strava.
   """
 
   use GenServer
@@ -39,11 +39,7 @@ defmodule YTD.Strava.Activities do
   end
 
   defp broadcast_token_refreshed(user, client) do
-    PubSub.broadcast!(
-      :ytd,
-      "user:#{user.id}",
-      {:token_refreshed, client.token.access_token, client.token.refresh_token}
-    )
+    PubSub.broadcast!(:ytd, "users", {:token_refreshed, user, client.token})
   end
 
   defp broadcast_activity(user, activity) do

@@ -6,21 +6,38 @@ defmodule YTD.Users do
 
   @behaviour YTD.Users.API
 
-  alias Ecto.Multi
-  alias YTD.Repo
-  alias YTD.Strava.Tokens
-  alias YTD.Users.{Queries, SaveTokens, User}
+  use GenServer
 
-  @spec get_user_from_athlete_id(integer()) :: User.t() | nil
+  alias Phoenix.PubSub
+  alias YTD.Repo
+  alias YTD.Users.{Queries, SaveTokens}
+
+  @spec start_link(any()) :: GenServer.on_start()
+  def start_link(_arg) do
+    GenServer.start_link(__MODULE__, [])
+  end
+
+  @impl GenServer
+  def init(_arg) do
+    PubSub.subscribe(:ytd, "users")
+    {:ok, []}
+  end
+
+  @impl YTD.Users.API
   def get_user_from_athlete_id(athlete_id) do
     athlete_id |> Queries.get_user_from_athlete_id() |> Repo.one()
   end
 
-  @spec save_user_tokens(Tokens.t()) ::
-          {:ok, any()}
-          | {:error, any()}
-          | {:error, Multi.name(), any(), %{required(Multi.name()) => any()}}
+  @impl YTD.Users.API
   def save_user_tokens(tokens) do
     tokens |> SaveTokens.call() |> Repo.transaction()
+  end
+
+  @impl GenServer
+  def handle_info({:token_refreshed, tokens}, state) do
+    save_user_tokens(tokens)
+    # Just for the test really
+    PubSub.broadcast!(:ytd, "user-updates", {:updated, tokens.athlete_id})
+    {:noreply, state}
   end
 end
