@@ -2843,6 +2843,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"detect-indent@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "detect-indent@npm:5.0.0"
+  checksum: 1b6a22f23b837da87434d461ff125121649dd9d775302d94e986a0ae990fb8801b883dd0d316a6d90df8f0e7303b6ff7c04b57eaac63265e14c88d38172f947d
+  languageName: node
+  linkType: hard
+
 "diffie-hellman@npm:^5.0.0":
   version: 5.0.3
   resolution: "diffie-hellman@npm:5.0.3"
@@ -3286,7 +3293,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-cache-dir@npm:^2.1.0":
+"find-cache-dir@npm:^2.0.0, find-cache-dir@npm:^2.1.0":
   version: 2.1.0
   resolution: "find-cache-dir@npm:2.1.0"
   dependencies:
@@ -3691,6 +3698,29 @@ fsevents@~2.1.2:
     ajv: ^6.12.3
     har-schema: ^2.0.0
   checksum: 01b905cdaa7632c926a962c8127a77b98387935ef3aa0b44dae871eae2592ba6da948a3bdbb3eeceb90fa1599300f16716e50147965a7ea7c4e7c4e57ac69727
+  languageName: node
+  linkType: hard
+
+"hard-source-webpack-plugin@npm:^0.13.1":
+  version: 0.13.1
+  resolution: "hard-source-webpack-plugin@npm:0.13.1"
+  dependencies:
+    chalk: ^2.4.1
+    find-cache-dir: ^2.0.0
+    graceful-fs: ^4.1.11
+    lodash: ^4.15.0
+    mkdirp: ^0.5.1
+    node-object-hash: ^1.2.0
+    parse-json: ^4.0.0
+    pkg-dir: ^3.0.0
+    rimraf: ^2.6.2
+    semver: ^5.6.0
+    tapable: ^1.0.0-beta.5
+    webpack-sources: ^1.0.1
+    write-json-file: ^2.3.0
+  peerDependencies:
+    webpack: "*"
+  checksum: 1199091073b4fca50da1dbf6135de679966bd7c6d902706f0a80b1c448917b00fa2175bed03939cf255a9985dec62ad42c0a7773c82e9282fb102fde901684a8
   languageName: node
   linkType: hard
 
@@ -4605,7 +4635,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.0.0, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.5, lodash@npm:~4.17.10":
+"lodash@npm:^4.0.0, lodash@npm:^4.15.0, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.5, lodash@npm:~4.17.10":
   version: 4.17.20
   resolution: "lodash@npm:4.17.20"
   checksum: c62101d2500c383b5f174a7e9e6fe8098149ddd6e9ccfa85f36d4789446195f5c4afd3cfba433026bcaf3da271256566b04a2bf2618e5a39f6e67f8c12030cb6
@@ -4647,6 +4677,15 @@ fsevents@~2.1.2:
   dependencies:
     yallist: ^4.0.0
   checksum: b8b78353d2391c0f135cdc245c4744ad41c2efb1a6d98f31bc57a2cf48ebf02de96e4876657c3026673576bf1f1f61fc3fdd77ab00ad1ead737537bf17d8019d
+  languageName: node
+  linkType: hard
+
+"make-dir@npm:^1.0.0":
+  version: 1.3.0
+  resolution: "make-dir@npm:1.3.0"
+  dependencies:
+    pify: ^3.0.0
+  checksum: 20a14043c61faab5ddc7844e3b325281c81b0975bbe4ae657774fdb51216b6a07b5c5cd90bdaf6a9dfcd7a12e81d9ddb5b3d47c9f27a65f6fea66be701f35b36
   languageName: node
   linkType: hard
 
@@ -5096,6 +5135,13 @@ fsevents@~2.1.2:
     util: ^0.11.0
     vm-browserify: ^1.0.1
   checksum: 8da918a5ef93c0bfed8df90bb9d6b12ae08836963aa0b22927eedf6d3eab6e60feb9eae2d394f1eb6d5f0fdd985fb2858b698a3347606b90dfdd5047b5ea6042
+  languageName: node
+  linkType: hard
+
+"node-object-hash@npm:^1.2.0":
+  version: 1.4.2
+  resolution: "node-object-hash@npm:1.4.2"
+  checksum: e6b36e82469501cfd50e55491a1f578a07991c586f086798fc4e6502eb4e10733690ef7b0575fc0191e81e8f3881d949625879a58543aa4b552ca2503f02c8af
   languageName: node
   linkType: hard
 
@@ -6535,7 +6581,7 @@ resolve@^1.10.0:
   languageName: node
   linkType: hard
 
-"rimraf@npm:2, rimraf@npm:^2.5.4, rimraf@npm:^2.6.3, rimraf@npm:^2.7.1":
+"rimraf@npm:2, rimraf@npm:^2.5.4, rimraf@npm:^2.6.2, rimraf@npm:^2.6.3, rimraf@npm:^2.7.1":
   version: 2.7.1
   resolution: "rimraf@npm:2.7.1"
   dependencies:
@@ -6576,6 +6622,7 @@ resolve@^1.10.0:
     babel-loader: ^8.0.0
     copy-webpack-plugin: ^5.1.2
     css-loader: ^3.4.2
+    hard-source-webpack-plugin: ^0.13.1
     mini-css-extract-plugin: ^0.9.0
     node-sass: ^4.13.1
     nprogress: ^0.2.0
@@ -6826,7 +6873,7 @@ resolve@^1.10.0:
   languageName: node
   linkType: hard
 
-"signal-exit@npm:^3.0.0":
+"signal-exit@npm:^3.0.0, signal-exit@npm:^3.0.2":
   version: 3.0.3
   resolution: "signal-exit@npm:3.0.3"
   checksum: f8f3fec95c8d1f9ad7e3cce07e1195f84e7a85cdcb4e825e8a2b76aa5406a039083d2bc9662b3cf40e6948262f41277047d20e6fbd58c77edced0b18fab647d8
@@ -6891,6 +6938,15 @@ resolve@^1.10.0:
   dependencies:
     is-plain-obj: ^1.0.0
   checksum: 78d9165ed35a19591685375cf85b7f45d94d0538af8cf162dec9ae67e6c631468169f9242e06f799a5bbb4207e90413f32dc528323f1f5d8edb0be51bf9f8880
+  languageName: node
+  linkType: hard
+
+"sort-keys@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "sort-keys@npm:2.0.0"
+  dependencies:
+    is-plain-obj: ^1.0.0
+  checksum: c0437ce7fbcc35e6f255f46cc4ba350cadac3199f4af3ee8c8b305f50a35b6ead4fec814a4d86ffa49c8ec9e5bf064877232a7d45270c6e31f725209a1c4ef3d
   languageName: node
   linkType: hard
 
@@ -7302,7 +7358,7 @@ resolve@^1.10.0:
   languageName: node
   linkType: hard
 
-"tapable@npm:^1.0.0, tapable@npm:^1.1.3":
+"tapable@npm:^1.0.0, tapable@npm:^1.0.0-beta.5, tapable@npm:^1.1.3":
   version: 1.1.3
   resolution: "tapable@npm:1.1.3"
   checksum: b2c2ab20260394b867fd249d8b6ab3e4645e00f9cce16b558b0de5a86291ef05f536f578744549d1618c9032c7f99bc1d6f68967e4aa11cb0dca4461dc4714bc
@@ -7807,7 +7863,7 @@ resolve@^1.10.0:
   languageName: node
   linkType: hard
 
-"webpack-sources@npm:^1.1.0, webpack-sources@npm:^1.4.0, webpack-sources@npm:^1.4.1, webpack-sources@npm:^1.4.3":
+"webpack-sources@npm:^1.0.1, webpack-sources@npm:^1.1.0, webpack-sources@npm:^1.4.0, webpack-sources@npm:^1.4.1, webpack-sources@npm:^1.4.3":
   version: 1.4.3
   resolution: "webpack-sources@npm:1.4.3"
   dependencies:
@@ -7912,6 +7968,31 @@ resolve@^1.10.0:
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
   checksum: 519fcda0fcdf0c16327be2de9d98646742307bc830277e8868529fcf7566f2b330a6453c233e0cdcb767d5838dd61a90984a02ecc983bcddebea5ad0833bbf98
+  languageName: node
+  linkType: hard
+
+"write-file-atomic@npm:^2.0.0":
+  version: 2.4.3
+  resolution: "write-file-atomic@npm:2.4.3"
+  dependencies:
+    graceful-fs: ^4.1.11
+    imurmurhash: ^0.1.4
+    signal-exit: ^3.0.2
+  checksum: ef7113c80ff888aeebddc8ab83e1279d7548738fda89fd071d3cf9603ade689bb1a9c2c49a4d66a24f06724dc9e50fe59048a2bd303f47e31f1e4928d5c7d177
+  languageName: node
+  linkType: hard
+
+"write-json-file@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "write-json-file@npm:2.3.0"
+  dependencies:
+    detect-indent: ^5.0.0
+    graceful-fs: ^4.1.2
+    make-dir: ^1.0.0
+    pify: ^3.0.0
+    sort-keys: ^2.0.0
+    write-file-atomic: ^2.0.0
+  checksum: ce8fd134bc3371cb1dbed27006a42b63d723af49cff8992aadbdac29313b6c5843908bd2714d7c96bdacfd51d1ba89001db897f35d1b8e8252943311d3ff2d1e
   languageName: node
   linkType: hard
 
