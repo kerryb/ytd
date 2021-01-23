@@ -44,13 +44,13 @@ defmodule YTD.UsersTest do
     end
 
     test "updates the saved tokens" do
-      insert(:user, athlete_id: 123)
+      user = insert(:user, athlete_id: 123)
       PubSub.subscribe(:ytd, "user-updates")
 
       PubSub.broadcast!(
         :ytd,
         "users",
-        {:token_refreshed, %{athlete_id: 123, access_token: "456", refresh_token: "789"}}
+        {:token_refreshed, user, %{access_token: "456", refresh_token: "789"}}
       )
 
       assert_receive {:updated, _}

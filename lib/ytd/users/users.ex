@@ -10,7 +10,7 @@ defmodule YTD.Users do
 
   alias Phoenix.PubSub
   alias YTD.Repo
-  alias YTD.Users.{Queries, SaveTokens}
+  alias YTD.Users.{Create, Queries, UpdateTokens}
 
   @spec start_link(any()) :: GenServer.on_start()
   def start_link(_arg) do
@@ -30,14 +30,17 @@ defmodule YTD.Users do
 
   @impl YTD.Users.API
   def save_user_tokens(tokens) do
-    tokens |> SaveTokens.call() |> Repo.transaction()
+    case get_user_from_athlete_id(tokens.athlete_id) do
+      nil -> tokens |> Create.call() |> Repo.transaction()
+      user -> user |> UpdateTokens.call(tokens) |> Repo.transaction()
+    end
   end
 
   @impl GenServer
-  def handle_info({:token_refreshed, tokens}, state) do
-    save_user_tokens(tokens)
+  def handle_info({:token_refreshed, user, tokens}, state) do
+    user |> UpdateTokens.call(tokens) |> Repo.transaction()
     # Just for the test really
-    PubSub.broadcast!(:ytd, "user-updates", {:updated, tokens.athlete_id})
+    PubSub.broadcast!(:ytd, "user-updates", {:updated, user})
     {:noreply, state}
   end
 end
