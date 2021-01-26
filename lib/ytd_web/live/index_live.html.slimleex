@@ -1,7 +1,7 @@
 .flex.justify-center.items-center
   .m-2.max-w-lg
     hr
-    p.font-thin.text-2xl. Year to date:
+    p.font-thin.text-2xl Year to date:
     p class="text-5xl sm:text-7xl"
       span#ytd-miles.font-extrabold> = @ytd
       span.font-thin miles
