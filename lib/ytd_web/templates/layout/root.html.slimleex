@@ -9,5 +9,5 @@ html lang="en"
     link rel="stylesheet" href="#{Routes.static_path(@conn, "/css/app.css")}"
     script defer=true type="text/javascript" src="#{Routes.static_path(@conn, "/js/app.js")}"
   
-  body.bg-strava-orange.text-white.font-sans
+  body class="bg-strava-orange dark:bg-black text-white dark:text-strava-orange font-sans"
     = @inner_content
