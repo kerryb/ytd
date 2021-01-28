@@ -19,7 +19,13 @@ defmodule YTDWeb.IndexLive do
       :ok = PubSub.broadcast!(:ytd, "activities", {:get_activities, user})
     end
 
-    {:ok, assign(socket, user: user, ytd: 0.0, info: "Loading activities …")}
+    {:ok,
+     assign(socket, user: user, types: [], type: "Run", ytd: 0.0, info: "Loading activities …")}
+  end
+
+  @impl true
+  def handle_event("select", %{"_target" => ["type"], "type" => type}, socket) do
+    {:noreply, assign(socket, type: type, ytd: total_mileage(socket.assigns.activities, type))}
   end
 
   @impl true
@@ -27,7 +33,8 @@ defmodule YTDWeb.IndexLive do
     {:noreply,
      assign(socket,
        activities: activities,
-       ytd: total_mileage(activities),
+       types: types(activities),
+       ytd: total_mileage(activities, socket.assigns.type),
        info:
          "#{length(activities)} #{if length(activities) == 1, do: "activity", else: "activities"} loaded. Fetching new activities …"
      )}
@@ -39,7 +46,8 @@ defmodule YTDWeb.IndexLive do
     {:noreply,
      assign(socket,
        activities: activities,
-       ytd: total_mileage(activities),
+       types: types(activities),
+       ytd: total_mileage(activities, socket.assigns.type),
        info:
          "#{length(activities)} #{if length(activities) == 1, do: "activity", else: "activities"} loaded. Fetching new activities …"
      )}
@@ -49,10 +57,18 @@ defmodule YTDWeb.IndexLive do
     {:noreply, assign(socket, info: nil)}
   end
 
-  defp total_mileage([]), do: 0.0
+  defp types(activities) do
+    activities |> Enum.map(& &1.type) |> Enum.uniq()
+  end
 
-  defp total_mileage(activities) do
-    activities |> Enum.map(& &1.distance) |> Enum.sum() |> metres_to_miles()
+  defp total_mileage([], _type), do: 0.0
+
+  defp total_mileage(activities, type) do
+    activities
+    |> Enum.filter(&(&1.type == type))
+    |> Enum.map(& &1.distance)
+    |> Enum.sum()
+    |> metres_to_miles()
   end
 
   @metres_in_a_mile 1609.34

@@ -1,6 +1,19 @@
 .flex.justify-center.items-center
   .m-2.max-w-lg
     hr
+    form.flex.flex-row phx-change="select"
+      .flex.flex-1
+        select.bg-strava-orange.outline-none name="type"
+          = for type <- @types do
+            = if type == @type do
+              option selected=true = type
+            - else
+              option = type
+      div
+        select.bg-strava-orange.outline-none name="unit"
+          option selected=true miles
+          option km
+    hr
     p.font-thin.text-2xl Year to date:
     p class="text-5xl sm:text-7xl"
       span#ytd-miles.font-extrabold> = @ytd
