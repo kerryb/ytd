@@ -35,8 +35,7 @@ defmodule YTDWeb.IndexLive do
        activities: activities,
        types: types(activities),
        ytd: total_mileage(activities, socket.assigns.type),
-       info:
-         "#{length(activities)} #{if length(activities) == 1, do: "activity", else: "activities"} loaded. Fetching new activities …"
+       info: fetching_message(activities)
      )}
   end
 
@@ -48,8 +47,7 @@ defmodule YTDWeb.IndexLive do
        activities: activities,
        types: types(activities),
        ytd: total_mileage(activities, socket.assigns.type),
-       info:
-         "#{length(activities)} #{if length(activities) == 1, do: "activity", else: "activities"} loaded. Fetching new activities …"
+       info: fetching_message(activities)
      )}
   end
 
@@ -70,6 +68,10 @@ defmodule YTDWeb.IndexLive do
     |> Enum.sum()
     |> metres_to_miles()
   end
+
+  defp fetching_message([_activity]), do: fetching_message(1, "activity")
+  defp fetching_message(activities), do: fetching_message(length(activities), "activities")
+  defp fetching_message(count, noun), do: "#{count} #{noun} loaded. Fetching new activities …"
 
   @metres_in_a_mile 1609.34
 
