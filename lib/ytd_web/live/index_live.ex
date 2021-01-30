@@ -35,7 +35,8 @@ defmodule YTDWeb.IndexLive do
   @impl true
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket) do
     ytd = total_distance(socket.assigns.activities, type, socket.assigns.unit)
-    {:noreply, assign(socket, type: type, ytd: ytd)}
+    latest = latest_activity(socket.assigns.activities, type)
+    {:noreply, assign(socket, type: type, ytd: ytd, latest: latest)}
   end
 
   def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket) do
@@ -60,7 +61,7 @@ defmodule YTDWeb.IndexLive do
   end
 
   def handle_info(:all_activities_fetched, socket) do
-    latest = latest_activity(socket.assigns.activities)
+    latest = latest_activity(socket.assigns.activities, socket.assigns.type)
     {:noreply, assign(socket, info: nil, latest: latest)}
   end
 
@@ -82,8 +83,13 @@ defmodule YTDWeb.IndexLive do
   defp fetching_message(activities), do: fetching_message(length(activities), "activities")
   defp fetching_message(count, noun), do: "#{count} #{noun} loaded. Fetching new activities …"
 
-  defp latest_activity([]), do: nil
-  defp latest_activity(activities), do: Enum.max_by(activities, & &1.start_date, DateTime)
+  defp latest_activity([], _type), do: nil
+
+  defp latest_activity(activities, type) do
+    activities
+    |> Enum.filter(&(&1.type == type))
+    |> Enum.max_by(& &1.start_date, DateTime)
+  end
 
   defp metres_to_unit(metres, "miles"), do: Float.round(metres / 1609.34, 1)
   defp metres_to_unit(metres, "km"), do: Float.round(metres / 1000, 1)

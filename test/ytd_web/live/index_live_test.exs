@@ -99,20 +99,20 @@ defmodule YTDWeb.IndexLiveTest do
       refute has_element?(view, "#ytd-info")
     end
 
-    test "shows the latet activity name when all activities have been received", %{
-      conn: conn,
-      user: user
-    } do
-      existing_activity =
-        build(:activity, name: "Morning run", type: "Run", start_date: ~U[2010-01-30 09:00:00Z])
-
-      new_activity =
-        build(:activity, name: "Evening run", type: "Run", start_date: ~U[2010-01-30 19:00:00Z])
+    test "shows the latet activity of the selected type when all activities have been received",
+         %{
+           conn: conn,
+           user: user
+         } do
+      activities = [
+        build(:activity, name: "Morning run", type: "Run", start_date: ~U[2010-01-30 09:00:00Z]),
+        build(:activity, name: "Evening run", type: "Run", start_date: ~U[2010-01-30 19:00:00Z]),
+        build(:activity, name: "Night ride", type: "Ride", start_date: ~U[2010-01-30 22:00:00Z])
+      ]
 
       PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
       PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
       assert has_element?(view, "#ytd-latest-activity-name", "Evening run")
       assert has_element?(view, "#ytd-latest-activity-date", "Saturday, 7.00pm")
@@ -130,6 +130,24 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#ytd-total", "3.1")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
       assert has_element?(view, "#ytd-total", "6.2")
+    end
+
+    test "shows the correct latest activity when the user switches activity type", %{
+      conn: conn,
+      user: user
+    } do
+      activities = [
+        build(:activity, type: "Run", name: "Morning run", distance: 5_000.0),
+        build(:activity, type: "Ride", name: "Afternoon ride", distance: 10_000.0)
+      ]
+
+      PubSub.subscribe(:ytd, "user:#{user.id}")
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
+      PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
+      assert has_element?(view, "#ytd-latest-activity-name", "Morning run")
+      view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
+      assert has_element?(view, "#ytd-latest-activity-name", "Afternoon ride")
     end
 
     test "allows the units to be changed to miles or km", %{conn: conn, user: user} do
