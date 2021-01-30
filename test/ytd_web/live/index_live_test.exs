@@ -95,5 +95,19 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
       refute has_element?(view, "#ytd-info")
     end
+
+    test "shows the correct total when the user switches activity type", %{conn: conn, user: user} do
+      activities = [
+        build(:activity, type: "Run", distance: 5_000.0),
+        build(:activity, type: "Ride", distance: 10_000.0)
+      ]
+
+      PubSub.subscribe(:ytd, "user:#{user.id}")
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
+      assert has_element?(view, "#ytd-miles", "3.1")
+      view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
+      assert has_element?(view, "#ytd-miles", "6.2")
+    end
   end
 end
