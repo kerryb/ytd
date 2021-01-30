@@ -11,13 +11,16 @@
               option = type
       div
         select#unit class="bg-strava-orange dark:bg-black outline-none" name="unit"
-          option selected=true miles
-          option km
+          = for unit <- ~w[miles km] do
+            = if unit == @unit do
+              option selected=true = unit
+            - else
+              option = unit
     hr class="dark:bg-strava-orange dark:border-strava-orange"
     p.font-thin.text-2xl Year to date:
     p class="text-5xl sm:text-7xl"
-      span#ytd-miles.font-extrabold> = @ytd
-      span.font-thin miles
+      span#ytd-total.font-extrabold> = @ytd
+      span.font-thin = @unit
     hr class="dark:bg-strava-orange dark:border-strava-orange"
     = if @info do
       #ytd-info class="text-gray-300 dark:text-gray-700 text-sm" = @info

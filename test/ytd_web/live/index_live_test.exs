@@ -27,7 +27,7 @@ defmodule YTDWeb.IndexLiveTest do
 
     test "initially displays 0.0 miles", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
-      assert has_element?(view, "#ytd-miles", "0.0")
+      assert has_element?(view, "#ytd-total", "0.0")
     end
 
     test "broadcasts a :get_activities message", %{conn: conn, user: user} do
@@ -64,7 +64,7 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
-      assert has_element?(view, "#ytd-miles", "9.3")
+      assert has_element?(view, "#ytd-total", "9.3")
     end
 
     test "updates the mileage when a new  activity is received", %{conn: conn, user: user} do
@@ -75,7 +75,7 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
-      assert has_element?(view, "#ytd-miles", "9.3")
+      assert has_element?(view, "#ytd-total", "9.3")
     end
 
     test "updates the message when a new activity is received", %{conn: conn, user: user} do
@@ -105,9 +105,19 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
-      assert has_element?(view, "#ytd-miles", "3.1")
+      assert has_element?(view, "#ytd-total", "3.1")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
-      assert has_element?(view, "#ytd-miles", "6.2")
+      assert has_element?(view, "#ytd-total", "6.2")
+    end
+
+    test "allows the units to be changed to miles or km", %{conn: conn, user: user} do
+      activity = build(:activity, type: "Run", distance: 5_000.0)
+      PubSub.subscribe(:ytd, "user:#{user.id}")
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      assert has_element?(view, "#ytd-total", "3.1")
+      view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
+      assert has_element?(view, "#ytd-total", "5.0")
     end
   end
 end

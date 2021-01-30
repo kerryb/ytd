@@ -20,35 +20,41 @@ defmodule YTDWeb.IndexLive do
     end
 
     {:ok,
-     assign(socket, user: user, types: [], type: "Run", ytd: 0.0, info: "Loading activities …")}
+     assign(socket,
+       user: user,
+       types: [],
+       type: "Run",
+       unit: "miles",
+       ytd: 0.0,
+       info: "Loading activities …"
+     )}
   end
 
   @impl true
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket) do
-    {:noreply, assign(socket, type: type, ytd: total_mileage(socket.assigns.activities, type))}
+    ytd = total_distance(socket.assigns.activities, type, socket.assigns.unit)
+    {:noreply, assign(socket, type: type, ytd: ytd)}
+  end
+
+  def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket) do
+    ytd = total_distance(socket.assigns.activities, socket.assigns.type, unit)
+    {:noreply, assign(socket, unit: unit, ytd: ytd)}
   end
 
   @impl true
   def handle_info({:existing_activities, activities}, socket) do
-    {:noreply,
-     assign(socket,
-       activities: activities,
-       types: types(activities),
-       ytd: total_mileage(activities, socket.assigns.type),
-       info: fetching_message(activities)
-     )}
+    ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
+    types = types(activities)
+    info = fetching_message(activities)
+    {:noreply, assign(socket, activities: activities, types: types, ytd: ytd, info: info)}
   end
 
   def handle_info({:new_activity, activity}, socket) do
     activities = [activity | socket.assigns.activities]
-
-    {:noreply,
-     assign(socket,
-       activities: activities,
-       types: types(activities),
-       ytd: total_mileage(activities, socket.assigns.type),
-       info: fetching_message(activities)
-     )}
+    ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
+    types = types(activities)
+    info = fetching_message(activities)
+    {:noreply, assign(socket, activities: activities, types: types, ytd: ytd, info: info)}
   end
 
   def handle_info(:all_activities_fetched, socket) do
@@ -59,23 +65,20 @@ defmodule YTDWeb.IndexLive do
     activities |> Enum.map(& &1.type) |> Enum.uniq()
   end
 
-  defp total_mileage([], _type), do: 0.0
+  defp total_distance([], _type, _unit), do: 0.0
 
-  defp total_mileage(activities, type) do
+  defp total_distance(activities, type, unit) do
     activities
     |> Enum.filter(&(&1.type == type))
     |> Enum.map(& &1.distance)
     |> Enum.sum()
-    |> metres_to_miles()
+    |> metres_to_unit(unit)
   end
 
   defp fetching_message([_activity]), do: fetching_message(1, "activity")
   defp fetching_message(activities), do: fetching_message(length(activities), "activities")
   defp fetching_message(count, noun), do: "#{count} #{noun} loaded. Fetching new activities …"
 
-  @metres_in_a_mile 1609.34
-
-  defp metres_to_miles(metres) do
-    Float.round(metres / @metres_in_a_mile, 1)
-  end
+  defp metres_to_unit(metres, "miles"), do: Float.round(metres / 1609.34, 1)
+  defp metres_to_unit(metres, "km"), do: Float.round(metres / 1000, 1)
 end
