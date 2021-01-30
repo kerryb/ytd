@@ -23,4 +23,11 @@
       span.font-thin = @unit
     hr class="dark:bg-strava-orange dark:border-strava-orange"
     = if @info do
-      #ytd-info class="text-gray-300 dark:text-gray-700 text-sm" = @info
+      #ytd-info class="text-gray-300 dark:text-gray-700 text-sm font-light" = @info
+    = if @latest do
+      #ytd-latest-activity.text-sm.font-thin
+        ' Latest:
+        span#ytd-latest-activity-name.font-bold> = @latest.name
+        | (
+        span#ytd-latest-activity-date = Timex.format!(@latest.start_date, "{WDfull}, {h12}.{m}{am}")
+        | )

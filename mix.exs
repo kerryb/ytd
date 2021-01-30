@@ -58,7 +58,8 @@ defmodule YTD.MixProject do
       {:phoenix_slime, "~> 0.13"},
       {:strava, "~> 1.0"},
       {:telemetry_metrics, "~> 0.4"},
-      {:telemetry_poller, "~> 0.4"}
+      {:telemetry_poller, "~> 0.4"},
+      {:timex, "~> 3.6"}
     ]
   end
 

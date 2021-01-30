@@ -22,11 +22,13 @@ defmodule YTDWeb.IndexLive do
     {:ok,
      assign(socket,
        user: user,
+       activities: [],
        types: [],
        type: "Run",
        unit: "miles",
        ytd: 0.0,
-       info: "Loading activities …"
+       info: "Loading activities …",
+       latest: nil
      )}
   end
 
@@ -58,7 +60,8 @@ defmodule YTDWeb.IndexLive do
   end
 
   def handle_info(:all_activities_fetched, socket) do
-    {:noreply, assign(socket, info: nil)}
+    latest = latest_activity(socket.assigns.activities)
+    {:noreply, assign(socket, info: nil, latest: latest)}
   end
 
   defp types(activities) do
@@ -78,6 +81,9 @@ defmodule YTDWeb.IndexLive do
   defp fetching_message([_activity]), do: fetching_message(1, "activity")
   defp fetching_message(activities), do: fetching_message(length(activities), "activities")
   defp fetching_message(count, noun), do: "#{count} #{noun} loaded. Fetching new activities …"
+
+  defp latest_activity([]), do: nil
+  defp latest_activity(activities), do: Enum.max_by(activities, & &1.start_date, DateTime)
 
   defp metres_to_unit(metres, "miles"), do: Float.round(metres / 1609.34, 1)
   defp metres_to_unit(metres, "km"), do: Float.round(metres / 1000, 1)
