@@ -1,5 +1,5 @@
 .flex.justify-center.items-center
-  .m-2.max-w-lg
+  .m-2.w-144
     hr class="dark:bg-strava-orange dark:border-strava-orange"
     form.flex.flex-row phx-change="select"
       .flex.flex-1

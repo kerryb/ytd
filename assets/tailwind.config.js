@@ -10,7 +10,10 @@ module.exports = {
     extend: {
       colors: {
         'strava-orange': '#fc4c02',
-      }
+      },
+       spacing: {
+         '144': '36rem'
+       }      
     },
   },
   variants: {
