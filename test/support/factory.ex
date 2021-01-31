@@ -13,7 +13,9 @@ defmodule YTD.Factory do
     %User{
       athlete_id: sequence(:athlete_id, &(10_000_000 + &1)),
       access_token: sequence(:access_token, &"#{20_000_000 + &1}"),
-      refresh_token: sequence(:refresh_token, &"#{30_000_000 + &1}")
+      refresh_token: sequence(:refresh_token, &"#{30_000_000 + &1}"),
+      selected_activity_type: Enum.random(~w[Run Ride Swim Walk]),
+      selected_unit: Enum.random(~w[miles km])
     }
   end
 

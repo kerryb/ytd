@@ -4,13 +4,15 @@ defmodule YTDWeb.IndexLiveTest do
   import Plug.Conn
   import Phoenix.{ConnTest, LiveViewTest}
 
+  alias Ecto.Changeset
   alias Phoenix.PubSub
+  alias YTD.Repo
 
   @endpoint YTDWeb.Endpoint
 
   describe "YTDWeb.IndexLive" do
     setup %{conn: conn} do
-      user = insert(:user)
+      user = insert(:user, selected_activity_type: "Run", selected_unit: "miles")
 
       conn =
         conn
@@ -28,6 +30,18 @@ defmodule YTDWeb.IndexLiveTest do
     test "initially displays 0.0 miles", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       assert has_element?(view, "#ytd-total", "0.0")
+    end
+
+    test "uses the saved selection for activity type", %{conn: conn, user: user} do
+      user |> Changeset.change(selected_activity_type: "Ride") |> Repo.update!()
+      {:ok, view, _html} = live(conn, "/")
+      assert has_element?(view, "#type option[selected]", "Ride")
+    end
+
+    test "uses the saved selection for unit", %{conn: conn, user: user} do
+      user |> Changeset.change(selected_unit: "km") |> Repo.update!()
+      {:ok, view, _html} = live(conn, "/")
+      assert has_element?(view, "#unit option[selected]", "km")
     end
 
     test "broadcasts a :get_activities message", %{conn: conn, user: user} do
@@ -67,7 +81,7 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#ytd-total", "9.3")
     end
 
-    test "updates the mileage when a new  activity is received", %{conn: conn, user: user} do
+    test "updates the mileage when a new activity is received", %{conn: conn, user: user} do
       existing_activity = build(:activity, type: "Run", distance: 5_000.0)
       new_activity = build(:activity, type: "Run", distance: 10_000.0)
 
@@ -162,6 +176,17 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#ytd-latest-activity-name", "Afternoon ride")
     end
 
+    test "broadcasts an event to the users channel when the user switches activity type",
+         %{
+           conn: conn,
+           user: user
+         } do
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.subscribe(:ytd, "users")
+      view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
+      assert_receive {:activity_type_changed, ^user, "Ride"}
+    end
+
     test "allows the units to be changed to miles or km", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       PubSub.subscribe(:ytd, "user:#{user.id}")
@@ -170,6 +195,16 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#ytd-total", "3.1")
       view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
       assert has_element?(view, "#ytd-total", "5.0")
+    end
+
+    test "broadcasts an event to the users channel when the user changes unit", %{
+      conn: conn,
+      user: user
+    } do
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.subscribe(:ytd, "users")
+      view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
+      assert_receive {:unit_changed, ^user, "km"}
     end
   end
 end

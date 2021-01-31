@@ -69,7 +69,9 @@ CREATE TABLE public.users (
     swim_target integer,
     inserted_at timestamp(0) without time zone NOT NULL,
     updated_at timestamp(0) without time zone NOT NULL,
-    refresh_token text
+    refresh_token text,
+    selected_activity_type text DEFAULT 'Run'::text,
+    selected_unit text DEFAULT 'miles'::text
 );
 
 
@@ -164,3 +166,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20191012151837);
 INSERT INTO public."schema_migrations" (version) VALUES (20200816140355);
 INSERT INTO public."schema_migrations" (version) VALUES (20200816184009);
 INSERT INTO public."schema_migrations" (version) VALUES (20200817213538);
+INSERT INTO public."schema_migrations" (version) VALUES (20210131134621);

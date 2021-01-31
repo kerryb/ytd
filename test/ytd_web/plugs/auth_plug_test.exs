@@ -23,7 +23,7 @@ defmodule YTDWeb.AuthPlugTest do
   describe "YTDWeb.AuthPlug.get_user_if_signed_in/2" do
     test "assigns the athlete ID if it is present in the session and the user is in the database",
          %{conn: conn} do
-      stub(UsersMock, :get_user_from_athlete_id, fn @athlete_id -> %User{} end)
+      stub(UsersMock, :get_user_from_athlete_id, fn @athlete_id -> build(:user) end)
 
       conn =
         conn

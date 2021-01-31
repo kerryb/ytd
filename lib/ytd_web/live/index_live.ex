@@ -23,9 +23,9 @@ defmodule YTDWeb.IndexLive do
      assign(socket,
        user: user,
        activities: [],
-       types: [],
-       type: "Run",
-       unit: "miles",
+       types: [user.selected_activity_type],
+       type: user.selected_activity_type,
+       unit: user.selected_unit,
        ytd: 0.0,
        info: "Loading activities …",
        latest: nil
@@ -36,11 +36,13 @@ defmodule YTDWeb.IndexLive do
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket) do
     ytd = total_distance(socket.assigns.activities, type, socket.assigns.unit)
     latest = latest_activity(socket.assigns.activities, type)
+    PubSub.broadcast!(:ytd, "users", {:activity_type_changed, socket.assigns.user, type})
     {:noreply, assign(socket, type: type, ytd: ytd, latest: latest)}
   end
 
   def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket) do
     ytd = total_distance(socket.assigns.activities, socket.assigns.type, unit)
+    PubSub.broadcast!(:ytd, "users", {:unit_changed, socket.assigns.user, unit})
     {:noreply, assign(socket, unit: unit, ytd: ytd)}
   end
 

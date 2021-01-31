@@ -10,7 +10,7 @@ defmodule YTD.Users do
 
   alias Phoenix.PubSub
   alias YTD.Repo
-  alias YTD.Users.{Create, Queries, UpdateTokens}
+  alias YTD.Users.{Create, Queries, UpdateSelectedActivityType, UpdateSelectedUnit, UpdateTokens}
 
   @spec start_link(any()) :: GenServer.on_start()
   def start_link(_arg) do
@@ -39,6 +39,20 @@ defmodule YTD.Users do
   @impl GenServer
   def handle_info({:token_refreshed, user, tokens}, state) do
     user |> UpdateTokens.call(tokens) |> Repo.transaction()
+    # Just for the test really
+    PubSub.broadcast!(:ytd, "user-updates", {:updated, user})
+    {:noreply, state}
+  end
+
+  def handle_info({:activity_type_changed, user, type}, state) do
+    user |> UpdateSelectedActivityType.call(type) |> Repo.transaction()
+    # Just for the test really
+    PubSub.broadcast!(:ytd, "user-updates", {:updated, user})
+    {:noreply, state}
+  end
+
+  def handle_info({:unit_changed, user, type}, state) do
+    user |> UpdateSelectedUnit.call(type) |> Repo.transaction()
     # Just for the test really
     PubSub.broadcast!(:ytd, "user-updates", {:updated, user})
     {:noreply, state}
