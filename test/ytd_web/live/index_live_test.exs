@@ -105,9 +105,21 @@ defmodule YTDWeb.IndexLiveTest do
            user: user
          } do
       activities = [
-        build(:activity, name: "Morning run", type: "Run", start_date: ~U[2010-01-30 09:00:00Z]),
-        build(:activity, name: "Evening run", type: "Run", start_date: ~U[2010-01-30 19:00:00Z]),
-        build(:activity, name: "Night ride", type: "Ride", start_date: ~U[2010-01-30 22:00:00Z])
+        build(:activity,
+          name: "Morning run",
+          type: "Run",
+          start_date: Timex.shift(DateTime.utc_now(), days: -3)
+        ),
+        build(:activity,
+          name: "Evening run",
+          type: "Run",
+          start_date: Timex.shift(DateTime.utc_now(), days: -2)
+        ),
+        build(:activity,
+          name: "Night ride",
+          type: "Ride",
+          start_date: Timex.shift(DateTime.utc_now(), days: -1)
+        )
       ]
 
       PubSub.subscribe(:ytd, "user:#{user.id}")
@@ -115,7 +127,7 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
       PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
       assert has_element?(view, "#ytd-latest-activity-name", "Evening run")
-      assert has_element?(view, "#ytd-latest-activity-date", "Saturday, 7.00pm")
+      assert has_element?(view, "#ytd-latest-activity-date", "2 days ago")
     end
 
     test "shows the correct total when the user switches activity type", %{conn: conn, user: user} do

@@ -29,5 +29,5 @@
         ' Latest:
         span#ytd-latest-activity-name.font-bold> = @latest.name
         | (
-        span#ytd-latest-activity-date = Timex.format!(@latest.start_date, "{WDfull}, {h12}.{m}{am}")
+        span#ytd-latest-activity-date = Timex.format!(@latest.start_date, "{relative}", :relative)
         | )
