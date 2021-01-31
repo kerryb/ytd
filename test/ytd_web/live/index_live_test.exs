@@ -99,7 +99,7 @@ defmodule YTDWeb.IndexLiveTest do
       refute has_element?(view, "#ytd-info")
     end
 
-    test "shows the latet activity of the selected type when all activities have been received",
+    test "shows the latest activity of the selected type when all activities have been received",
          %{
            conn: conn,
            user: user
