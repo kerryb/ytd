@@ -2,15 +2,15 @@ defmodule YTD.StatsTest do
   use ExUnit.Case
   alias YTD.Stats
 
-  describe "YTD.Stats.calculate/3, when given a target" do
-    test "returns the weekly average, given a distance and date" do
+  describe "YTD.Stats.calculate/3, when given a target," do
+    test "returns the weekly average to 1dp, given a distance and date" do
       stats = Stats.calculate(123, ~D[2017-04-15])
-      assert_in_delta(stats.weekly_average, 8.2, 0.1)
+      assert_in_delta(stats.weekly_average, 8.2, 0.0001)
     end
 
-    test "returns the estimated annual total, given a distance and date" do
+    test "returns the estimated annual total to 1dp, given a distance and date" do
       stats = Stats.calculate(123, ~D[2017-04-15])
-      assert_in_delta(stats.projected_annual, 427.6, 0.1)
+      assert_in_delta(stats.projected_annual, 427.6, 0.0001)
     end
 
     test "accounts for leap years when calculating projected total" do
@@ -30,7 +30,7 @@ defmodule YTD.StatsTest do
     end
 
     test "reports not on target if the projected distance is below the target" do
-      stats = Stats.calculate(123, ~D[2017-04-15], 427.6)
+      stats = Stats.calculate(123, ~D[2017-04-15], 427.7)
       refute stats.on_target?
     end
 
@@ -39,13 +39,13 @@ defmodule YTD.StatsTest do
       assert stats.estimated_target_completion == ~D[2017-12-08]
     end
 
-    test "returns the weekly average needed from now to hit the target" do
-      stats = Stats.calculate(123, ~D[2017-04-15], 400)
-      assert_in_delta(stats.required_average, 7.5, 0.1)
+    test "returns the weekly average needed from now to hit the target, to 1dp" do
+      stats = Stats.calculate(123, ~D[2017-04-15], 456)
+      assert_in_delta(stats.required_average, 8.9, 0.0001)
     end
   end
 
-  describe "YTD.Stats.calculate/3, when not given a target" do
+  describe "YTD.Stats.calculate/3, when not given a target," do
     test "returns nil for on target" do
       stats = Stats.calculate(123, ~D[2017-04-15])
       assert stats.on_target? == nil

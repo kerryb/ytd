@@ -69,7 +69,7 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#ytd-info", "0 activities loaded. Fetching new activities …")
     end
 
-    test "updates the mileage when existing activities are received", %{conn: conn, user: user} do
+    test "updates the distance when existing activities are received", %{conn: conn, user: user} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
         build(:activity, type: "Run", distance: 10_000.0)
@@ -81,7 +81,22 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#ytd-total", "9.3")
     end
 
-    test "updates the mileage when a new activity is received", %{conn: conn, user: user} do
+    test "updates the stats when existing activities are received", %{conn: conn, user: user} do
+      activities = [
+        build(:activity, type: "Run", distance: 5_000.0),
+        build(:activity, type: "Run", distance: 10_000.0)
+      ]
+
+      PubSub.subscribe(:ytd, "user:#{user.id}")
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
+      assert has_element?(view, "#ytd-total", "9.3")
+      avg_element = view |> element("#ytd-weekly-average") |> render()
+      [avg] = Regex.run(~r/>(\d+\.\d)</, avg_element, capture: :all_but_first)
+      refute avg == "0.0"
+    end
+
+    test "updates the distance when a new activity is received", %{conn: conn, user: user} do
       existing_activity = build(:activity, type: "Run", distance: 5_000.0)
       new_activity = build(:activity, type: "Run", distance: 10_000.0)
 
@@ -90,6 +105,19 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
       assert has_element?(view, "#ytd-total", "9.3")
+    end
+
+    test "updates the stats when a new activity is received", %{conn: conn, user: user} do
+      existing_activity = build(:activity, type: "Run", distance: 5_000.0)
+      new_activity = build(:activity, type: "Run", distance: 10_000.0)
+
+      PubSub.subscribe(:ytd, "user:#{user.id}")
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
+      avg_element_1 = view |> element("#ytd-weekly-average") |> render()
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
+      avg_element_2 = view |> element("#ytd-weekly-average") |> render()
+      refute avg_element_1 == avg_element_2
     end
 
     test "updates the message when a new activity is received", %{conn: conn, user: user} do

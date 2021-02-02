@@ -6,7 +6,7 @@ defmodule YTDWeb.IndexLive do
   use YTDWeb, :live_view
 
   alias Phoenix.PubSub
-  alias YTD.Users
+  alias YTD.{Stats, Users}
 
   require Logger
 
@@ -27,6 +27,7 @@ defmodule YTDWeb.IndexLive do
        type: user.selected_activity_type,
        unit: user.selected_unit,
        ytd: 0.0,
+       stats: Stats.calculate(0.0, Date.utc_today()),
        info: "Loading activities …",
        latest: nil
      )}
@@ -49,17 +50,23 @@ defmodule YTDWeb.IndexLive do
   @impl true
   def handle_info({:existing_activities, activities}, socket) do
     ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
+    stats = Stats.calculate(ytd, Date.utc_today())
     types = types(activities)
     info = fetching_message(activities)
-    {:noreply, assign(socket, activities: activities, types: types, ytd: ytd, info: info)}
+
+    {:noreply,
+     assign(socket, activities: activities, types: types, ytd: ytd, stats: stats, info: info)}
   end
 
   def handle_info({:new_activity, activity}, socket) do
     activities = [activity | socket.assigns.activities]
     ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
+    stats = Stats.calculate(ytd, Date.utc_today())
     types = types(activities)
     info = fetching_message(activities)
-    {:noreply, assign(socket, activities: activities, types: types, ytd: ytd, info: info)}
+
+    {:noreply,
+     assign(socket, activities: activities, types: types, ytd: ytd, stats: stats, info: info)}
   end
 
   def handle_info(:all_activities_fetched, socket) do

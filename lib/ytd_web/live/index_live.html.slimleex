@@ -1,6 +1,6 @@
 .flex.justify-center.items-center
   .m-2.w-144
-    hr class="dark:bg-strava-orange dark:border-strava-orange"
+    hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
     form.flex.flex-row phx-change="select"
       .flex.flex-1
         select#type class="bg-strava-orange dark:bg-black outline-none" name="type"
@@ -16,18 +16,28 @@
               option selected=true = unit
             - else
               option = unit
-    hr class="dark:bg-strava-orange dark:border-strava-orange"
+
+    hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
+
     p.font-thin.text-2xl Year to date:
     p class="text-5xl sm:text-7xl"
       span#ytd-total.font-extrabold> = @ytd
       span.font-thin = @unit
-    hr class="dark:bg-strava-orange dark:border-strava-orange"
-    = if @info do
-      #ytd-info class="text-gray-300 dark:text-gray-700 text-sm font-light" = @info
+    p.font-thin.text-2xl
+      ' (That&rsquo;s
+      span#ytd-weekly-average.font-bold> = @stats.weekly_average
+      => @unit
+      ' a week)
+
     = if @latest do
+      hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
       #ytd-latest-activity.text-sm.font-thin
         ' Latest:
         span#ytd-latest-activity-name.font-bold> = @latest.name
         | (
         span#ytd-latest-activity-date = Timex.format!(@latest.start_date, "{relative}", :relative)
         | )
+
+    hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
+    = if @info do
+      #ytd-info class="text-gray-300 dark:text-gray-700 text-sm font-light" = @info

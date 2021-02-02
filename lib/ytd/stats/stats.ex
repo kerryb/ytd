@@ -25,7 +25,7 @@ defmodule YTD.Stats do
     :required_average
   ]
 
-  @spec calculate(float(), DateTime.t(), integer() | nil) :: t()
+  @spec calculate(float(), Date.t(), integer() | nil) :: t()
   def calculate(ytd, now, target \\ nil)
 
   def calculate(ytd, now, nil) do
@@ -46,13 +46,13 @@ defmodule YTD.Stats do
   end
 
   defp projected_annual(ytd, now) do
-    ytd * days_in_year(now) / Timex.day(now)
+    Float.round(ytd * days_in_year(now) / Timex.day(now), 1)
   end
 
   defp days_in_year(now), do: if(Timex.is_leap?(now), do: 366, else: 365)
 
   defp weekly_average(ytd, now) do
-    ytd / Timex.day(now) * 7
+    Float.round(ytd / Timex.day(now) * 7, 1)
   end
 
   defp on_target?(ytd, now, target), do: projected_annual(ytd, now) >= target
@@ -69,6 +69,6 @@ defmodule YTD.Stats do
 
   defp required_average(ytd, now, target) do
     days_left = Timex.diff(Timex.end_of_year(now), now, :days) + 1
-    (target - ytd) / days_left * 7
+    Float.round((target - ytd) / days_left * 7, 1)
   end
 end
