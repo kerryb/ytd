@@ -29,8 +29,16 @@
       => @unit
       ' a week)
 
-    = if @latest do
+    = if @stats.projected_annual do
       hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
+      p.font-thin.text-2xl Projected year total:
+      p class="text-5xl sm:text-7xl"
+        span#ytd-projected-annual.font-extrabold> = @stats.projected_annual
+        span.font-thin = @unit
+
+    hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
+
+    = if @latest do
       #ytd-latest-activity.text-sm.font-thin
         ' Latest:
         span#ytd-latest-activity-name.font-bold> = @latest.name
@@ -38,6 +46,5 @@
         span#ytd-latest-activity-date = Timex.format!(@latest.start_date, "{relative}", :relative)
         | )
 
-    hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
     = if @info do
       #ytd-info class="text-gray-300 dark:text-gray-700 text-sm font-light" = @info

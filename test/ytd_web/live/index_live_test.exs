@@ -94,6 +94,12 @@ defmodule YTDWeb.IndexLiveTest do
       avg_element = view |> element("#ytd-weekly-average") |> render()
       [avg] = Regex.run(~r/>(\d+\.\d)</, avg_element, capture: :all_but_first)
       refute avg == "0.0"
+      projected_annual_element = view |> element("#ytd-projected-annual") |> render()
+
+      [projected_annual] =
+        Regex.run(~r/>(\d+\.\d)</, projected_annual_element, capture: :all_but_first)
+
+      refute projected_annual == "0.0"
     end
 
     test "updates the distance when a new activity is received", %{conn: conn, user: user} do
