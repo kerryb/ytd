@@ -24,12 +24,12 @@ defmodule YTDWeb.IndexLiveTest do
 
     test "initially displays a 'loading activities' message", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
-      assert has_element?(view, "#ytd-info", "Loading activities …")
+      assert has_element?(view, "#info", "Loading activities …")
     end
 
     test "initially displays 0.0 miles", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
-      assert has_element?(view, "#ytd-total", "0.0")
+      assert has_element?(view, "#total", "0.0")
     end
 
     test "uses the saved selection for activity type", %{conn: conn, user: user} do
@@ -65,7 +65,7 @@ defmodule YTDWeb.IndexLiveTest do
 
       assert has_element?(
                view,
-               "#ytd-info",
+               "#info",
                "2 activities loaded. Fetching new activities …"
              )
     end
@@ -77,7 +77,7 @@ defmodule YTDWeb.IndexLiveTest do
 
       assert has_element?(
                view,
-               "#ytd-info",
+               "#info",
                "0 activities loaded. Fetching new activities …"
              )
     end
@@ -91,7 +91,7 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
-      assert has_element?(view, "#ytd-total", "9.3")
+      assert has_element?(view, "#total", "9.3")
     end
 
     test "updates the stats when existing activities are received", %{conn: conn, user: user} do
@@ -103,11 +103,11 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
-      assert has_element?(view, "#ytd-total", "9.3")
-      avg_element = view |> element("#ytd-weekly-average") |> render()
+      assert has_element?(view, "#total", "9.3")
+      avg_element = view |> element("#weekly-average") |> render()
       [avg] = Regex.run(~r/>(\d+\.\d)</, avg_element, capture: :all_but_first)
       refute avg == "0.0"
-      projected_annual_element = view |> element("#ytd-projected-annual") |> render()
+      projected_annual_element = view |> element("#projected-annual") |> render()
 
       [projected_annual] =
         Regex.run(~r/>(\d+\.\d)</, projected_annual_element, capture: :all_but_first)
@@ -123,7 +123,7 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
-      assert has_element?(view, "#ytd-total", "9.3")
+      assert has_element?(view, "#total", "9.3")
     end
 
     test "updates the stats when a new activity is received", %{conn: conn, user: user} do
@@ -133,9 +133,9 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
-      avg_element_1 = view |> element("#ytd-weekly-average") |> render()
+      avg_element_1 = view |> element("#weekly-average") |> render()
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
-      avg_element_2 = view |> element("#ytd-weekly-average") |> render()
+      avg_element_2 = view |> element("#weekly-average") |> render()
       refute avg_element_1 == avg_element_2
     end
 
@@ -150,7 +150,7 @@ defmodule YTDWeb.IndexLiveTest do
 
       assert has_element?(
                view,
-               "#ytd-info",
+               "#info",
                "2 activities loaded. Fetching new activities …"
              )
     end
@@ -162,7 +162,7 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
-      refute has_element?(view, "#ytd-info")
+      refute has_element?(view, "#info")
     end
 
     test "shows the latest activity of the selected type when all activities have been received",
@@ -192,8 +192,8 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
       PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
-      assert has_element?(view, "#ytd-latest-activity-name", "Evening run")
-      assert has_element?(view, "#ytd-latest-activity-date", "2 days ago")
+      assert has_element?(view, "#latest-activity-name", "Evening run")
+      assert has_element?(view, "#latest-activity-date", "2 days ago")
     end
 
     test "shows the correct total when the user switches activity type", %{conn: conn, user: user} do
@@ -205,9 +205,9 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
-      assert has_element?(view, "#ytd-total", "3.1")
+      assert has_element?(view, "#total", "3.1")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
-      assert has_element?(view, "#ytd-total", "6.2")
+      assert has_element?(view, "#total", "6.2")
     end
 
     test "updates the stats when the user switches activity type", %{conn: conn, user: user} do
@@ -219,9 +219,9 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
-      avg_element_1 = view |> element("#ytd-weekly-average") |> render()
+      avg_element_1 = view |> element("#weekly-average") |> render()
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
-      avg_element_2 = view |> element("#ytd-weekly-average") |> render()
+      avg_element_2 = view |> element("#weekly-average") |> render()
       refute avg_element_1 == avg_element_2
     end
 
@@ -238,9 +238,9 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
       PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
-      assert has_element?(view, "#ytd-latest-activity-name", "Morning run")
+      assert has_element?(view, "#latest-activity-name", "Morning run")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
-      assert has_element?(view, "#ytd-latest-activity-name", "Afternoon ride")
+      assert has_element?(view, "#latest-activity-name", "Afternoon ride")
     end
 
     test "broadcasts an event to the users channel when the user switches activity type",
@@ -259,9 +259,9 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
-      assert has_element?(view, "#ytd-total", "3.1")
+      assert has_element?(view, "#total", "3.1")
       view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
-      assert has_element?(view, "#ytd-total", "5.0")
+      assert has_element?(view, "#total", "5.0")
     end
 
     test "broadcasts an event to the users channel when the user changes unit", %{
@@ -278,9 +278,9 @@ defmodule YTDWeb.IndexLiveTest do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
-      avg_element_1 = view |> element("#ytd-weekly-average") |> render()
+      avg_element_1 = view |> element("#weekly-average") |> render()
       view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
-      avg_element_2 = view |> element("#ytd-weekly-average") |> render()
+      avg_element_2 = view |> element("#weekly-average") |> render()
       refute avg_element_1 == avg_element_2
     end
 
@@ -291,14 +291,14 @@ defmodule YTDWeb.IndexLiveTest do
          } do
       PubSub.subscribe(:ytd, "activities")
       {:ok, view, _html} = live(conn, "/")
-      view |> element("button#ytd-refresh") |> render_click()
+      view |> element("button#refresh") |> render_click()
       assert_receive {:refresh_activities, ^user}
     end
 
     test "shows a message when the refresh button is clicked", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
-      view |> element("button#ytd-refresh") |> render_click()
-      assert has_element?(view, "#ytd-info", "Refreshing activities …")
+      view |> element("button#refresh") |> render_click()
+      assert has_element?(view, "#info", "Refreshing activities …")
     end
 
     test "broadcasts a :reset_activities message on the activities channel when the refresh button is shift-clicked",
@@ -320,7 +320,7 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
       render_click(view, :refresh, %{"shift_key" => true})
-      assert has_element?(view, "#ytd-count", "0")
+      assert has_element?(view, "#count", "0")
     end
 
     test "resets the ytd total to zero when the refresh button is shift-clicked", %{
@@ -331,13 +331,13 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
       render_click(view, :refresh, %{"shift_key" => true})
-      assert has_element?(view, "#ytd-total", "0.0")
+      assert has_element?(view, "#total", "0.0")
     end
 
     test "shows a message when the refresh button is shift-clicked", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       render_click(view, :refresh, %{"shift_key" => true})
-      assert has_element?(view, "#ytd-info", "Re-fetching all activities …")
+      assert has_element?(view, "#info", "Re-fetching all activities …")
     end
   end
 end
