@@ -76,9 +76,7 @@ defmodule YTD.Activities do
   end
 
   defp broadcast_get_new_activities(user, [] = _activities) do
-    {:ok, beginning_of_year, _offset} =
-      DateTime.from_iso8601("#{Date.utc_today().year}-01-01T00:00:00Z")
-
+    beginning_of_year = Timex.beginning_of_year(DateTime.utc_now())
     PubSub.broadcast!(:ytd, "strava", {:get_new_activities, user, beginning_of_year})
   end
 
