@@ -36,15 +36,17 @@ defmodule YTDWeb.IndexLive do
   @impl true
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket) do
     ytd = total_distance(socket.assigns.activities, type, socket.assigns.unit)
+    stats = Stats.calculate(ytd, Date.utc_today())
     latest = latest_activity(socket.assigns.activities, type)
     PubSub.broadcast!(:ytd, "users", {:activity_type_changed, socket.assigns.user, type})
-    {:noreply, assign(socket, type: type, ytd: ytd, latest: latest)}
+    {:noreply, assign(socket, type: type, ytd: ytd, stats: stats, latest: latest)}
   end
 
   def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket) do
     ytd = total_distance(socket.assigns.activities, socket.assigns.type, unit)
+    stats = Stats.calculate(ytd, Date.utc_today())
     PubSub.broadcast!(:ytd, "users", {:unit_changed, socket.assigns.user, unit})
-    {:noreply, assign(socket, unit: unit, ytd: ytd)}
+    {:noreply, assign(socket, unit: unit, ytd: ytd, stats: stats)}
   end
 
   @impl true

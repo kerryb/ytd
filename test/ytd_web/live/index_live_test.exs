@@ -192,6 +192,21 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#ytd-total", "6.2")
     end
 
+    test "updates the stats when the user switches activity type", %{conn: conn, user: user} do
+      activities = [
+        build(:activity, type: "Run", distance: 5_000.0),
+        build(:activity, type: "Ride", distance: 10_000.0)
+      ]
+
+      PubSub.subscribe(:ytd, "user:#{user.id}")
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
+      avg_element_1 = view |> element("#ytd-weekly-average") |> render()
+      view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
+      avg_element_2 = view |> element("#ytd-weekly-average") |> render()
+      refute avg_element_1 == avg_element_2
+    end
+
     test "shows the correct latest activity when the user switches activity type", %{
       conn: conn,
       user: user
@@ -239,6 +254,16 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.subscribe(:ytd, "users")
       view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
       assert_receive {:unit_changed, ^user, "km"}
+    end
+
+    test "updates the stats when the user changes unit", %{conn: conn, user: user} do
+      activity = build(:activity, type: "Run", distance: 5_000.0)
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      avg_element_1 = view |> element("#ytd-weekly-average") |> render()
+      view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
+      avg_element_2 = view |> element("#ytd-weekly-average") |> render()
+      refute avg_element_1 == avg_element_2
     end
   end
 end
