@@ -49,6 +49,16 @@ defmodule YTDWeb.IndexLive do
     {:noreply, assign(socket, unit: unit, ytd: ytd, stats: stats)}
   end
 
+  def handle_event("refresh", %{"shift_key" => true}, socket) do
+    PubSub.broadcast!(:ytd, "activities", {:reset_activities, socket.assigns.user})
+    {:noreply, assign(socket, activities: [], ytd: 0.0, info: "Re-fetching all activities …")}
+  end
+
+  def handle_event("refresh", _params, socket) do
+    PubSub.broadcast!(:ytd, "activities", {:refresh_activities, socket.assigns.user})
+    {:noreply, assign(socket, info: "Refreshing activities …")}
+  end
+
   @impl true
   def handle_info({:existing_activities, activities}, socket) do
     ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
@@ -92,7 +102,9 @@ defmodule YTDWeb.IndexLive do
 
   defp fetching_message([_activity]), do: fetching_message(1, "activity")
   defp fetching_message(activities), do: fetching_message(length(activities), "activities")
-  defp fetching_message(count, noun), do: "#{count} #{noun} loaded. Fetching new activities …"
+
+  defp fetching_message(count, noun),
+    do: "#{count} #{noun} loaded. Fetching new activities …"
 
   defp latest_activity([], _type), do: nil
 

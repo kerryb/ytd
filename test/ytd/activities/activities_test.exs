@@ -45,6 +45,49 @@ defmodule YTD.ActivitiesTest do
     end
   end
 
+  describe "YTD.Activities server on receiving {:refresh_activities, user} on the 'activities' channel" do
+    setup do
+      {:ok, _pid} = start_supervised(Activities)
+      :ok
+    end
+
+    test "broadcasts a get_new_activities message, with the latest activity timestamp, to the strava channel" do
+      user = insert(:user)
+      insert(:activity, user: user, start_date: ~U[2021-01-19 14:00:00Z])
+      insert(:activity, user: user, start_date: ~U[2021-01-20 21:00:00Z])
+      PubSub.subscribe(:ytd, "strava")
+      PubSub.broadcast!(:ytd, "activities", {:refresh_activities, user})
+      assert_receive {:get_new_activities, ^user, ~U[2021-01-20 21:00:00Z]}
+    end
+  end
+
+  describe "YTD.Activities server on receiving {:reset_activities, user} on the 'activities' channel" do
+    setup do
+      {:ok, _pid} = start_supervised(Activities)
+      :ok
+    end
+
+    test "deletes all the user's activities" do
+      user = insert(:user)
+      another_user = insert(:user)
+      insert(:activity, user: user)
+      other_user_activity = insert(:activity, user: another_user)
+      PubSub.broadcast!(:ytd, "activities", {:reset_activities, user})
+      assert Repo.all(from a in Activity, select: a.id) == [other_user_activity.id]
+    end
+
+    test "broadcasts a get_new_activities message, with the beginning of the year, to the strava channel" do
+      user = insert(:user)
+      PubSub.subscribe(:ytd, "strava")
+      PubSub.broadcast!(:ytd, "activities", {:reset_activities, user})
+
+      {:ok, beginning_of_year, _offset} =
+        DateTime.from_iso8601("#{Date.utc_today().year}-01-01T00:00:00Z")
+
+      assert_receive {:get_new_activities, ^user, ^beginning_of_year}
+    end
+  end
+
   describe "YTD.Activities server on receiving {:new_activity, user, summary} on the 'activities' channel" do
     setup do
       {:ok, _pid} = start_supervised(Activities)

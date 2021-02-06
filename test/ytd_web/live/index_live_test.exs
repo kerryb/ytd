@@ -44,7 +44,10 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#unit option[selected]", "km")
     end
 
-    test "broadcasts a :get_activities message", %{conn: conn, user: user} do
+    test "broadcasts a :get_activities message on the activities channel on page load", %{
+      conn: conn,
+      user: user
+    } do
       PubSub.subscribe(:ytd, "activities")
       {:ok, _view, _html} = live(conn, "/")
       assert_receive {:get_activities, ^user}
@@ -59,14 +62,24 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
-      assert has_element?(view, "#ytd-info", "2 activities loaded. Fetching new activities …")
+
+      assert has_element?(
+               view,
+               "#ytd-info",
+               "2 activities loaded. Fetching new activities …"
+             )
     end
 
     test "copes with there not being any initial activities", %{conn: conn, user: user} do
       PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, []})
-      assert has_element?(view, "#ytd-info", "0 activities loaded. Fetching new activities …")
+
+      assert has_element?(
+               view,
+               "#ytd-info",
+               "0 activities loaded. Fetching new activities …"
+             )
     end
 
     test "updates the distance when existing activities are received", %{conn: conn, user: user} do
@@ -134,7 +147,12 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
-      assert has_element?(view, "#ytd-info", "2 activities loaded. Fetching new activities …")
+
+      assert has_element?(
+               view,
+               "#ytd-info",
+               "2 activities loaded. Fetching new activities …"
+             )
     end
 
     test "clears the info message when all activities have been received", %{
@@ -264,6 +282,62 @@ defmodule YTDWeb.IndexLiveTest do
       view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
       avg_element_2 = view |> element("#ytd-weekly-average") |> render()
       refute avg_element_1 == avg_element_2
+    end
+
+    test "broadcasts a :refresh_activities message on the activities channel when the refresh button is clicked",
+         %{
+           conn: conn,
+           user: user
+         } do
+      PubSub.subscribe(:ytd, "activities")
+      {:ok, view, _html} = live(conn, "/")
+      view |> element("button#ytd-refresh") |> render_click()
+      assert_receive {:refresh_activities, ^user}
+    end
+
+    test "shows a message when the refresh button is clicked", %{conn: conn} do
+      {:ok, view, _html} = live(conn, "/")
+      view |> element("button#ytd-refresh") |> render_click()
+      assert has_element?(view, "#ytd-info", "Refreshing activities …")
+    end
+
+    test "broadcasts a :reset_activities message on the activities channel when the refresh button is shift-clicked",
+         %{
+           conn: conn,
+           user: user
+         } do
+      PubSub.subscribe(:ytd, "activities")
+      {:ok, view, _html} = live(conn, "/")
+      render_click(view, :refresh, %{"shift_key" => true})
+      assert_receive {:reset_activities, ^user}
+    end
+
+    test "clears the activity list when the refresh button is shift-clicked", %{
+      conn: conn,
+      user: user
+    } do
+      activity = build(:activity, type: "Run", distance: 5_000.0)
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      render_click(view, :refresh, %{"shift_key" => true})
+      assert has_element?(view, "#ytd-count", "0")
+    end
+
+    test "resets the ytd total to zero when the refresh button is shift-clicked", %{
+      conn: conn,
+      user: user
+    } do
+      activity = build(:activity, type: "Run", distance: 5_000.0)
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      render_click(view, :refresh, %{"shift_key" => true})
+      assert has_element?(view, "#ytd-total", "0.0")
+    end
+
+    test "shows a message when the refresh button is shift-clicked", %{conn: conn} do
+      {:ok, view, _html} = live(conn, "/")
+      render_click(view, :refresh, %{"shift_key" => true})
+      assert has_element?(view, "#ytd-info", "Re-fetching all activities …")
     end
   end
 end

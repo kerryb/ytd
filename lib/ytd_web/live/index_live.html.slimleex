@@ -19,7 +19,12 @@
 
     hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
 
-    p.font-thin.text-2xl Year to date:
+    p.font-thin.text-2xl
+      | Year to date (
+      span#ytd-count
+        => length(@activities)
+      = if length(@activities) == 1, do: "activity", else: "activities"
+      ' ):
     p class="text-5xl sm:text-7xl"
       span#ytd-total.font-extrabold> = @ytd
       span.font-thin = @unit
@@ -38,13 +43,21 @@
 
     hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
 
-    = if @latest do
-      #ytd-latest-activity.text-sm.font-thin
-        ' Latest:
-        span#ytd-latest-activity-name.font-bold> = @latest.name
-        | (
-        span#ytd-latest-activity-date = Timex.format!(@latest.start_date, "{relative}", :relative)
-        | )
-
-    = if @info do
-      #ytd-info class="text-gray-300 dark:text-gray-700 text-sm font-light" = @info
+    .flex.flex-row.text-sm
+      .flex.flex-1
+        = cond do
+          - @info ->
+            #ytd-info class="text-gray-300 dark:text-gray-700 text-sm font-light" = @info
+          - @latest ->
+            #ytd-latest-activity.font-thin
+              ' Latest:
+              span#ytd-latest-activity-name.font-bold> = @latest.name
+              | (
+              span#ytd-latest-activity-date = Timex.format!(@latest.start_date, "{relative}", :relative)
+              | )
+          - true ->
+            div
+      div
+        button#ytd-refresh(class="focus:outline-none" phx-click="refresh"
+        title="Fetch new activities. Shift-click to discard all activities and reload everything from Strava.")
+          i.fas.fa-sync
