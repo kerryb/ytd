@@ -72,7 +72,9 @@ defmodule YTD.ActivitiesTest do
       another_user = insert(:user)
       insert(:activity, user: user)
       other_user_activity = insert(:activity, user: another_user)
+      PubSub.subscribe(:ytd, "strava")
       PubSub.broadcast!(:ytd, "activities", {:reset_activities, user})
+      assert_receive {:get_new_activities, _user, _since}
       assert Repo.all(from a in Activity, select: a.id) == [other_user_activity.id]
     end
 
