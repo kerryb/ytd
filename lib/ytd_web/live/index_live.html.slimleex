@@ -29,7 +29,7 @@
       span#total.font-extrabold> = @ytd
       span.font-thin = @unit
     p.font-thin.text-2xl
-      ' (That&rsquo;s
+      ' (That’s
       span#weekly-average.font-bold> = @stats.weekly_average
       => @unit
       ' a week)
