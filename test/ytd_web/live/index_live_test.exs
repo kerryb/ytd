@@ -10,17 +10,19 @@ defmodule YTDWeb.IndexLiveTest do
 
   @endpoint YTDWeb.Endpoint
 
-  describe "YTDWeb.IndexLive" do
-    setup %{conn: conn} do
-      user = insert(:user, selected_activity_type: "Run", selected_unit: "miles")
+  defp authenticate_user(%{conn: conn}) do
+    user = insert(:user, selected_activity_type: "Run", selected_unit: "miles")
 
-      conn =
-        conn
-        |> SessionHelper.prepare_session()
-        |> put_session(:athlete_id, user.athlete_id)
+    conn =
+      conn
+      |> SessionHelper.prepare_session()
+      |> put_session(:athlete_id, user.athlete_id)
 
-      {:ok, conn: conn, user: user}
-    end
+    {:ok, conn: conn, user: user}
+  end
+
+  describe "YTDWeb.IndexLive, initially" do
+    setup :authenticate_user
 
     test "initially displays a 'loading activities' message", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
@@ -52,61 +54,61 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, _view, _html} = live(conn, "/")
       assert_receive {:get_activities, ^user}
     end
+  end
 
-    test "updates the message when existing activities are received", %{conn: conn, user: user} do
-      activities = [
-        build(:activity),
-        build(:activity)
-      ]
+  describe "YTDWeb.IndexLive, when existing activities are received" do
+    setup :authenticate_user
 
-      PubSub.subscribe(:ytd, "user:#{user.id}")
+    test "updates the message", %{conn: conn, user: user} do
+      activities = [build(:activity), build(:activity)]
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
-
-      assert has_element?(
-               view,
-               "#info",
-               "2 activities loaded. Fetching new activities …"
-             )
+      assert has_element?(view, "#info", "2 activities loaded. Fetching new activities …")
     end
 
-    test "copes with there not being any initial activities", %{conn: conn, user: user} do
-      PubSub.subscribe(:ytd, "user:#{user.id}")
+    test "copes with there not being any activities", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, []})
-
-      assert has_element?(
-               view,
-               "#info",
-               "0 activities loaded. Fetching new activities …"
-             )
+      assert has_element?(view, "#info", "0 activities loaded. Fetching new activities …")
     end
 
-    test "updates the distance when existing activities are received", %{conn: conn, user: user} do
+    test "updates the distance", %{conn: conn, user: user} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
         build(:activity, type: "Run", distance: 10_000.0)
       ]
 
-      PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
       assert has_element?(view, "#total", "9.3")
     end
 
-    test "updates the stats when existing activities are received", %{conn: conn, user: user} do
+    test "updates the total distance", %{conn: conn, user: user} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
         build(:activity, type: "Run", distance: 10_000.0)
       ]
 
-      PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
       assert has_element?(view, "#total", "9.3")
+    end
+
+    test "updates the weekly average", %{conn: conn, user: user} do
+      activities = [build(:activity, type: "Run", distance: 5_000.0)]
+
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
       avg_element = view |> element("#weekly-average") |> render()
       [avg] = Regex.run(~r/>(\d+\.\d)</, avg_element, capture: :all_but_first)
       refute avg == "0.0"
+    end
+
+    test "updates the projected annual total", %{conn: conn, user: user} do
+      activities = [build(:activity, type: "Run", distance: 5_000.0)]
+
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
       projected_annual_element = view |> element("#projected-annual") |> render()
 
       [projected_annual] =
@@ -114,23 +116,24 @@ defmodule YTDWeb.IndexLiveTest do
 
       refute projected_annual == "0.0"
     end
+  end
 
-    test "updates the distance when a new activity is received", %{conn: conn, user: user} do
+  describe "YTDWeb.IndexLive, when a new activity is received" do
+    setup :authenticate_user
+
+    test "updates the distance", %{conn: conn, user: user} do
       existing_activity = build(:activity, type: "Run", distance: 5_000.0)
       new_activity = build(:activity, type: "Run", distance: 10_000.0)
 
-      PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
       assert has_element?(view, "#total", "9.3")
     end
 
-    test "updates the stats when a new activity is received", %{conn: conn, user: user} do
+    test "updates the stats", %{conn: conn, user: user} do
       existing_activity = build(:activity, type: "Run", distance: 5_000.0)
       new_activity = build(:activity, type: "Run", distance: 10_000.0)
-
-      PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
       avg_element_1 = view |> element("#weekly-average") |> render()
@@ -139,11 +142,10 @@ defmodule YTDWeb.IndexLiveTest do
       refute avg_element_1 == avg_element_2
     end
 
-    test "updates the message when a new activity is received", %{conn: conn, user: user} do
+    test "updates the info message", %{conn: conn, user: user} do
       existing_activity = build(:activity)
       new_activity = build(:activity)
 
-      PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
@@ -154,22 +156,18 @@ defmodule YTDWeb.IndexLiveTest do
                "2 activities loaded. Fetching new activities …"
              )
     end
+  end
 
-    test "clears the info message when all activities have been received", %{
-      conn: conn,
-      user: user
-    } do
-      PubSub.subscribe(:ytd, "user:#{user.id}")
+  describe "YTDWeb.IndexLive, when all activities have been received" do
+    setup :authenticate_user
+
+    test "clears the info message", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
       refute has_element?(view, "#info")
     end
 
-    test "shows the latest activity of the selected type when all activities have been received",
-         %{
-           conn: conn,
-           user: user
-         } do
+    test "shows the latest activity of the selected type", %{conn: conn, user: user} do
       activities = [
         build(:activity,
           name: "Morning run",
@@ -195,14 +193,17 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#latest-activity-name", "Evening run")
       assert has_element?(view, "#latest-activity-date", "2 days ago")
     end
+  end
 
-    test "shows the correct total when the user switches activity type", %{conn: conn, user: user} do
+  describe "YTDWeb.IndexLive, when the user switches activity type" do
+    setup :authenticate_user
+
+    test "updates the total", %{conn: conn, user: user} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
         build(:activity, type: "Ride", distance: 10_000.0)
       ]
 
-      PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
       assert has_element?(view, "#total", "3.1")
@@ -210,13 +211,12 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#total", "6.2")
     end
 
-    test "updates the stats when the user switches activity type", %{conn: conn, user: user} do
+    test "updates the stats", %{conn: conn, user: user} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
         build(:activity, type: "Ride", distance: 10_000.0)
       ]
 
-      PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
       avg_element_1 = view |> element("#weekly-average") |> render()
@@ -225,16 +225,12 @@ defmodule YTDWeb.IndexLiveTest do
       refute avg_element_1 == avg_element_2
     end
 
-    test "shows the correct latest activity when the user switches activity type", %{
-      conn: conn,
-      user: user
-    } do
+    test "shows the correct latest activity", %{conn: conn, user: user} do
       activities = [
         build(:activity, type: "Run", name: "Morning run", distance: 5_000.0),
         build(:activity, type: "Ride", name: "Afternoon ride", distance: 10_000.0)
       ]
 
-      PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
       PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
@@ -243,20 +239,22 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#latest-activity-name", "Afternoon ride")
     end
 
-    test "broadcasts an event to the users channel when the user switches activity type",
-         %{
-           conn: conn,
-           user: user
-         } do
-      {:ok, view, _html} = live(conn, "/")
+    test "broadcasts an :activity_type_changed event to the users channel", %{
+      conn: conn,
+      user: user
+    } do
       PubSub.subscribe(:ytd, "users")
+      {:ok, view, _html} = live(conn, "/")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
       assert_receive {:activity_type_changed, ^user, "Ride"}
     end
+  end
 
-    test "allows the units to be changed to miles or km", %{conn: conn, user: user} do
+  describe "YTDWeb.IndexLive, when the user cahnges unit" do
+    setup :authenticate_user
+
+    test "updates the total", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
-      PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
       assert has_element?(view, "#total", "3.1")
@@ -264,17 +262,7 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#total", "5.0")
     end
 
-    test "broadcasts an event to the users channel when the user changes unit", %{
-      conn: conn,
-      user: user
-    } do
-      {:ok, view, _html} = live(conn, "/")
-      PubSub.subscribe(:ytd, "users")
-      view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
-      assert_receive {:unit_changed, ^user, "km"}
-    end
-
-    test "updates the stats when the user changes unit", %{conn: conn, user: user} do
+    test "updates the stats", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
@@ -284,7 +272,18 @@ defmodule YTDWeb.IndexLiveTest do
       refute avg_element_1 == avg_element_2
     end
 
-    test "broadcasts a :refresh_activities message on the activities channel when the refresh button is clicked",
+    test "broadcasts a :unit_changed event to the users channel", %{conn: conn, user: user} do
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.subscribe(:ytd, "users")
+      view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
+      assert_receive {:unit_changed, ^user, "km"}
+    end
+  end
+
+  describe "YTDWeb.IndexLive, when the refresh button is clicked" do
+    setup :authenticate_user
+
+    test "broadcasts a :refresh_activities message on the activities channel",
          %{
            conn: conn,
            user: user
@@ -295,27 +294,27 @@ defmodule YTDWeb.IndexLiveTest do
       assert_receive {:refresh_activities, ^user}
     end
 
-    test "shows a message when the refresh button is clicked", %{conn: conn} do
+    test "shows an info message", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       view |> element("button#refresh") |> render_click()
       assert has_element?(view, "#info", "Refreshing activities …")
     end
+  end
 
-    test "broadcasts a :reset_activities message on the activities channel when the refresh button is shift-clicked",
-         %{
-           conn: conn,
-           user: user
-         } do
+  describe "YTDWeb.IndexLive, when the refresh button is shift-clicked" do
+    setup :authenticate_user
+
+    test "broadcasts a :reset_activities message on the activities channel", %{
+      conn: conn,
+      user: user
+    } do
       PubSub.subscribe(:ytd, "activities")
       {:ok, view, _html} = live(conn, "/")
       render_click(view, :refresh, %{"shift_key" => true})
       assert_receive {:reset_activities, ^user}
     end
 
-    test "clears the activity list when the refresh button is shift-clicked", %{
-      conn: conn,
-      user: user
-    } do
+    test "clears the activity list", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
@@ -323,10 +322,7 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#count", "0")
     end
 
-    test "resets the ytd total to zero when the refresh button is shift-clicked", %{
-      conn: conn,
-      user: user
-    } do
+    test "resets the ytd total to zero", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
@@ -334,7 +330,7 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#total", "0.0")
     end
 
-    test "shows a message when the refresh button is shift-clicked", %{conn: conn} do
+    test "shows an info message", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       render_click(view, :refresh, %{"shift_key" => true})
       assert has_element?(view, "#info", "Re-fetching all activities …")
