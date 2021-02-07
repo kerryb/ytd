@@ -52,21 +52,33 @@ defmodule YTDWeb.AuthPlug do
     conn
     |> fetch_query_params()
     |> case do
-      %{query_params: %{"code" => code}} = conn ->
-        tokens = strava.get_tokens_from_code(code)
-        users.save_user_tokens(tokens)
-
-        conn
-        |> put_session("athlete_id", tokens.athlete_id)
-        |> Phoenix.Controller.redirect(to: "/")
-        |> halt()
+      %{query_params: %{"code" => code, "scope" => scope}} = conn ->
+        if scope =~ ~r/\bactivity:read\b/ do
+          sign_in(conn, code, users, strava)
+        else
+          render_pre_auth_page(conn, strava)
+        end
 
       conn ->
-        conn
-        |> Controller.put_view(AuthView)
-        |> Conn.assign(:auth_url, strava.authorize_url)
-        |> Controller.render("index.html")
-        |> halt()
+        render_pre_auth_page(conn, strava)
     end
+  end
+
+  defp sign_in(conn, code, users, strava) do
+    tokens = strava.get_tokens_from_code(code)
+    users.save_user_tokens(tokens)
+
+    conn
+    |> put_session("athlete_id", tokens.athlete_id)
+    |> Phoenix.Controller.redirect(to: "/")
+    |> halt()
+  end
+
+  defp render_pre_auth_page(conn, strava) do
+    conn
+    |> Controller.put_view(AuthView)
+    |> Conn.assign(:auth_url, strava.authorize_url)
+    |> Controller.render("index.html")
+    |> halt()
   end
 end

@@ -1,3 +1,4 @@
+# credo:disable-for-this-file /Pipe/
 defmodule YTDWeb.AuthPlugTest do
   use YTDWeb.ConnCase, async: true
 
@@ -66,7 +67,7 @@ defmodule YTDWeb.AuthPlugTest do
     end
   end
 
-  describe "YTDWeb.AuthPlug.authorize_with_strava_if_not_signed_in/2, when there's a code param" do
+  describe "YTDWeb.AuthPlug.authorize_with_strava_if_not_signed_in/2, when there's a code param and required scope" do
     setup do
       tokens = %Tokens{
         athlete_id: @athlete_id,
@@ -77,8 +78,10 @@ defmodule YTDWeb.AuthPlugTest do
       stub(StravaMock, :get_tokens_from_code, fn @code -> tokens end)
       stub(UsersMock, :save_user_tokens, fn ^tokens -> {:ok, %User{}} end)
 
-      # credo:disable-for-next-line /Pipe/
-      conn = build_conn(:get, "/", %{"code" => @code}) |> init_test_session([])
+      conn =
+        build_conn(:get, "/", %{"code" => @code, "scope" => "activity:read,maybe-other-scopes"})
+        |> init_test_session([])
+
       %{conn: conn, tokens: tokens}
     end
 
@@ -109,8 +112,48 @@ defmodule YTDWeb.AuthPlugTest do
     end
   end
 
+  describe "YTDWeb.AuthPlug.authorize_with_strava_if_not_signed_in/2, when there's a code param but not the required scope" do
+    test "renders the pre-authentication page" do
+      tokens = %Tokens{
+        athlete_id: @athlete_id,
+        access_token: @access_token,
+        refresh_token: @refresh_token
+      }
+
+      stub(StravaMock, :get_tokens_from_code, fn @code -> tokens end)
+      stub(UsersMock, :save_user_tokens, fn ^tokens -> {:ok, %User{}} end)
+
+      conn =
+        build_conn(:get, "/", %{"code" => @code, "scope" => "only-other-scopes"})
+        |> init_test_session([])
+
+      %{conn: conn, tokens: tokens}
+      stub(StravaMock, :authorize_url, fn -> @strava_auth_url end)
+
+      %{status: 200} =
+        conn =
+        AuthPlug.authorize_with_strava_if_not_signed_in(conn, users: UsersMock, strava: StravaMock)
+
+      assert conn.resp_body =~ ~s[href="#{@strava_auth_url}"]
+    end
+  end
+
   describe "YTDWeb.AuthPlug.authorize_with_strava_if_not_signed_in/2, when there's neither an assigned athlete ID nor a code param" do
-    test "renders the pre-authentication page", %{conn: conn} do
+    test "renders the pre-authentication page" do
+      tokens = %Tokens{
+        athlete_id: @athlete_id,
+        access_token: @access_token,
+        refresh_token: @refresh_token
+      }
+
+      stub(StravaMock, :get_tokens_from_code, fn @code -> tokens end)
+      stub(UsersMock, :save_user_tokens, fn ^tokens -> {:ok, %User{}} end)
+
+      conn =
+        build_conn(:get, "/", %{})
+        |> init_test_session([])
+
+      %{conn: conn, tokens: tokens}
       stub(StravaMock, :authorize_url, fn -> @strava_auth_url end)
 
       %{status: 200} =
