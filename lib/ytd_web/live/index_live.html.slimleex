@@ -1,21 +1,21 @@
-hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
+hr.separator
 form.flex.flex-row phx-change="select"
   .flex.flex-1
-    select#type class="bg-strava-orange dark:bg-black outline-none" name="type"
+    select#type.select-noborder name="type"
       = for type <- @types do
         = if type == @type do
           option selected=true = type
         - else
           option = type
   div
-    select#unit class="bg-strava-orange dark:bg-black outline-none" name="unit"
+    select#unit.select-noborder name="unit"
       = for unit <- ~w[miles km] do
         = if unit == @unit do
           option selected=true = unit
         - else
           option = unit
 
-hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
+hr.separator
 
 p.font-thin.text-2xl
   | Year to date (
@@ -33,13 +33,13 @@ p.font-thin.text-2xl
   ' a week)
 
 = if @stats.projected_annual do
-  hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
+  hr.separator
   p.font-thin.text-2xl Projected year total:
   p class="text-5xl sm:text-7xl"
     span#projected-annual.font-extrabold> = @stats.projected_annual
     span.font-thin = @unit
 
-hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
+hr.separator
 
 .flex.flex-row.text-sm
   .flex.flex-1

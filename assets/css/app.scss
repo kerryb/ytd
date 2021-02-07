@@ -7,3 +7,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .separator {
+    @apply my-1 dark:bg-strava-orange dark:border-strava-orange
+  }
+
+  .select-noborder {
+    @apply bg-strava-orange dark:bg-black outline-none
+  }
+}
