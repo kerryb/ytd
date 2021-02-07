@@ -1,63 +1,61 @@
-.flex.justify-center.items-center
-  .m-2.w-144
-    hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
-    form.flex.flex-row phx-change="select"
-      .flex.flex-1
-        select#type class="bg-strava-orange dark:bg-black outline-none" name="type"
-          = for type <- @types do
-            = if type == @type do
-              option selected=true = type
-            - else
-              option = type
-      div
-        select#unit class="bg-strava-orange dark:bg-black outline-none" name="unit"
-          = for unit <- ~w[miles km] do
-            = if unit == @unit do
-              option selected=true = unit
-            - else
-              option = unit
+hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
+form.flex.flex-row phx-change="select"
+  .flex.flex-1
+    select#type class="bg-strava-orange dark:bg-black outline-none" name="type"
+      = for type <- @types do
+        = if type == @type do
+          option selected=true = type
+        - else
+          option = type
+  div
+    select#unit class="bg-strava-orange dark:bg-black outline-none" name="unit"
+      = for unit <- ~w[miles km] do
+        = if unit == @unit do
+          option selected=true = unit
+        - else
+          option = unit
 
-    hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
+hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
 
-    p.font-thin.text-2xl
-      | Year to date (
-      span#count
-        => length(@activities)
-      = if length(@activities) == 1, do: "activity", else: "activities"
-      ' ):
-    p class="text-5xl sm:text-7xl"
-      span#total.font-extrabold> = @ytd
-      span.font-thin = @unit
-    p.font-thin.text-2xl
-      ' (That’s
-      span#weekly-average.font-bold> = @stats.weekly_average
-      => @unit
-      ' a week)
+p.font-thin.text-2xl
+  | Year to date (
+  span#count
+    => length(@activities)
+  = if length(@activities) == 1, do: "activity", else: "activities"
+  ' ):
+p class="text-5xl sm:text-7xl"
+  span#total.font-extrabold> = @ytd
+  span.font-thin = @unit
+p.font-thin.text-2xl
+  ' (That’s
+  span#weekly-average.font-bold> = @stats.weekly_average
+  => @unit
+  ' a week)
 
-    = if @stats.projected_annual do
-      hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
-      p.font-thin.text-2xl Projected year total:
-      p class="text-5xl sm:text-7xl"
-        span#projected-annual.font-extrabold> = @stats.projected_annual
-        span.font-thin = @unit
+= if @stats.projected_annual do
+  hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
+  p.font-thin.text-2xl Projected year total:
+  p class="text-5xl sm:text-7xl"
+    span#projected-annual.font-extrabold> = @stats.projected_annual
+    span.font-thin = @unit
 
-    hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
+hr class="my-1 dark:bg-strava-orange dark:border-strava-orange"
 
-    .flex.flex-row.text-sm
-      .flex.flex-1
-        = cond do
-          - @info ->
-            #info class="text-gray-300 dark:text-gray-700 text-sm font-light" = @info
-          - @latest ->
-            #latest-activity.font-thin
-              ' Latest:
-              span#latest-activity-name.font-bold> = @latest.name
-              | (
-              span#latest-activity-date = Timex.format!(@latest.start_date, "{relative}", :relative)
-              | )
-          - true ->
-            div
-      div
-        button#refresh(class="focus:outline-none" phx-click="refresh"
-        title="Fetch new activities. Shift-click to discard all activities and reload everything from Strava.")
-          i.fas.fa-sync
+.flex.flex-row.text-sm
+  .flex.flex-1
+    = cond do
+      - @info ->
+        #info class="text-gray-300 dark:text-gray-700 text-sm font-light" = @info
+      - @latest ->
+        #latest-activity.font-thin
+          ' Latest:
+          span#latest-activity-name.font-bold> = @latest.name
+          | (
+          span#latest-activity-date = Timex.format!(@latest.start_date, "{relative}", :relative)
+          | )
+      - true ->
+        div
+  div
+    button#refresh(class="focus:outline-none" phx-click="refresh"
+    title="Fetch new activities. Shift-click to discard all activities and reload everything from Strava.")
+      i.fas.fa-sync

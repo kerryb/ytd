@@ -10,4 +10,6 @@ html lang="en"
     script defer=true type="text/javascript" src="#{Routes.static_path(@conn, "/js/app.js")}"
   
   body class="bg-strava-orange dark:bg-black text-white dark:text-strava-orange font-sans"
-    = @inner_content
+    .flex.justify-center.items-center
+      .m-2.w-144
+        = @inner_content
