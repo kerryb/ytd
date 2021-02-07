@@ -1,0 +1,13 @@
+p.font-thin.text-2xl.mb-5
+  ' Click the button below to connect with Strava, and allow your activities to
+  ' be fetched (you only need to do this once).
+p.font-thin.text-2xl
+  ' The 
+  span.font-extrabold> View data about your activities
+  ' permission is required. If you want private activities to be included in
+  ' your distance totals, you also need to allow
+  span.font-extrabold View data about your private activities
+  | .
+p.text-center.mt-10
+  = link("Get started", to: @auth_url,
+    class: "hover:bg-white text-white hover:text-strava-orange font-bold text-4xl border-2 border-white rounded-lg p-2")

@@ -110,13 +110,14 @@ defmodule YTDWeb.AuthPlugTest do
   end
 
   describe "YTDWeb.AuthPlug.authorize_with_strava_if_not_signed_in/2, when there's neither an assigned athlete ID nor a code param" do
-    test "redirects to the Strava authentication page", %{conn: conn} do
+    test "renders the pre-authentication page", %{conn: conn} do
       stub(StravaMock, :authorize_url, fn -> @strava_auth_url end)
 
-      conn =
+      %{status: 200} =
+        conn =
         AuthPlug.authorize_with_strava_if_not_signed_in(conn, users: UsersMock, strava: StravaMock)
 
-      assert redirected_to(conn) == @strava_auth_url
+      assert conn.resp_body =~ ~s[href="#{@strava_auth_url}"]
     end
   end
 end

@@ -8,7 +8,7 @@ defmodule YTD.Repo.Migrations.CreateAthletes do
       add(:run_target, :integer)
       add(:ride_target, :integer)
       add(:swim_target, :integer)
-      timestamps
+      timestamps()
     end
   end
 end

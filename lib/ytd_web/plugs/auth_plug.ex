@@ -13,8 +13,10 @@ defmodule YTDWeb.AuthPlug do
 
   use Plug.Builder
 
+  alias Phoenix.Controller
   alias Plug.Conn
   alias YTD.{Strava, Users}
+  alias YTDWeb.AuthView
 
   plug :get_user_if_signed_in
   plug :authorize_with_strava_if_not_signed_in
@@ -60,7 +62,11 @@ defmodule YTDWeb.AuthPlug do
         |> halt()
 
       conn ->
-        conn |> Phoenix.Controller.redirect(external: strava.authorize_url()) |> halt()
+        conn
+        |> Controller.put_view(AuthView)
+        |> Conn.assign(:auth_url, strava.authorize_url)
+        |> Controller.render("index.html")
+        |> halt()
     end
   end
 end
