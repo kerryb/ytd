@@ -56,6 +56,9 @@ hr.separator
       - true ->
         div
   div
-    button#refresh(class="focus:outline-none" phx-click="refresh"
-    title="Fetch new activities. Shift-click to discard all activities and reload everything from Strava.")
-      i.fas.fa-sync
+    = if @info do
+      i.fas.fa-sync.opacity-25
+    - else
+      button#refresh(class="focus:outline-none" phx-click="refresh"
+      title="Fetch new activities. Shift-click to discard all activities and reload everything from Strava.")
+        i.fas.fa-sync

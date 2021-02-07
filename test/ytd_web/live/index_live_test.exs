@@ -46,6 +46,11 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#unit option[selected]", "km")
     end
 
+    test "does not enable the refresh button", %{conn: conn} do
+      {:ok, view, _html} = live(conn, "/")
+      refute has_element?(view, "button")
+    end
+
     test "broadcasts a :get_activities message on the activities channel on page load", %{
       conn: conn,
       user: user
@@ -290,12 +295,14 @@ defmodule YTDWeb.IndexLiveTest do
          } do
       PubSub.subscribe(:ytd, "activities")
       {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
       view |> element("button#refresh") |> render_click()
       assert_receive {:refresh_activities, ^user}
     end
 
-    test "shows an info message", %{conn: conn} do
+    test "shows an info message", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
       view |> element("button#refresh") |> render_click()
       assert has_element?(view, "#info", "Refreshing activities …")
     end
