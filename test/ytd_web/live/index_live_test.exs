@@ -255,7 +255,7 @@ defmodule YTDWeb.IndexLiveTest do
     end
   end
 
-  describe "YTDWeb.IndexLive, when the user cahnges unit" do
+  describe "YTDWeb.IndexLive, when the user changes unit" do
     setup :authenticate_user
 
     test "updates the total", %{conn: conn, user: user} do
