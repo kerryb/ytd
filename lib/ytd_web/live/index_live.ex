@@ -50,8 +50,12 @@ defmodule YTDWeb.IndexLive do
   end
 
   def handle_event("refresh", %{"shift_key" => true}, socket) do
+    ytd = 0.0
+    stats = Stats.calculate(ytd, Date.utc_today())
     PubSub.broadcast!(:ytd, "activities", {:reset_activities, socket.assigns.user})
-    {:noreply, assign(socket, activities: [], ytd: 0.0, info: "Re-fetching all activities …")}
+
+    {:noreply,
+     assign(socket, activities: [], ytd: ytd, stats: stats, info: "Re-fetching all activities …")}
   end
 
   def handle_event("refresh", _params, socket) do

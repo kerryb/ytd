@@ -337,6 +337,14 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#total", "0.0")
     end
 
+    test "resets the stats", %{conn: conn, user: user} do
+      activity = build(:activity, type: "Run", distance: 5_000.0)
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      render_click(view, :refresh, %{"shift_key" => true})
+      assert has_element?(view, "#weekly-average", "0.0")
+    end
+
     test "shows an info message", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       render_click(view, :refresh, %{"shift_key" => true})
