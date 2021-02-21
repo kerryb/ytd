@@ -19,4 +19,4 @@ docs:
 	mix docs
 update-deps:
 	mix deps.update --all
-	cd assets && yarn up
+	cd assets && rm yarn.lock && yarn install
