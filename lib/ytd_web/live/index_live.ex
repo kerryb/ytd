@@ -29,7 +29,8 @@ defmodule YTDWeb.IndexLive do
        ytd: 0.0,
        stats: Stats.calculate(0.0, Date.utc_today()),
        info: "Loading activities …",
-       latest: nil
+       latest: nil,
+       edit_target?: false
      )}
   end
 
@@ -61,6 +62,18 @@ defmodule YTDWeb.IndexLive do
   def handle_event("refresh", _params, socket) do
     PubSub.broadcast!(:ytd, "activities", {:refresh_activities, socket.assigns.user})
     {:noreply, assign(socket, info: "Refreshing activities …")}
+  end
+
+  def handle_event("edit-target", _params, socket) do
+    {:noreply, assign(socket, edit_target?: true)}
+  end
+
+  def handle_event("submit-target", _params, socket) do
+    {:noreply, assign(socket, edit_target?: false)}
+  end
+
+  def handle_event("cancel-target", _params, socket) do
+    {:noreply, assign(socket, edit_target?: false)}
   end
 
   @impl true
