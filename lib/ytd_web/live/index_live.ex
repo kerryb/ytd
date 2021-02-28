@@ -23,6 +23,7 @@ defmodule YTDWeb.IndexLive do
      assign(socket,
        user: user,
        activities: [],
+       count: activity_count([], user.selected_activity_type),
        types: [user.selected_activity_type],
        type: user.selected_activity_type,
        unit: user.selected_unit,
@@ -37,10 +38,11 @@ defmodule YTDWeb.IndexLive do
   @impl true
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket) do
     ytd = total_distance(socket.assigns.activities, type, socket.assigns.unit)
+    count = activity_count(socket.assigns.activities, type)
     stats = Stats.calculate(ytd, Date.utc_today())
     latest = latest_activity(socket.assigns.activities, type)
     PubSub.broadcast!(:ytd, "users", {:activity_type_changed, socket.assigns.user, type})
-    {:noreply, assign(socket, type: type, ytd: ytd, stats: stats, latest: latest)}
+    {:noreply, assign(socket, type: type, ytd: ytd, count: count, stats: stats, latest: latest)}
   end
 
   def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket) do
@@ -51,12 +53,19 @@ defmodule YTDWeb.IndexLive do
   end
 
   def handle_event("refresh", %{"shift_key" => true}, socket) do
+    count = activity_count([], socket.assigns.type)
     ytd = 0.0
     stats = Stats.calculate(ytd, Date.utc_today())
     PubSub.broadcast!(:ytd, "activities", {:reset_activities, socket.assigns.user})
 
     {:noreply,
-     assign(socket, activities: [], ytd: ytd, stats: stats, info: "Re-fetching all activities …")}
+     assign(socket,
+       activities: [],
+       count: count,
+       ytd: ytd,
+       stats: stats,
+       info: "Re-fetching all activities …"
+     )}
   end
 
   def handle_event("refresh", _params, socket) do
@@ -78,24 +87,40 @@ defmodule YTDWeb.IndexLive do
 
   @impl true
   def handle_info({:existing_activities, activities}, socket) do
+    count = activity_count(activities, socket.assigns.type)
     ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
     stats = Stats.calculate(ytd, Date.utc_today())
     types = types(activities)
     info = fetching_message(activities)
 
     {:noreply,
-     assign(socket, activities: activities, types: types, ytd: ytd, stats: stats, info: info)}
+     assign(socket,
+       activities: activities,
+       count: count,
+       types: types,
+       ytd: ytd,
+       stats: stats,
+       info: info
+     )}
   end
 
   def handle_info({:new_activity, activity}, socket) do
     activities = [activity | socket.assigns.activities]
+    count = activity_count(activities, socket.assigns.type)
     ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
     stats = Stats.calculate(ytd, Date.utc_today())
     types = types(activities)
     info = fetching_message(activities)
 
     {:noreply,
-     assign(socket, activities: activities, types: types, ytd: ytd, stats: stats, info: info)}
+     assign(socket,
+       activities: activities,
+       count: count,
+       types: types,
+       ytd: ytd,
+       stats: stats,
+       info: info
+     )}
   end
 
   def handle_info(:all_activities_fetched, socket) do
@@ -115,6 +140,15 @@ defmodule YTDWeb.IndexLive do
     |> Enum.map(& &1.distance)
     |> Enum.sum()
     |> metres_to_unit(unit)
+  end
+
+  defp activity_count(activities, type) do
+    activities
+    |> Enum.count(&(&1.type == type))
+    |> case do
+      1 -> "1 activity"
+      count -> "#{count} activities"
+    end
   end
 
   defp fetching_message([_activity]), do: fetching_message(1, "activity")

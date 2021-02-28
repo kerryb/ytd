@@ -24,14 +24,19 @@ defmodule YTDWeb.IndexLiveTest do
   describe "YTDWeb.IndexLive, initially" do
     setup :authenticate_user
 
-    test "initially displays a 'loading activities' message", %{conn: conn} do
+    test "displays a 'loading activities' message", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       assert has_element?(view, "#info", "Loading activities …")
     end
 
-    test "initially displays 0.0 miles", %{conn: conn} do
+    test "displays 0.0 miles", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       assert has_element?(view, "#total", "0.0")
+    end
+
+    test "shows zero activities", %{conn: conn} do
+      {:ok, view, _html} = live(conn, "/")
+      assert has_element?(view, "#count", "0 activities")
     end
 
     test "uses the saved selection for activity type", %{conn: conn, user: user} do
@@ -88,7 +93,7 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#total", "9.3")
     end
 
-    test "updates the total distance", %{conn: conn, user: user} do
+    test "updates the number of activities", %{conn: conn, user: user} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
         build(:activity, type: "Run", distance: 10_000.0)
@@ -96,7 +101,7 @@ defmodule YTDWeb.IndexLiveTest do
 
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
-      assert has_element?(view, "#total", "9.3")
+      assert has_element?(view, "#count", "2 activities")
     end
 
     test "updates the weekly average", %{conn: conn, user: user} do
@@ -145,6 +150,13 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
       avg_element_2 = view |> element("#weekly-average") |> render()
       refute avg_element_1 == avg_element_2
+    end
+
+    test "updates the number of activities", %{conn: conn, user: user} do
+      activity = build(:activity, type: "Run", distance: 10_000.0)
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, activity})
+      assert has_element?(view, "#count", "1 activity")
     end
 
     test "updates the info message", %{conn: conn, user: user} do
@@ -244,6 +256,21 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#latest-activity-name", "Afternoon ride")
     end
 
+    test "shows the correct number of activities", %{conn: conn, user: user} do
+      activities = [
+        build(:activity, type: "Run", name: "Morning run"),
+        build(:activity, type: "Run", name: "Evening run"),
+        build(:activity, type: "Ride", name: "Afternoon ride")
+      ]
+
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
+      PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
+      assert has_element?(view, "#count", "2 activities")
+      view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
+      assert has_element?(view, "#count", "1 activity")
+    end
+
     test "broadcasts an :activity_type_changed event to the users channel", %{
       conn: conn,
       user: user
@@ -326,7 +353,7 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
       render_click(view, :refresh, %{"shift_key" => true})
-      assert has_element?(view, "#count", "0")
+      assert has_element?(view, "#count", "0 activities")
     end
 
     test "resets the ytd total to zero", %{conn: conn, user: user} do

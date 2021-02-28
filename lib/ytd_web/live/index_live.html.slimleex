@@ -19,9 +19,7 @@ hr.separator
 
 p.font-thin.text-2xl
   | Year to date (
-  span#count
-    => length(@activities)
-  = if length(@activities) == 1, do: "activity", else: "activities"
+  span#count = @count
   ' ):
 p class="text-5xl sm:text-7xl"
   span#total.font-extrabold> = @ytd
