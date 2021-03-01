@@ -15,4 +15,5 @@ defmodule YTD.Users.API do
   @callback get_user_from_athlete_id(integer()) :: User.t() | nil
   @callback save_user_tokens(Tokens.t()) :: multi_result()
   @callback save_activity_type(User.t(), String.t()) :: multi_result()
+  @callback save_unit(User.t(), String.t()) :: multi_result()
 end
