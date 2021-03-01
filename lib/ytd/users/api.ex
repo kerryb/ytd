@@ -7,10 +7,12 @@ defmodule YTD.Users.API do
   alias YTD.Strava.Tokens
   alias YTD.Users.User
 
-  @callback get_user_from_athlete_id(integer()) :: User.t() | nil
+  @type multi_result ::
+          {:ok, any()}
+          | {:error, any()}
+          | {:error, Multi.name(), any(), %{required(Multi.name()) => any()}}
 
-  @callback save_user_tokens(Tokens.t()) ::
-              {:ok, any()}
-              | {:error, any()}
-              | {:error, Multi.name(), any(), %{required(Multi.name()) => any()}}
+  @callback get_user_from_athlete_id(integer()) :: User.t() | nil
+  @callback save_user_tokens(Tokens.t()) :: multi_result()
+  @callback save_activity_type(User.t(), String.t()) :: multi_result()
 end

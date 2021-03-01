@@ -271,14 +271,11 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#count", "1 activity")
     end
 
-    test "broadcasts an :activity_type_changed event to the users channel", %{
-      conn: conn,
-      user: user
-    } do
-      PubSub.subscribe(:ytd, "users")
+    test "persists the change", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
-      assert_receive {:activity_type_changed, ^user, "Ride"}
+      {:ok, reloaded_view, _html} = live(conn, "/")
+      assert has_element?(reloaded_view, "#type option[selected]", "Ride")
     end
   end
 

@@ -6,6 +6,7 @@ defmodule YTD.Strava.Activities do
   use GenServer
 
   alias Phoenix.PubSub
+  alias YTD.Users
 
   @spec start_link(any()) :: GenServer.on_start()
   def start_link(_arg) do
@@ -28,7 +29,7 @@ defmodule YTD.Strava.Activities do
     client =
       Strava.Client.new(user.access_token,
         refresh_token: user.refresh_token,
-        token_refreshed: &broadcast_token_refreshed(user, &1)
+        token_refreshed: &Users.save_user_tokens/1
       )
 
     Strava.Paginator.stream(&Strava.Activities.get_logged_in_athlete_activities(client, &1))
@@ -36,10 +37,6 @@ defmodule YTD.Strava.Activities do
     |> Enum.each(&broadcast_activity(user, &1))
 
     broadcast_all_activities_fetched(user)
-  end
-
-  defp broadcast_token_refreshed(user, client) do
-    PubSub.broadcast!(:ytd, "users", {:token_refreshed, user, client.token})
   end
 
   defp broadcast_activity(user, activity) do

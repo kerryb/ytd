@@ -6,29 +6,23 @@ defmodule YTD.Users do
 
   @behaviour YTD.Users.API
 
-  use GenServer
-
-  alias Phoenix.PubSub
   alias YTD.Repo
-  alias YTD.Users.{Create, Queries, UpdateSelectedActivityType, UpdateSelectedUnit, UpdateTokens}
 
-  @spec start_link(any()) :: GenServer.on_start()
-  def start_link(_arg) do
-    GenServer.start_link(__MODULE__, [])
-  end
+  alias YTD.Users.{
+    API,
+    Create,
+    Queries,
+    UpdateSelectedActivityType,
+    UpdateSelectedUnit,
+    UpdateTokens
+  }
 
-  @impl GenServer
-  def init(_arg) do
-    PubSub.subscribe(:ytd, "users")
-    {:ok, []}
-  end
-
-  @impl YTD.Users.API
+  @impl API
   def get_user_from_athlete_id(athlete_id) do
     athlete_id |> Queries.get_user_from_athlete_id() |> Repo.one()
   end
 
-  @impl YTD.Users.API
+  @impl API
   def save_user_tokens(tokens) do
     case get_user_from_athlete_id(tokens.athlete_id) do
       nil -> tokens |> Create.call() |> Repo.transaction()
@@ -36,25 +30,13 @@ defmodule YTD.Users do
     end
   end
 
-  @impl GenServer
-  def handle_info({:token_refreshed, user, tokens}, state) do
-    user |> UpdateTokens.call(tokens) |> Repo.transaction()
-    # Just for the test really
-    PubSub.broadcast!(:ytd, "user-updates", {:updated, user})
-    {:noreply, state}
-  end
-
-  def handle_info({:activity_type_changed, user, type}, state) do
+  @impl API
+  def save_activity_type(user, type) do
     user |> UpdateSelectedActivityType.call(type) |> Repo.transaction()
-    # Just for the test really
-    PubSub.broadcast!(:ytd, "user-updates", {:updated, user})
-    {:noreply, state}
   end
 
-  def handle_info({:unit_changed, user, type}, state) do
-    user |> UpdateSelectedUnit.call(type) |> Repo.transaction()
-    # Just for the test really
-    PubSub.broadcast!(:ytd, "user-updates", {:updated, user})
-    {:noreply, state}
+  @impl API
+  def save_unit(user, unit) do
+    user |> UpdateSelectedUnit.call(unit) |> Repo.transaction()
   end
 end

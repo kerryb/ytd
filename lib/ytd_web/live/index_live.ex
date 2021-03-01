@@ -41,7 +41,7 @@ defmodule YTDWeb.IndexLive do
     count = activity_count(socket.assigns.activities, type)
     stats = Stats.calculate(ytd, Date.utc_today())
     latest = latest_activity(socket.assigns.activities, type)
-    PubSub.broadcast!(:ytd, "users", {:activity_type_changed, socket.assigns.user, type})
+    Users.save_activity_type(socket.assigns.user, type)
     {:noreply, assign(socket, type: type, ytd: ytd, count: count, stats: stats, latest: latest)}
   end
 

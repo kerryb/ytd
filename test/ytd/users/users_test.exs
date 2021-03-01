@@ -1,7 +1,6 @@
 defmodule YTD.UsersTest do
   use YTD.DataCase, async: false
 
-  alias Phoenix.PubSub
   alias YTD.{Repo, Users}
   alias YTD.Strava.Tokens
   alias YTD.Users.User
@@ -37,65 +36,18 @@ defmodule YTD.UsersTest do
     end
   end
 
-  describe "YTD.Users server on receiving {:token_refreshed, user, token} on the 'users' channel" do
-    setup do
-      {:ok, _pid} = start_supervised(Users)
-      :ok
-    end
-
-    test "updates the saved tokens" do
-      user = insert(:user, athlete_id: 123)
-      PubSub.subscribe(:ytd, "user-updates")
-
-      PubSub.broadcast!(
-        :ytd,
-        "users",
-        {:token_refreshed, user, %{access_token: "456", refresh_token: "789"}}
-      )
-
-      assert_receive {:updated, _}
-      assert %{access_token: "456", refresh_token: "789"} = Repo.one(from(u in User))
-    end
-  end
-
-  describe "YTD.Users server on receiving {:activity_type_changed, user, type} on the 'users' channel" do
-    setup do
-      {:ok, _pid} = start_supervised(Users)
-      :ok
-    end
-
+  describe "YTD.Users.save_activity_type/2" do
     test "updates the saved type" do
       user = insert(:user, athlete_id: 123, selected_activity_type: "Run")
-      PubSub.subscribe(:ytd, "user-updates")
-
-      PubSub.broadcast!(
-        :ytd,
-        "users",
-        {:activity_type_changed, user, "Ride"}
-      )
-
-      assert_receive {:updated, _}
+      Users.save_activity_type(user, "Ride")
       assert %{selected_activity_type: "Ride"} = Repo.one(from(u in User))
     end
   end
 
-  describe "YTD.Users server on receiving {:unit_changed, user, type} on the 'users' channel" do
-    setup do
-      {:ok, _pid} = start_supervised(Users)
-      :ok
-    end
-
+  describe "YTD.Users.save_unit/2" do
     test "updates the saved type" do
       user = insert(:user, athlete_id: 123, selected_unit: "miles")
-      PubSub.subscribe(:ytd, "user-updates")
-
-      PubSub.broadcast!(
-        :ytd,
-        "users",
-        {:unit_changed, user, "km"}
-      )
-
-      assert_receive {:updated, _}
+      Users.save_unit(user, "km")
       assert %{selected_unit: "km"} = Repo.one(from(u in User))
     end
   end

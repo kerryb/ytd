@@ -14,7 +14,7 @@ defmodule YTD.Application do
   end
 
   defp children(_env) do
-    default_children() ++ [YTD.Users, YTD.Activities, YTD.Strava.Activities]
+    default_children() ++ [YTD.Activities, YTD.Strava.Activities]
   end
 
   defp default_children do
