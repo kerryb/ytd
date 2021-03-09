@@ -2,7 +2,10 @@ module.exports = {
   purge: [
     '../lib/**/*.ex',
     '../lib/**/*.leex',
+    '../lib/**/*.slimleex',
     '../lib/**/*.eex',
+    '../lib/**/*.slim',
+    '../lib/**/*.slime',
     './js/**/*.js'
   ],
   darkMode: 'media',
