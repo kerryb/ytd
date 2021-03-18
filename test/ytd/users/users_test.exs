@@ -1,5 +1,5 @@
 defmodule YTD.UsersTest do
-  use YTD.DataCase, async: false
+  use YTD.DataCase, async: true
 
   alias YTD.{Repo, Users}
   alias YTD.Strava.Tokens
@@ -15,6 +15,17 @@ defmodule YTD.UsersTest do
 
     test "returns nil if no user is found" do
       assert Users.get_user_from_athlete_id(123) == nil
+    end
+  end
+
+  describe "YTD.Users.get_targets/1" do
+    test "retreives all targets for a user" do
+      user = insert(:user, athlete_id: 123)
+      insert(:target, user: user, activity_type: "Ride", target: 2000, unit: "km")
+      insert(:target, user: user, activity_type: "Run", target: 1000, unit: "miles")
+
+      assert %{"Ride" => %{target: 2000, unit: "km"}, "Run" => %{target: 1000, unit: "miles"}} =
+               Users.get_targets(user)
     end
   end
 
@@ -45,10 +56,19 @@ defmodule YTD.UsersTest do
   end
 
   describe "YTD.Users.save_unit/2" do
-    test "updates the saved type" do
+    test "updates the saved unit" do
       user = insert(:user, athlete_id: 123, selected_unit: "miles")
       Users.save_unit(user, "km")
       assert %{selected_unit: "km"} = Repo.one(from(u in User))
+    end
+  end
+
+  describe "YTD.Users.save_target/2" do
+    test "saves a target" do
+      user = insert(:user, athlete_id: 123)
+      Users.save_target(user, "Run", "1000", "miles")
+
+      assert %{target: 1000, unit: "miles"} = Repo.one(Ecto.assoc(user, :targets))
     end
   end
 end

@@ -12,6 +12,7 @@ defmodule YTD.Users do
     API,
     Create,
     Queries,
+    SaveTarget,
     UpdateSelectedActivityType,
     UpdateSelectedUnit,
     UpdateTokens
@@ -20,6 +21,14 @@ defmodule YTD.Users do
   @impl API
   def get_user_from_athlete_id(athlete_id) do
     athlete_id |> Queries.get_user_from_athlete_id() |> Repo.one()
+  end
+
+  @impl API
+  def get_targets(user) do
+    user
+    |> Queries.get_targets()
+    |> Repo.all()
+    |> Enum.into(%{}, &{&1.activity_type, &1})
   end
 
   @impl API
@@ -38,5 +47,10 @@ defmodule YTD.Users do
   @impl API
   def save_unit(user, unit) do
     user |> UpdateSelectedUnit.call(unit) |> Repo.transaction()
+  end
+
+  @impl API
+  def save_target(user, activity_type, target, unit) do
+    user |> SaveTarget.call(activity_type, target, unit) |> Repo.transaction()
   end
 end

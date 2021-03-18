@@ -40,24 +40,27 @@ p.font-thin.text-2xl
   = if @edit_target? do
     .p-4.fixed.flex.justify-center.items-center.inset-0.bg-black.bg-opacity-75.z-50
       .max-w-xl.max-h-full.bg-strava-orange.rounded.shadow-lg.overflow-auto.p-4
-        .mb-6
-          form phx-submit="submit-target"
+        form#edit-target-form phx-submit="submit-target"
+          .mb-4
             label for="target"
               => @type
               ' target:
-            input#target.w-20.text-strava-orange.pl-2.rounded type="number" name="target" autofocus="true"
+            input#target.w-20.text-strava-orange.pl-2.ml-2.rounded type="number" name="target" autofocus="true"
             =<> @unit
-        div
-          span
-            button> class="font-bold border-2 rounded px-1 bg-strava-orange hover:bg-white hover:text-strava-orange" type="submit" Save
-          span.float-right
-            button> class="font-thin border rounded px-1 bg-strava-orange hover:bg-white hover:text-strava-orange" phx-click="cancel-target" Cancel
+          .flex.justify-between
+            button> class="font-thin border rounded px-1 bg-strava-orange hover:bg-strava-orange-dark" phx-click="cancel-target" Cancel
+            button> class="font-bold border-2 rounded px-1 bg-white text-strava-orange hover:bg-gray-200" type="submit" Save
   - else
     p.font-thin.text-2xl
-      ' Why not
-      a.border-b.border-dotted phx-click="edit-target" href="#" set yourself a target
-      ' ?
-
+      = if @targets[@type] do
+        ' To hit your target of
+        => @targets[@type].target
+        = @targets[@type].unit
+        ' , you need to do something.
+      - else
+        ' Why not
+        a#edit-target.border-b.border-dotted phx-click="edit-target" href="#" set yourself a target
+        ' ?
 
 hr.separator
 

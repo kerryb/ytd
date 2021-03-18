@@ -7,7 +7,7 @@ defmodule YTD.Factory do
   use ExMachina.Ecto, repo: YTD.Repo
 
   alias YTD.Activities.Activity
-  alias YTD.Users.User
+  alias YTD.Users.{Target, User}
 
   def user_factory do
     %User{
@@ -27,6 +27,15 @@ defmodule YTD.Factory do
       name: Faker.Lorem.sentence(3),
       distance: :rand.uniform_real() * 100,
       start_date: DateTime.add(DateTime.utc_now(), -:rand.uniform(10_000_000), :second)
+    }
+  end
+
+  def target_factory do
+    %Target{
+      user: build(:user),
+      activity_type: Enum.random(["Run", "Ride", "Swim"]),
+      target: :rand.uniform(3000),
+      unit: Enum.random(["miles", "km"])
     }
   end
 end

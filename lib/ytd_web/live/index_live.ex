@@ -13,6 +13,7 @@ defmodule YTDWeb.IndexLive do
   @impl true
   def mount(_params, session, socket) do
     user = Users.get_user_from_athlete_id(session["athlete_id"])
+    targets = Users.get_targets(user)
 
     if connected?(socket) do
       :ok = PubSub.subscribe(:ytd, "user:#{user.id}")
@@ -23,6 +24,7 @@ defmodule YTDWeb.IndexLive do
      assign(socket,
        user: user,
        activities: [],
+       targets: targets,
        count: activity_count([], user.selected_activity_type),
        types: [user.selected_activity_type],
        type: user.selected_activity_type,
@@ -77,8 +79,10 @@ defmodule YTDWeb.IndexLive do
     {:noreply, assign(socket, edit_target?: true)}
   end
 
-  def handle_event("submit-target", _params, socket) do
-    {:noreply, assign(socket, edit_target?: false)}
+  def handle_event("submit-target", %{"target" => target}, socket) do
+    Users.save_target(socket.assigns.user, socket.assigns.type, target, socket.assigns.unit)
+    targets = Users.get_targets(socket.assigns.user)
+    {:noreply, assign(socket, targets: targets, edit_target?: false)}
   end
 
   def handle_event("cancel-target", _params, socket) do
@@ -165,6 +169,6 @@ defmodule YTDWeb.IndexLive do
     |> Enum.max_by(& &1.start_date, DateTime)
   end
 
-  defp metres_to_unit(metres, "miles"), do: Float.round(metres / 1609.34, 1)
+  defp metres_to_unit(metres, "miles"), do: Float.round(metres / 1609.344, 1)
   defp metres_to_unit(metres, "km"), do: Float.round(metres / 1000, 1)
 end

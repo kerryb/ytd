@@ -64,9 +64,6 @@ CREATE TABLE public.users (
     id bigint NOT NULL,
     athlete_id integer,
     access_token text,
-    run_target integer,
-    ride_target integer,
-    swim_target integer,
     inserted_at timestamp(0) without time zone NOT NULL,
     updated_at timestamp(0) without time zone NOT NULL,
     refresh_token text,
@@ -105,10 +102,51 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: targets; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.targets (
+    id bigint NOT NULL,
+    user_id bigint,
+    activity_type character varying(255),
+    target integer,
+    unit character varying(255),
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
+);
+
+
+--
+-- Name: targets_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.targets_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: targets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.targets_id_seq OWNED BY public.targets.id;
+
+
+--
 -- Name: activities id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.activities ALTER COLUMN id SET DEFAULT nextval('public.activities_id_seq'::regclass);
+
+
+--
+-- Name: targets id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.targets ALTER COLUMN id SET DEFAULT nextval('public.targets_id_seq'::regclass);
 
 
 --
@@ -143,10 +181,25 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: targets targets_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.targets
+    ADD CONSTRAINT targets_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: activities_strava_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX activities_strava_id_index ON public.activities USING btree (strava_id);
+
+
+--
+-- Name: targets_user_id_activity_type_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX targets_user_id_activity_type_index ON public.targets USING btree (user_id, activity_type);
 
 
 --
@@ -155,6 +208,14 @@ CREATE UNIQUE INDEX activities_strava_id_index ON public.activities USING btree 
 
 ALTER TABLE ONLY public.activities
     ADD CONSTRAINT activities_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: targets targets_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.targets
+    ADD CONSTRAINT targets_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
@@ -167,3 +228,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20200816140355);
 INSERT INTO public."schema_migrations" (version) VALUES (20200816184009);
 INSERT INTO public."schema_migrations" (version) VALUES (20200817213538);
 INSERT INTO public."schema_migrations" (version) VALUES (20210131134621);
+INSERT INTO public."schema_migrations" (version) VALUES (20210303204557);

@@ -12,7 +12,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'strava-orange': '#fc4c02',
+        'strava-orange': {
+          light: '#fd7135',
+          DEFAULT: '#fc4c02',
+          dark: '#ca3e02',
+        },
       },
        spacing: {
          '144': '36rem'

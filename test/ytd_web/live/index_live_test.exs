@@ -375,4 +375,15 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#info", "Re-fetching all activities …")
     end
   end
+
+  describe "YTDWeb.IndexLive, setting a new target" do
+    setup :authenticate_user
+
+    test "saves the target", %{conn: conn} do
+      {:ok, view, _html} = live(conn, "/")
+      view |> element("a#edit-target") |> render_click()
+      html = view |> element("form#edit-target-form") |> render_submit(target: "1000")
+      assert html =~ "To hit your target of 1000 miles"
+    end
+  end
 end
