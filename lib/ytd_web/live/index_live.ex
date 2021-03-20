@@ -6,7 +6,7 @@ defmodule YTDWeb.IndexLive do
   use YTDWeb, :live_view
 
   alias Phoenix.PubSub
-  alias YTD.{Stats, Users}
+  alias YTD.{Stats, Users, Util}
 
   require Logger
 
@@ -193,7 +193,8 @@ defmodule YTDWeb.IndexLive do
     |> Enum.filter(&(&1.type == type))
     |> Enum.map(& &1.distance)
     |> Enum.sum()
-    |> metres_to_unit(unit)
+    |> Util.convert(from: "metres", to: unit)
+    |> Float.round(1)
   end
 
   defp activity_count(activities, type) do
@@ -223,16 +224,9 @@ defmodule YTDWeb.IndexLive do
     target =
       case targets[activity_type] do
         nil -> nil
-        target -> convert(target.target, from: target.unit, to: unit)
+        target -> Util.convert(target.target, from: target.unit, to: unit)
       end
 
     Stats.calculate(ytd, date, target)
   end
-
-  defp convert(distance, from: unit, to: unit), do: distance
-  defp convert(distance, from: "km", to: "miles"), do: distance / 1.609344
-  defp convert(distance, from: "miles", to: "km"), do: distance * 1.609344
-
-  defp metres_to_unit(metres, "miles"), do: Float.round(metres / 1609.344, 1)
-  defp metres_to_unit(metres, "km"), do: Float.round(metres / 1000, 1)
 end

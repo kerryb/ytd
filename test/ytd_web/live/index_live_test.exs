@@ -283,12 +283,12 @@ defmodule YTDWeb.IndexLiveTest do
     setup :authenticate_user
 
     test "updates the total", %{conn: conn, user: user} do
-      activity = build(:activity, type: "Run", distance: 5_000.0)
+      activity = build(:activity, type: "Run", distance: 5_012.3)
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
       assert has_element?(view, "#total", "3.1")
       view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
-      assert has_element?(view, "#total", "5.0")
+      assert has_element?(view, "#total", ~r/^5.0$/)
     end
 
     test "updates the stats", %{conn: conn, user: user} do
