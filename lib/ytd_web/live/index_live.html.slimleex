@@ -56,7 +56,10 @@ p.font-thin.text-2xl
         ' To hit your target of
         => @targets[@type].target
         = @targets[@type].unit
-        ' , you need to do something.
+        ' , you need to average
+        => @stats.required_average
+        => @unit
+        ' a week from now on.
       - else
         ' Why not
         a#edit-target.border-b.border-dotted phx-click="edit-target" href="#" set yourself a target

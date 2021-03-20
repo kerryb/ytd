@@ -30,7 +30,14 @@ defmodule YTDWeb.IndexLive do
        type: user.selected_activity_type,
        unit: user.selected_unit,
        ytd: 0.0,
-       stats: Stats.calculate(0.0, Date.utc_today()),
+       stats:
+         calculate_stats(
+           0.0,
+           user.selected_unit,
+           Date.utc_today(),
+           user.selected_activity_type,
+           targets
+         ),
        info: "Loading activities …",
        latest: nil,
        edit_target?: false
@@ -41,7 +48,10 @@ defmodule YTDWeb.IndexLive do
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket) do
     ytd = total_distance(socket.assigns.activities, type, socket.assigns.unit)
     count = activity_count(socket.assigns.activities, type)
-    stats = Stats.calculate(ytd, Date.utc_today())
+
+    stats =
+      calculate_stats(ytd, socket.assigns.unit, Date.utc_today(), type, socket.assigns.targets)
+
     latest = latest_activity(socket.assigns.activities, type)
     Users.save_activity_type(socket.assigns.user, type)
     {:noreply, assign(socket, type: type, ytd: ytd, count: count, stats: stats, latest: latest)}
@@ -49,7 +59,10 @@ defmodule YTDWeb.IndexLive do
 
   def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket) do
     ytd = total_distance(socket.assigns.activities, socket.assigns.type, unit)
-    stats = Stats.calculate(ytd, Date.utc_today())
+
+    stats =
+      calculate_stats(ytd, unit, Date.utc_today(), socket.assigns.type, socket.assigns.targets)
+
     PubSub.broadcast!(:ytd, "users", {:unit_changed, socket.assigns.user, unit})
     {:noreply, assign(socket, unit: unit, ytd: ytd, stats: stats)}
   end
@@ -57,7 +70,16 @@ defmodule YTDWeb.IndexLive do
   def handle_event("refresh", %{"shift_key" => true}, socket) do
     count = activity_count([], socket.assigns.type)
     ytd = 0.0
-    stats = Stats.calculate(ytd, Date.utc_today())
+
+    stats =
+      calculate_stats(
+        0.0,
+        socket.assigns.unit,
+        Date.utc_today(),
+        socket.assigns.type,
+        socket.assigns.targets
+      )
+
     PubSub.broadcast!(:ytd, "activities", {:reset_activities, socket.assigns.user})
 
     {:noreply,
@@ -82,7 +104,17 @@ defmodule YTDWeb.IndexLive do
   def handle_event("submit-target", %{"target" => target}, socket) do
     Users.save_target(socket.assigns.user, socket.assigns.type, target, socket.assigns.unit)
     targets = Users.get_targets(socket.assigns.user)
-    {:noreply, assign(socket, targets: targets, edit_target?: false)}
+
+    stats =
+      calculate_stats(
+        socket.assigns.ytd,
+        socket.assigns.unit,
+        Date.utc_today(),
+        socket.assigns.type,
+        targets
+      )
+
+    {:noreply, assign(socket, targets: targets, stats: stats, edit_target?: false)}
   end
 
   def handle_event("cancel-target", _params, socket) do
@@ -93,7 +125,16 @@ defmodule YTDWeb.IndexLive do
   def handle_info({:existing_activities, activities}, socket) do
     count = activity_count(activities, socket.assigns.type)
     ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
-    stats = Stats.calculate(ytd, Date.utc_today())
+
+    stats =
+      calculate_stats(
+        ytd,
+        socket.assigns.unit,
+        Date.utc_today(),
+        socket.assigns.type,
+        socket.assigns.targets
+      )
+
     types = types(activities)
     info = fetching_message(activities)
 
@@ -112,7 +153,16 @@ defmodule YTDWeb.IndexLive do
     activities = [activity | socket.assigns.activities]
     count = activity_count(activities, socket.assigns.type)
     ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
-    stats = Stats.calculate(ytd, Date.utc_today())
+
+    stats =
+      calculate_stats(
+        ytd,
+        socket.assigns.unit,
+        Date.utc_today(),
+        socket.assigns.type,
+        socket.assigns.targets
+      )
+
     types = types(activities)
     info = fetching_message(activities)
 
@@ -168,6 +218,20 @@ defmodule YTDWeb.IndexLive do
     |> Enum.filter(&(&1.type == type))
     |> Enum.max_by(& &1.start_date, DateTime)
   end
+
+  defp calculate_stats(ytd, unit, date, activity_type, targets) do
+    target =
+      case targets[activity_type] do
+        nil -> nil
+        target -> convert(target.target, from: target.unit, to: unit)
+      end
+
+    Stats.calculate(ytd, date, target)
+  end
+
+  defp convert(distance, from: unit, to: unit), do: distance
+  defp convert(distance, from: "km", to: "miles"), do: distance / 1.609344
+  defp convert(distance, from: "miles", to: "km"), do: distance * 1.609344
 
   defp metres_to_unit(metres, "miles"), do: Float.round(metres / 1609.344, 1)
   defp metres_to_unit(metres, "km"), do: Float.round(metres / 1000, 1)

@@ -301,6 +301,13 @@ defmodule YTDWeb.IndexLiveTest do
       refute avg_element_1 == avg_element_2
     end
 
+    test "converts the target", %{conn: conn, user: user} do
+      insert(:target, user: user, activity_type: "Run", target: 1000, unit: "miles")
+      {:ok, view, _html} = live(conn, "/")
+      html = view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
+      assert html =~ ~r/you need to average \d+\.\d km/
+    end
+
     test "broadcasts a :unit_changed event to the users channel", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
       PubSub.subscribe(:ytd, "users")
@@ -383,7 +390,9 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       view |> element("a#edit-target") |> render_click()
       html = view |> element("form#edit-target-form") |> render_submit(target: "1000")
-      assert html =~ "To hit your target of 1000 miles"
+
+      assert html =~
+               ~r/To hit your target of 1000 miles, you need to average \d+\.\d miles a week from now on/
     end
   end
 end
