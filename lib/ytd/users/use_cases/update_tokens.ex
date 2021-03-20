@@ -4,18 +4,11 @@ defmodule YTD.Users.UpdateTokens do
   """
 
   alias Ecto.{Changeset, Multi}
-  alias YTD.Strava.Tokens
   alias YTD.Users.User
 
-  @spec call(User.t(), Tokens.t()) :: Multi.t()
-  def call(user, tokens) do
-    change =
-      Changeset.change(
-        user,
-        access_token: tokens.access_token,
-        refresh_token: tokens.refresh_token
-      )
-
+  @spec call(User.t(), String.t(), String.t()) :: Multi.t()
+  def call(user, access_token, refresh_token) do
+    change = Changeset.change(user, access_token: access_token, refresh_token: refresh_token)
     Multi.update(Multi.new(), :save_tokens, change)
   end
 end

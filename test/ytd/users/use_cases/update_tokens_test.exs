@@ -11,7 +11,7 @@ defmodule YTD.Users.UpdateTokensTest do
       user = insert(:user, athlete_id: 123)
 
       user
-      |> UpdateTokens.call(%{access_token: "456", refresh_token: "789"})
+      |> UpdateTokens.call("456", "789")
       |> Repo.transaction()
 
       assert %{access_token: "456", refresh_token: "789"} = Repo.one(from(u in User))

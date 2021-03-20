@@ -29,7 +29,7 @@ defmodule YTD.Strava.Activities do
     client =
       Strava.Client.new(user.access_token,
         refresh_token: user.refresh_token,
-        token_refreshed: &Users.save_user_tokens/1
+        token_refreshed: &Users.update_user_tokens(user, &1)
       )
 
     Strava.Paginator.stream(&Strava.Activities.get_logged_in_athlete_activities(client, &1))

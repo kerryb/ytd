@@ -47,6 +47,18 @@ defmodule YTD.UsersTest do
     end
   end
 
+  describe "YTD.Users.update_user_tokens/2" do
+    test "updates strava tokens for an existing user" do
+      user = insert(:user, athlete_id: 123, access_token: "456", refresh_token: "789")
+
+      Users.update_user_tokens(user, %{
+        token: %{access_token: "987", refresh_token: "654"}
+      })
+
+      assert %{access_token: "987", refresh_token: "654"} = Repo.one(from(u in User))
+    end
+  end
+
   describe "YTD.Users.save_activity_type/2" do
     test "updates the saved type" do
       user = insert(:user, athlete_id: 123, selected_activity_type: "Run")

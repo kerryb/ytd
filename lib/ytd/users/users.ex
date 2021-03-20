@@ -34,9 +34,19 @@ defmodule YTD.Users do
   @impl API
   def save_user_tokens(tokens) do
     case get_user_from_athlete_id(tokens.athlete_id) do
-      nil -> tokens |> Create.call() |> Repo.transaction()
-      user -> user |> UpdateTokens.call(tokens) |> Repo.transaction()
+      nil ->
+        tokens |> Create.call() |> Repo.transaction()
+
+      user ->
+        user |> UpdateTokens.call(tokens.access_token, tokens.refresh_token) |> Repo.transaction()
     end
+  end
+
+  @impl API
+  def update_user_tokens(user, client) do
+    user
+    |> UpdateTokens.call(client.token.access_token, client.token.refresh_token)
+    |> Repo.transaction()
   end
 
   @impl API
