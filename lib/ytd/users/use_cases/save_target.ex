@@ -3,10 +3,20 @@ defmodule YTD.Users.SaveTarget do
   Use case for setting a user's target for an activity type.
   """
 
+  import Ecto.Query
+
   alias Ecto.Multi
   alias YTD.Users.{Target, User}
 
   @spec call(User.t(), String.t(), String.t(), String.t()) :: Multi.t()
+  def call(user, activity_type, "", _unit) do
+    Multi.delete_all(
+      Multi.new(),
+      :delete_target,
+      from(t in Target, where: t.user_id == ^user.id, where: t.activity_type == ^activity_type)
+    )
+  end
+
   def call(user, activity_type, target, unit) do
     target = %Target{
       user_id: user.id,

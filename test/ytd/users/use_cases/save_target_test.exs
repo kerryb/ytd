@@ -32,6 +32,17 @@ defmodule YTD.Users.SaveTargetTest do
                Repo.all(Ecto.assoc(user, :targets))
     end
 
+    test "deletes the target if given an empty string" do
+      user = insert(:user)
+      insert(:target, user: user, activity_type: "Run", target: 500, unit: "km")
+
+      user
+      |> SaveTarget.call("Run", "", "miles")
+      |> Repo.transaction()
+
+      assert Repo.all(Ecto.assoc(user, :targets)) == []
+    end
+
     test "tracks activity types separately" do
       user = insert(:user)
       insert(:target, user: user, activity_type: "Ride", target: 500, unit: "km")
