@@ -53,14 +53,21 @@ p.font-thin.text-2xl
   - else
     p.font-thin.text-2xl
       = if @targets[@type] do
-        ' To hit your target of
-        a#edit-target.border-b.border-dotted phx-click="edit-target" href="#"
-          => @targets[@type].target
-          = @targets[@type].unit
-        ' , you need to average
-        => @stats.required_average
-        => @unit
-        ' a week from now on.
+        = if @stats.on_target? do
+          ' You have hit your target of
+          a#edit-target.border-b.border-dotted phx-click="edit-target" href="#"
+            => @targets[@type].target
+            = @targets[@type].unit
+          | !
+        - else
+          ' To hit your target of
+          a#edit-target.border-b.border-dotted phx-click="edit-target" href="#"
+            => @targets[@type].target
+            = @targets[@type].unit
+          ' , you need to average
+          => @stats.required_average
+          => @unit
+          ' a week from now on.
       - else
         ' Why not
         a#edit-target.border-b.border-dotted phx-click="edit-target" href="#" set yourself a target

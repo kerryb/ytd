@@ -410,4 +410,16 @@ defmodule YTDWeb.IndexLiveTest do
                ~r/To hit your target of.*2000 km.*, you need to average \d+\.\d km a week from now on/
     end
   end
+
+  describe "YTDWeb.IndexLive, when the target has been met" do
+    setup :authenticate_user
+
+    test "saves the target", %{conn: conn, user: user} do
+      insert(:target, user: user, activity_type: "Run", target: 3, unit: "miles")
+      activity = build(:activity, type: "Run", distance: 5_000.0)
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      assert render(view) =~ ~r/You have hit your target of.*3 miles.*!/
+    end
+  end
 end
