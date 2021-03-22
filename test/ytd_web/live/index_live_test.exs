@@ -392,7 +392,22 @@ defmodule YTDWeb.IndexLiveTest do
       html = view |> element("form#edit-target-form") |> render_submit(target: "1000")
 
       assert html =~
-               ~r/To hit your target of 1000 miles, you need to average \d+\.\d miles a week from now on/
+               ~r/To hit your target of.*1000 miles.*, you need to average \d+\.\d miles a week from now on/
+    end
+  end
+
+  describe "YTDWeb.IndexLive, editing an existing target" do
+    setup :authenticate_user
+
+    test "saves the target", %{conn: conn, user: user} do
+      insert(:target, user: user, activity_type: "Run", target: 1000, unit: "miles")
+      {:ok, view, _html} = live(conn, "/")
+      view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
+      view |> element("a#edit-target") |> render_click()
+      html = view |> element("form#edit-target-form") |> render_submit(target: "2000")
+
+      assert html =~
+               ~r/To hit your target of.*2000 km.*, you need to average \d+\.\d km a week from now on/
     end
   end
 end
