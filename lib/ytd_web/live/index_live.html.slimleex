@@ -96,3 +96,9 @@ hr.separator
       button#refresh(class="focus:outline-none" phx-click="refresh"
       title="Fetch new activities. Shift-click to discard all activities and reload everything from Strava.")
         i.fas.fa-sync
+
+hr.separator
+
+.flex.flex-row.justify-between.items-end.text-xs.opacity-50
+  = img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/api_logo_pwrdBy_strava_horiz_white.png"), width: "113")
+  = link "Made by Kerry Buckley", to: "https://github.com/kerryb/ytd"
