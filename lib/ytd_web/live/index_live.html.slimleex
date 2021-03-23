@@ -48,7 +48,7 @@ p.font-thin.text-2xl
             input#target.w-20.text-strava-orange.pl-2.ml-2.rounded type="number" name="target" autofocus="true" value="#{if @targets[@type], do: @targets[@type].target, else: 0}"
             =<> @unit
           .flex.justify-between
-            button> class="font-thin border rounded px-1 bg-strava-orange hover:bg-strava-orange-dark" phx-click="cancel-target" Cancel
+            button> class="font-thin border rounded px-1 bg-strava-orange hover:bg-strava-orange-dark" phx-click="cancel-target" type="button" Cancel
             button> class="font-bold border-2 rounded px-1 bg-white text-strava-orange hover:bg-gray-200" type="submit" Save
   - else
     p.font-thin.text-2xl

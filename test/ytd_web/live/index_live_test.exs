@@ -386,13 +386,21 @@ defmodule YTDWeb.IndexLiveTest do
   describe "YTDWeb.IndexLive, setting a new target" do
     setup :authenticate_user
 
-    test "saves the target", %{conn: conn} do
+    test "saves the target if you press 'Save'", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       view |> element("a#edit-target") |> render_click()
       html = view |> element("form#edit-target-form") |> render_submit(target: "1000")
 
       assert html =~
                ~r/To hit your target of.*1000 miles.*, you need to average \d+\.\d miles a week from now on/
+    end
+
+    test "does not save the target if you press 'Cancel'", %{conn: conn} do
+      #  for some reason clicking 'Cancel' causes a submit event after the click event
+      {:ok, view, _html} = live(conn, "/")
+      view |> element("a#edit-target") |> render_click()
+      html = view |> element("button", "Cancel") |> render_click()
+      assert html =~ ~r/set yourself a target/
     end
   end
 
