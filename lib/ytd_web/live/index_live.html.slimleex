@@ -26,8 +26,9 @@ p class="text-5xl sm:text-7xl"
   span.font-thin = @unit
 p.font-thin.text-2xl
   ' (That’s
-  span#weekly-average.font-bold> = @stats.weekly_average
-  => @unit
+  span#weekly-average.font-extrabold>
+    => @stats.weekly_average
+    = @unit
   ' a week)
 
 = if @stats.projected_annual do
@@ -62,12 +63,13 @@ p.font-thin.text-2xl
           | !
         - else
           ' To hit your target of
-          a#edit-target.border-b.border-dotted phx-click="edit-target" href="#"
+          a#edit-target.border-b.border-dotted.font-extrabold phx-click="edit-target" href="#"
             => @targets[@type].target
             = @targets[@type].unit
           ' , you need to average
-          => @stats.required_average
-          => @unit
+          span.font-extrabold>
+            => @stats.required_average
+            = @unit
           ' a week from now on.
       - else
         ' Why not
