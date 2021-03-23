@@ -8,6 +8,6 @@ p.font-thin.text-2xl
   ' your distance totals, you also need to allow
   span.font-extrabold View data about your private activities
   | .
-p.text-center.mt-10
-  = link("Get started", to: @auth_url,
-    class: "hover:bg-white text-white hover:text-strava-orange font-bold text-4xl border-2 border-white rounded-lg p-2")
+.mt-10.width-full.flex.flex-col.items-center
+  a href="#{@auth_url}"
+    = img_tag(Routes.static_path(@conn, "/images/btn_strava_connectwith_light.png"))

@@ -8,7 +8,7 @@ defmodule YTDWeb.AuthPlugTest do
   alias YTD.{Strava, Users}
   alias YTD.Strava.Tokens
   alias YTD.Users.User
-  alias YTDWeb.AuthPlug
+  alias YTDWeb.{AuthPlug, Endpoint}
 
   @athlete_id 123
   @access_token "456"
@@ -125,6 +125,7 @@ defmodule YTDWeb.AuthPlugTest do
 
       conn =
         build_conn(:get, "/", %{"code" => @code, "scope" => "only-other-scopes"})
+        |> Conn.put_private(:phoenix_endpoint, Endpoint)
         |> init_test_session([])
 
       %{conn: conn, tokens: tokens}
@@ -151,6 +152,7 @@ defmodule YTDWeb.AuthPlugTest do
 
       conn =
         build_conn(:get, "/", %{})
+        |> Conn.put_private(:phoenix_endpoint, Endpoint)
         |> init_test_session([])
 
       %{conn: conn, tokens: tokens}
