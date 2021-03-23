@@ -63,7 +63,6 @@ defmodule YTDWeb.IndexLive do
     stats =
       calculate_stats(ytd, unit, Date.utc_today(), socket.assigns.type, socket.assigns.targets)
 
-    PubSub.broadcast!(:ytd, "users", {:unit_changed, socket.assigns.user, unit})
     {:noreply, assign(socket, unit: unit, ytd: ytd, stats: stats)}
   end
 

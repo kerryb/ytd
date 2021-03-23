@@ -45,7 +45,8 @@ p.font-thin.text-2xl
             label for="target"
               => @type
               ' target:
-            input#target.w-20.text-strava-orange.pl-2.ml-2.rounded type="number" name="target" autofocus="true" value="#{if @targets[@type], do: @targets[@type].target, else: 0}"
+            input#target.w-20.text-strava-orange.pl-2.ml-2.rounded type="number" name="target" autofocus="true"
+            value="#{if @targets[@type], do: @targets[@type].target, else: 0}"
             =<> @unit
           .flex.justify-between
             button> class="font-thin border rounded px-1 bg-strava-orange hover:bg-strava-orange-dark" phx-click="cancel-target" type="button" Cancel
@@ -75,27 +76,20 @@ p.font-thin.text-2xl
 
 hr.separator
 
-.flex.flex-row.text-sm
-  .flex.flex-1
-    = cond do
-      - @info ->
-        #info class="text-gray-300 dark:text-gray-700 text-sm font-light animate-pulse" = @info
-      - @latest ->
-        #latest-activity.font-thin
-          ' Latest:
-          span#latest-activity-name.font-bold> = @latest.name
-          | (
-          span#latest-activity-date = Timex.format!(@latest.start_date, "{relative}", :relative)
-          | )
-      - true ->
-        div
-  div
-    = if @info do
-      i.fas.fa-sync.opacity-25
-    - else
-      button#refresh(class="focus:outline-none" phx-click="refresh"
-      title="Fetch new activities. Shift-click to discard all activities and reload everything from Strava.")
-        i.fas.fa-sync
+.flex.flex-row.justify-between.items-center.text-sm
+  = if @info do
+    #info class="text-gray-300 dark:text-gray-700 text-sm font-light animate-pulse" = @info
+  = if @latest do
+    #latest-activity.font-thin
+      ' Latest:
+      span#latest-activity-name.font-bold> = @latest.name
+      | (
+      span#latest-activity-date = Timex.format!(@latest.start_date, "{relative}", :relative)
+      | )
+  = unless @info do
+    button#refresh(class="focus:outline-none" phx-click="refresh"
+    title="Fetch new activities. Shift-click to discard all activities and reload everything from Strava.")
+      i.fas.fa-sync
 
 hr.separator
 

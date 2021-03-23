@@ -110,7 +110,7 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
       avg_element = view |> element("#weekly-average") |> render()
-      [avg] = Regex.run(~r/>(\d+\.\d)</, avg_element, capture: :all_but_first)
+      [avg] = Regex.run(~r/>(\d+\.\d)/, avg_element, capture: :all_but_first)
       refute avg == "0.0"
     end
 
@@ -305,14 +305,7 @@ defmodule YTDWeb.IndexLiveTest do
       insert(:target, user: user, activity_type: "Run", target: 1000, unit: "miles")
       {:ok, view, _html} = live(conn, "/")
       html = view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
-      assert html =~ ~r/you need to average \d+\.\d km/
-    end
-
-    test "broadcasts a :unit_changed event to the users channel", %{conn: conn, user: user} do
-      {:ok, view, _html} = live(conn, "/")
-      PubSub.subscribe(:ytd, "users")
-      view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
-      assert_receive {:unit_changed, ^user, "km"}
+      assert html =~ ~r/you need to average .*\d+\.\d km/
     end
   end
 
@@ -392,7 +385,7 @@ defmodule YTDWeb.IndexLiveTest do
       html = view |> element("form#edit-target-form") |> render_submit(target: "1000")
 
       assert html =~
-               ~r/To hit your target of.*1000 miles.*, you need to average \d+\.\d miles a week from now on/
+               ~r/To hit your target of .*1000 miles.*, you need to average .*\d+\.\d miles.* a week from now on/
     end
 
     test "does not save the target if you press 'Cancel'", %{conn: conn} do
@@ -415,7 +408,7 @@ defmodule YTDWeb.IndexLiveTest do
       html = view |> element("form#edit-target-form") |> render_submit(target: "2000")
 
       assert html =~
-               ~r/To hit your target of.*2000 km.*, you need to average \d+\.\d km a week from now on/
+               ~r/To hit your target of.*2000 km.*, you need to average .*\d+\.\d km.* a week from now on/
     end
   end
 
