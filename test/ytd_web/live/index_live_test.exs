@@ -11,7 +11,8 @@ defmodule YTDWeb.IndexLiveTest do
   @endpoint YTDWeb.Endpoint
 
   defp authenticate_user(%{conn: conn}) do
-    user = insert(:user, selected_activity_type: "Run", selected_unit: "miles")
+    user =
+      insert(:user, name: "Fred Bloggs", selected_activity_type: "Run", selected_unit: "miles")
 
     conn =
       conn
@@ -23,6 +24,11 @@ defmodule YTDWeb.IndexLiveTest do
 
   describe "YTDWeb.IndexLive, initially" do
     setup :authenticate_user
+
+    test "displays the user's name", %{conn: conn} do
+      {:ok, view, _html} = live(conn, "/")
+      assert has_element?(view, "#name", "Fred Bloggs")
+    end
 
     test "displays a 'loading activities' message", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")

@@ -11,6 +11,7 @@ defmodule YTD.Users.User do
   @type t :: %__MODULE__{
           id: integer() | nil,
           athlete_id: integer() | nil,
+          name: String.t() | nil,
           access_token: String.t() | nil,
           refresh_token: String.t() | nil,
           selected_activity_type: String.t(),
@@ -20,6 +21,7 @@ defmodule YTD.Users.User do
   schema "users" do
     field :athlete_id, :integer
     field :access_token, :string
+    field :name, :string
     field :refresh_token, :string
     field :selected_activity_type, :string
     field :selected_unit, :string

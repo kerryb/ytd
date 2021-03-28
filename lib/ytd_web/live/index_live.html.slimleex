@@ -1,19 +1,18 @@
 hr.separator
-form.flex.flex-row phx-change="select"
-  .flex.flex-1
-    select#type.select-noborder name="type"
-      = for type <- @types do
-        = if type == @type do
-          option selected=true = type
-        - else
-          option = type
-  div
-    select#unit.select-noborder name="unit"
-      = for unit <- ~w[miles km] do
-        = if unit == @unit do
-          option selected=true = unit
-        - else
-          option = unit
+form.flex.flex-row.justify-between phx-change="select"
+  select#type.select-noborder name="type"
+    = for type <- @types do
+      = if type == @type do
+        option selected=true = type
+      - else
+        option = type
+  span#name.font-light = @user.name
+  select#unit.select-noborder name="unit"
+    = for unit <- ~w[miles km] do
+      = if unit == @unit do
+        option selected=true = unit
+      - else
+        option = unit
 
 hr.separator
 

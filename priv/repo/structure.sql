@@ -68,7 +68,8 @@ CREATE TABLE public.users (
     updated_at timestamp(0) without time zone NOT NULL,
     refresh_token text,
     selected_activity_type text DEFAULT 'Run'::text,
-    selected_unit text DEFAULT 'miles'::text
+    selected_unit text DEFAULT 'miles'::text,
+    name character varying(255)
 );
 
 
@@ -229,3 +230,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20200816184009);
 INSERT INTO public."schema_migrations" (version) VALUES (20200817213538);
 INSERT INTO public."schema_migrations" (version) VALUES (20210131134621);
 INSERT INTO public."schema_migrations" (version) VALUES (20210303204557);
+INSERT INTO public."schema_migrations" (version) VALUES (20210328202433);
