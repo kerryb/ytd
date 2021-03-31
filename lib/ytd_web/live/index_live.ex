@@ -84,6 +84,7 @@ defmodule YTDWeb.IndexLive do
     {:noreply,
      assign(socket,
        activities: [],
+       latest: nil,
        count: count,
        ytd: ytd,
        stats: stats,

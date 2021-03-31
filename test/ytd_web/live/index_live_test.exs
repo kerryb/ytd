@@ -359,6 +359,15 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#count", "0 activities")
     end
 
+    test "clears the latest activity", %{conn: conn, user: user} do
+      activity = build(:activity, type: "Run", distance: 5_000.0)
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
+      render_click(view, :refresh, %{"shift_key" => true})
+      refute has_element?(view, "#latest-activity-name")
+    end
+
     test "resets the ytd total to zero", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
