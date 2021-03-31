@@ -56,13 +56,13 @@ p.font-thin.text-2xl.mb-2
       = if @targets[@type] do
         = if @stats.on_target? do
           ' You have hit your target of
-          a#edit-target.border-b.border-dotted phx-click="edit-target" href="#"
+          a#edit-target.link phx-click="edit-target" href="#"
             => @targets[@type].target
             = @targets[@type].unit
           | !
         - else
           ' To hit your target of
-          a#edit-target.border-b.border-dotted.font-extrabold phx-click="edit-target" href="#"
+          a#edit-target.link phx-click="edit-target" href="#"
             => @targets[@type].target
             = @targets[@type].unit
           ' , you need to average
@@ -72,7 +72,7 @@ p.font-thin.text-2xl.mb-2
           ' a week from now on.
       - else
         ' Why not
-        a#edit-target.border-b.border-dotted phx-click="edit-target" href="#" set yourself a target
+        a#edit-target.link phx-click="edit-target" href="#" set yourself a target
         ' ?
 
 hr.separator
@@ -95,5 +95,6 @@ hr.separator
 hr.separator
 
 .flex.flex-row.justify-between.items-end.text-xs.opacity-50
-  = img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/api_logo_pwrdBy_strava_horiz_white.png"), width: "113")
+  = img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/api_logo_pwrdBy_strava_horiz_white.png"), width: "113", class: "dark:hidden")
+  = img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/api_logo_pwrdBy_strava_horiz_light.png"), width: "113", class: "hidden dark:inline")
   = link "Made by Kerry Buckley", to: "https://github.com/kerryb/ytd"

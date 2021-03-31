@@ -10,10 +10,14 @@
 
 @layer components {
   .separator {
-    @apply my-1 dark:bg-strava-orange dark:border-strava-orange
+    @apply my-1 dark:bg-strava-orange dark:border-strava-orange;
   }
 
   .select-noborder {
-    @apply bg-strava-orange dark:bg-black outline-none
+    @apply bg-strava-orange dark:bg-black outline-none;
+  }
+
+  .link {
+    @apply border-b border-dotted font-extrabold dark:border-strava-orange;
   }
 }
