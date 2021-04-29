@@ -1,7 +1,6 @@
 defmodule YTD.Users do
   @moduledoc """
-  Entry point functions for Users context, dealing with saved users of the
-  application.
+  Context to handle persistance of users.
   """
 
   @behaviour YTD.Users.API

@@ -62,13 +62,22 @@ defmodule YTDWeb.IndexLiveTest do
       refute has_element?(view, "button")
     end
 
-    test "broadcasts a :get_activities message on the activities channel on page load", %{
+    test "broadcasts a :get_activities message on the activities channel", %{
       conn: conn,
       user: user
     } do
       PubSub.subscribe(:ytd, "activities")
       {:ok, _view, _html} = live(conn, "/")
       assert_receive {:get_activities, ^user}
+    end
+
+    test "broadcasts an :update_name message on the users channel", %{
+      conn: conn,
+      user: user
+    } do
+      PubSub.subscribe(:ytd, "users")
+      {:ok, _view, _html} = live(conn, "/")
+      assert_receive {:update_name, ^user}
     end
   end
 

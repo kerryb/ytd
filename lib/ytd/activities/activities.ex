@@ -1,6 +1,6 @@
 defmodule YTD.Activities do
   @moduledoc """
-  Server to handle persistance of activities.
+  Context (and server) to handle persistance of activities.
   """
 
   use GenServer
