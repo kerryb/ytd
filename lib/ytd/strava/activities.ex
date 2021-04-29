@@ -1,6 +1,6 @@
 defmodule YTD.Strava.Activities do
   @moduledoc """
-  Server and API wrapper for retrieving an athlete's activities from Strava.
+  Server for retrieving an athlete's activities from Strava.
   """
 
   use GenServer
