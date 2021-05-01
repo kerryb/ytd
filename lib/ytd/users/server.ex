@@ -7,8 +7,9 @@ defmodule YTD.Users.Server do
 
   alias Phoenix.PubSub
   alias YTD.Repo
-
   alias YTD.Users.UpdateName
+
+  require Logger
 
   @spec start_link(any()) :: GenServer.on_start()
   def start_link(_arg) do
@@ -23,7 +24,7 @@ defmodule YTD.Users.Server do
 
   @impl GenServer
   def handle_info({:update_name, user}, state) do
-    broadcast_get_athlete(user)
+    broadcast_get_athlete_details(user)
     {:noreply, state}
   end
 
@@ -38,7 +39,12 @@ defmodule YTD.Users.Server do
     {:noreply, state}
   end
 
-  defp broadcast_get_athlete(user) do
-    PubSub.broadcast!(:ytd, "strava", {:get_athlete, user})
+  def handle_info(message, state) do
+    Logger.warn("#{__MODULE__} Received unexpected message #{inspect(message)}")
+    {:noreply, state}
+  end
+
+  defp broadcast_get_athlete_details(user) do
+    PubSub.broadcast!(:ytd, "strava", {:get_athlete_details, user})
   end
 end

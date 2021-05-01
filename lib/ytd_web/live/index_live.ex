@@ -183,6 +183,10 @@ defmodule YTDWeb.IndexLive do
     {:noreply, assign(socket, info: nil, latest: latest)}
   end
 
+  def handle_info({:name_updated, user}, socket) do
+    {:noreply, assign(socket, user: user)}
+  end
+
   defp types(activities) do
     activities |> Enum.map(& &1.type) |> Enum.uniq()
   end

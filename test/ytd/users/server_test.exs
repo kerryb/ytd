@@ -14,11 +14,11 @@ defmodule YTD.Users.ServerTest do
       :ok
     end
 
-    test "broadcasts a get_athlete message, with the athlete ID, to the strava channel" do
+    test "broadcasts a get_athlete_details message, with the athlete ID, to the strava channel" do
       user = insert(:user)
       PubSub.subscribe(:ytd, "strava")
       PubSub.broadcast!(:ytd, "users", {:update_name, user})
-      assert_receive {:get_athlete, ^user}
+      assert_receive {:get_athlete_details, ^user}
     end
   end
 

@@ -227,6 +227,16 @@ defmodule YTDWeb.IndexLiveTest do
     end
   end
 
+  describe "YTDWeb.IndexLive, when a name_updated message is received" do
+    setup :authenticate_user
+
+    test "show the new name", %{conn: conn, user: user} do
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "user:#{user.id}", {:name_updated, %{user | name: "Freddy Bloggs"}})
+      assert has_element?(view, "#name", "Freddy Bloggs")
+    end
+  end
+
   describe "YTDWeb.IndexLive, when the user switches activity type" do
     setup :authenticate_user
 
