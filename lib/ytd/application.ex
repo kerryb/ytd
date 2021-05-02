@@ -1,4 +1,5 @@
 # credo:disable-for-this-file Credo.Check.Readability.Specs
+# credo:disable-for-this-file Credo.Check.Refactor.ModuleDependencies
 defmodule YTD.Application do
   @moduledoc false
 
@@ -22,7 +23,7 @@ defmodule YTD.Application do
       YTD.Repo,
       YTDWeb.Telemetry,
       {Phoenix.PubSub, name: :ytd},
-      YTDWeb.Endpoint
+      {SiteEncrypt.Phoenix, YTDWeb.Endpoint}
     ]
   end
 

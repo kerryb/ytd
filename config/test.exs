@@ -14,7 +14,10 @@ config :ytd, YTD.Repo,
 # you can enable the server option below.
 config :ytd, YTDWeb.Endpoint,
   http: [port: 4001],
+  https: [port: 4041],
   server: true
+
+config :ytd, :internal_acme_port, 4003
 
 config :ytd, :sql_sandbox, true
 

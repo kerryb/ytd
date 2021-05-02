@@ -38,3 +38,4 @@ ytd-*.tar
 # this depending on your deployment strategy.
 /priv/static/
 screenshots
+tmp/

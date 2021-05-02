@@ -1,6 +1,28 @@
 # credo:disable-for-this-file Credo.Check.Refactor.ModuleDependencies
 defmodule YTDWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :ytd
+  use SiteEncrypt.Phoenix
+
+  @impl Phoenix.Endpoint
+  def init(_key, config) do
+    {:ok, SiteEncrypt.Phoenix.configure_https(config)}
+  end
+
+  @impl SiteEncrypt
+  def certification do
+    SiteEncrypt.configure(
+      client: :native,
+      domains: ["ytd.kerryb.org", "www.ytd.kerryb.org"],
+      emails: ["kerryjbuckley@gmail.com"],
+      db_folder: System.get_env("SITE_ENCRYPT_DB", Path.join("tmp", "site_encrypt_db")),
+      directory_url:
+        case System.get_env("CERT_MODE", "local") do
+          "local" -> {:internal, port: Application.get_env(:ytd, :internal_acme_port, 4002)}
+          "staging" -> "https://acme-staging-v02.api.letsencrypt.org/directory"
+          "production" -> "https://acme-v02.api.letsencrypt.org/directory"
+        end
+    )
+  end
 
   if Application.get_env(:ytd, :sql_sandbox) do
     plug Phoenix.Ecto.SQL.Sandbox
