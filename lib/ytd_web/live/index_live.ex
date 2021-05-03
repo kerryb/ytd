@@ -17,8 +17,8 @@ defmodule YTDWeb.IndexLive do
 
     if connected?(socket) do
       :ok = PubSub.subscribe(:ytd, "user:#{user.id}")
-      :ok = PubSub.broadcast!(:ytd, "activities", {:get_activities, user})
-      :ok = PubSub.broadcast!(:ytd, "users", {:update_name, user})
+      get_activities(user)
+      update_name(user)
     end
 
     {:ok,
@@ -43,6 +43,14 @@ defmodule YTDWeb.IndexLive do
        latest: nil,
        edit_target?: false
      )}
+  end
+
+  defp get_activities(user) do
+    :ok = PubSub.broadcast!(:ytd, "activities", {:get_activities, user})
+  end
+
+  defp update_name(user) do
+    :ok = PubSub.broadcast!(:ytd, "users", {:update_name, user})
   end
 
   @impl true
