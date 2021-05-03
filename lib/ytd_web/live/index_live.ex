@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Refactor.ModuleDependencies
 defmodule YTDWeb.IndexLive do
   @moduledoc """
   Live view for main index page.
@@ -46,11 +47,11 @@ defmodule YTDWeb.IndexLive do
   end
 
   defp get_activities(user) do
-    :ok = PubSub.broadcast!(:ytd, "activities", {:get_activities, user})
+    Task.start_link(fn -> :ok = PubSub.broadcast!(:ytd, "activities", {:get_activities, user}) end)
   end
 
   defp update_name(user) do
-    :ok = PubSub.broadcast!(:ytd, "users", {:update_name, user})
+    Task.start_link(fn -> :ok = PubSub.broadcast!(:ytd, "users", {:update_name, user}) end)
   end
 
   @impl true
