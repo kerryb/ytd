@@ -1,5 +1,6 @@
 defmodule YTDWeb.IndexLiveTest do
   use YTDWeb.ConnCase, async: true
+  import Mox
 
   import Plug.Conn
   import Phoenix.{ConnTest, LiveViewTest}
@@ -9,6 +10,11 @@ defmodule YTDWeb.IndexLiveTest do
   alias YTD.Repo
 
   @endpoint YTDWeb.Endpoint
+
+  defp stub_apis(_context) do
+    stub(ActivitiesMock, :fetch_activities, fn _pid, _user -> :ok end)
+    :ok
+  end
 
   defp authenticate_user(%{conn: conn}) do
     user =
@@ -23,7 +29,9 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, initially" do
+    setup :stub_apis
     setup :authenticate_user
+    setup :verify_on_exit!
 
     test "displays the user's name", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
@@ -62,13 +70,12 @@ defmodule YTDWeb.IndexLiveTest do
       refute has_element?(view, "button")
     end
 
-    test "broadcasts a :get_activities message on the activities channel", %{
+    test "requests the user's activities", %{
       conn: conn,
       user: user
     } do
-      PubSub.subscribe(:ytd, "activities")
+      expect(ActivitiesMock, :fetch_activities, fn _pid, ^user -> :ok end)
       {:ok, _view, _html} = live(conn, "/")
-      assert_receive {:get_activities, ^user}
     end
 
     test "broadcasts an :update_name message on the users channel", %{
@@ -82,58 +89,59 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when existing activities are received" do
+    setup :stub_apis
     setup :authenticate_user
 
-    test "updates the message", %{conn: conn, user: user} do
+    test "updates the message", %{conn: conn} do
       activities = [build(:activity), build(:activity)]
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
+      send(view.pid, {:existing_activities, activities})
       assert has_element?(view, "#info", "2 activities loaded. Fetching new activities …")
     end
 
-    test "copes with there not being any activities", %{conn: conn, user: user} do
+    test "copes with there not being any activities", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, []})
+      send(view.pid, {:existing_activities, []})
       assert has_element?(view, "#info", "0 activities loaded. Fetching new activities …")
     end
 
-    test "updates the distance", %{conn: conn, user: user} do
+    test "updates the distance", %{conn: conn} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
         build(:activity, type: "Run", distance: 10_000.0)
       ]
 
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
+      send(view.pid, {:existing_activities, activities})
       assert has_element?(view, "#total", "9.3")
     end
 
-    test "updates the number of activities", %{conn: conn, user: user} do
+    test "updates the number of activities", %{conn: conn} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
         build(:activity, type: "Run", distance: 10_000.0)
       ]
 
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
+      send(view.pid, {:existing_activities, activities})
       assert has_element?(view, "#count", "2 activities")
     end
 
-    test "updates the weekly average", %{conn: conn, user: user} do
+    test "updates the weekly average", %{conn: conn} do
       activities = [build(:activity, type: "Run", distance: 5_000.0)]
 
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
+      send(view.pid, {:existing_activities, activities})
       avg_element = view |> element("#weekly-average") |> render()
       [avg] = Regex.run(~r/>(\d+\.\d)/, avg_element, capture: :all_but_first)
       refute avg == "0.0"
     end
 
-    test "updates the projected annual total", %{conn: conn, user: user} do
+    test "updates the projected annual total", %{conn: conn} do
       activities = [build(:activity, type: "Run", distance: 5_000.0)]
 
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
+      send(view.pid, {:existing_activities, activities})
       projected_annual_element = view |> element("#projected-annual") |> render()
 
       [projected_annual] =
@@ -144,43 +152,44 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when a new activity is received" do
+    setup :stub_apis
     setup :authenticate_user
 
-    test "updates the distance", %{conn: conn, user: user} do
+    test "updates the distance", %{conn: conn} do
       existing_activity = build(:activity, type: "Run", distance: 5_000.0)
       new_activity = build(:activity, type: "Run", distance: 10_000.0)
 
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
+      send(view.pid, {:existing_activities, [existing_activity]})
+      send(view.pid, {:new_activity, new_activity})
       assert has_element?(view, "#total", "9.3")
     end
 
-    test "updates the stats", %{conn: conn, user: user} do
+    test "updates the stats", %{conn: conn} do
       existing_activity = build(:activity, type: "Run", distance: 5_000.0)
       new_activity = build(:activity, type: "Run", distance: 10_000.0)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
+      send(view.pid, {:existing_activities, [existing_activity]})
       avg_element_1 = view |> element("#weekly-average") |> render()
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
+      send(view.pid, {:new_activity, new_activity})
       avg_element_2 = view |> element("#weekly-average") |> render()
       refute avg_element_1 == avg_element_2
     end
 
-    test "updates the number of activities", %{conn: conn, user: user} do
+    test "updates the number of activities", %{conn: conn} do
       activity = build(:activity, type: "Run", distance: 10_000.0)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, activity})
+      send(view.pid, {:new_activity, activity})
       assert has_element?(view, "#count", "1 activity")
     end
 
-    test "updates the info message", %{conn: conn, user: user} do
+    test "updates the info message", %{conn: conn} do
       existing_activity = build(:activity)
       new_activity = build(:activity)
 
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [existing_activity]})
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:new_activity, new_activity})
+      send(view.pid, {:existing_activities, [existing_activity]})
+      send(view.pid, {:new_activity, new_activity})
 
       assert has_element?(
                view,
@@ -191,15 +200,16 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when all activities have been received" do
+    setup :stub_apis
     setup :authenticate_user
 
-    test "clears the info message", %{conn: conn, user: user} do
+    test "clears the info message", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
+      send(view.pid, :all_activities_fetched)
       refute has_element?(view, "#info")
     end
 
-    test "shows the latest activity of the selected type", %{conn: conn, user: user} do
+    test "shows the latest activity of the selected type", %{conn: conn} do
       activities = [
         build(:activity,
           name: "Morning run",
@@ -218,16 +228,16 @@ defmodule YTDWeb.IndexLiveTest do
         )
       ]
 
-      PubSub.subscribe(:ytd, "user:#{user.id}")
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
-      PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
+      send(view.pid, {:existing_activities, activities})
+      send(view.pid, :all_activities_fetched)
       assert has_element?(view, "#latest-activity-name", "Evening run")
       assert has_element?(view, "#latest-activity-date", "2 days ago")
     end
   end
 
   describe "YTDWeb.IndexLive, when a name_updated message is received" do
+    setup :stub_apis
     setup :authenticate_user
 
     test "show the new name", %{conn: conn, user: user} do
@@ -238,6 +248,7 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when the user switches activity type" do
+    setup :stub_apis
     setup :authenticate_user
 
     test "updates the total", %{conn: conn, user: user} do
@@ -305,6 +316,7 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when the user changes unit" do
+    setup :stub_apis
     setup :authenticate_user
 
     test "updates the total", %{conn: conn, user: user} do
@@ -335,6 +347,7 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when the refresh button is clicked" do
+    setup :stub_apis
     setup :authenticate_user
 
     test "broadcasts a :refresh_activities message on the activities channel",
@@ -358,6 +371,7 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when the refresh button is shift-clicked" do
+    setup :stub_apis
     setup :authenticate_user
 
     test "broadcasts a :reset_activities message on the activities channel", %{
@@ -411,6 +425,7 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, setting a new target" do
+    setup :stub_apis
     setup :authenticate_user
 
     test "saves the target if you press 'Save'", %{conn: conn} do
@@ -432,6 +447,7 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, editing an existing target" do
+    setup :stub_apis
     setup :authenticate_user
 
     test "saves the target", %{conn: conn, user: user} do
@@ -447,6 +463,7 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when the target has been met" do
+    setup :stub_apis
     setup :authenticate_user
 
     test "saves the target", %{conn: conn, user: user} do

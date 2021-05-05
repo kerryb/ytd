@@ -5,7 +5,6 @@ defmodule YTDWeb.AuthPlugTest do
   import Hammox
 
   alias Plug.Conn
-  alias YTD.{Strava, Users}
   alias YTD.Strava.Tokens
   alias YTD.Users.User
   alias YTDWeb.{AuthPlug, Endpoint}
@@ -17,9 +16,6 @@ defmodule YTDWeb.AuthPlugTest do
   @strava_auth_url "https://strava.com/foo/bar"
 
   setup :verify_on_exit!
-
-  defmock(UsersMock, for: Users.API)
-  defmock(StravaMock, for: Strava.API)
 
   describe "YTDWeb.AuthPlug.get_user_if_signed_in/2" do
     test "assigns the athlete ID if it is present in the session and the user is in the database",

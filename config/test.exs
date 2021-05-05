@@ -17,9 +17,11 @@ config :ytd, YTDWeb.Endpoint,
   https: [port: 4041],
   server: true
 
-config :ytd, :internal_acme_port, 4003
-
-config :ytd, :sql_sandbox, true
+config :ytd,
+  internal_acme_port: 4003,
+  sql_sandbox: true,
+  activities_api: ActivitiesMock,
+  strava_api: StravaMock
 
 config :strava, redirect_uri: "http://localhost:4001"
 

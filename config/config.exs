@@ -9,7 +9,9 @@ use Mix.Config
 
 config :ytd,
   ecto_repos: [YTD.Repo],
-  env: Mix.env()
+  env: Mix.env(),
+  activities_api: YTD.Activities,
+  strava_api: YTD.Strava
 
 # Configures the endpoint
 config :ytd, YTDWeb.Endpoint,

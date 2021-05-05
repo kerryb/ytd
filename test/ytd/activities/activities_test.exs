@@ -3,11 +3,51 @@ defmodule YTD.ActivitiesTest do
 
   import Assertions, only: [assert_lists_equal: 3, assert_structs_equal: 3]
   import Ecto.Query
+  import Mox
 
   alias Phoenix.PubSub
   alias Strava.SummaryActivity
   alias YTD.{Activities, Repo}
   alias YTD.Activities.Activity
+
+  defp stub_strava(_context) do
+    stub(StravaMock, :stream_activities_since, fn _pid, _user, _timestamp -> :ok end)
+    :ok
+  end
+
+  describe "YTD.Activities.fetch_activities/2" do
+    setup :stub_strava
+    setup :verify_on_exit!
+
+    test "sends existing activities from the database" do
+      user = insert(:user)
+      activities = [insert(:activity, user: user), insert(:activity, user: user)]
+      Activities.fetch_activities(self(), user)
+      assert_receive {:existing_activities, broadcast_activities}
+      assert_lists_equal(activities, broadcast_activities, &assert_structs_equal(&1, &2, [:id]))
+    end
+
+    test "requests new activities from Strava" do
+      user = insert(:user)
+      insert(:activity, user: user, start_date: ~U[2021-01-19 14:00:00Z])
+      insert(:activity, user: user, start_date: ~U[2021-01-20 21:00:00Z])
+      pid = self()
+
+      expect(StravaMock, :stream_activities_since, fn ^pid, ^user, ~U[2021-01-20 21:00:00Z] ->
+        :ok
+      end)
+
+      Activities.fetch_activities(self(), user)
+    end
+
+    test "requests all activities for the year if there are no saved activities" do
+      user = insert(:user)
+      pid = self()
+      beginning_of_year = Timex.beginning_of_year(DateTime.utc_now())
+      expect(StravaMock, :stream_activities_since, fn ^pid, ^user, ^beginning_of_year -> :ok end)
+      Activities.fetch_activities(self(), user)
+    end
+  end
 
   describe "YTD.Activities server on receiving {:get_activities, user} on the 'activities' channel" do
     setup do

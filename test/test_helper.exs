@@ -3,4 +3,8 @@
 ExUnit.start()
 Faker.start()
 
+Mox.defmock(UsersMock, for: YTD.Users.API)
+Mox.defmock(StravaMock, for: YTD.Strava.API)
+Mox.defmock(ActivitiesMock, for: YTD.Activities.API)
+
 Ecto.Adapters.SQL.Sandbox.mode(YTD.Repo, :manual)

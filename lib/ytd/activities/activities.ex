@@ -3,13 +3,29 @@ defmodule YTD.Activities do
   Context (and server) to handle persistance of activities.
   """
 
+  @behaviour YTD.Activities.API
+
   use GenServer
 
   import Ecto.Query
 
   alias Phoenix.PubSub
-  alias YTD.Activities.Activity
+  alias YTD.Activities.{Activity, API}
   alias YTD.Repo
+
+  @impl API
+  def fetch_activities(pid, user) do
+    send(pid, {:existing_activities, get_existing_activities(user)})
+
+    timestamp =
+      case get_latest_activity(user) do
+        nil -> Timex.beginning_of_year(DateTime.utc_now())
+        activity -> activity.start_date
+      end
+
+    strava_api().stream_activities_since(pid, user, timestamp)
+    :ok
+  end
 
   @spec start_link(any()) :: GenServer.on_start()
   def start_link(_arg) do
@@ -96,4 +112,6 @@ defmodule YTD.Activities do
   defp broadcast_all_activities_fetched(user) do
     PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
   end
+
+  defp strava_api, do: Application.fetch_env!(:ytd, :strava_api)
 end

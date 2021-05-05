@@ -18,7 +18,7 @@ defmodule YTDWeb.IndexLive do
 
     if connected?(socket) do
       :ok = PubSub.subscribe(:ytd, "user:#{user.id}")
-      get_activities(user)
+      get_activities(self(), user)
       update_name(user)
     end
 
@@ -46,8 +46,8 @@ defmodule YTDWeb.IndexLive do
      )}
   end
 
-  defp get_activities(user) do
-    Task.start_link(fn -> :ok = PubSub.broadcast!(:ytd, "activities", {:get_activities, user}) end)
+  defp get_activities(pid, user) do
+    Task.start_link(fn -> :ok = activities_api().fetch_activities(pid, user) end)
   end
 
   defp update_name(user) do
@@ -196,6 +196,11 @@ defmodule YTDWeb.IndexLive do
     {:noreply, assign(socket, user: user)}
   end
 
+  def handle_info(message, socket) do
+    Logger.warn("#{__MODULE__} Received unexpected message #{inspect(message)}")
+    {:noreply, socket}
+  end
+
   defp types(activities) do
     activities |> Enum.map(& &1.type) |> Enum.uniq()
   end
@@ -243,4 +248,6 @@ defmodule YTDWeb.IndexLive do
 
     Stats.calculate(ytd, date, target)
   end
+
+  defp activities_api, do: Application.fetch_env!(:ytd, :activities_api)
 end
