@@ -103,8 +103,9 @@ defmodule YTDWeb.IndexLive do
   end
 
   def handle_event("refresh", _params, socket) do
-    PubSub.broadcast!(:ytd, "activities", {:refresh_activities, socket.assigns.user})
-    {:noreply, assign(socket, info: "Refreshing activities …")}
+    pid = self()
+    Task.start_link(fn -> :ok = activities_api().refresh_activities(pid, socket.assigns.user) end)
+    {:noreply, assign(socket, latest: nil, info: "Refreshing activities …")}
   end
 
   def handle_event("edit-target", _params, socket) do

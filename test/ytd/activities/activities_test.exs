@@ -49,52 +49,28 @@ defmodule YTD.ActivitiesTest do
     end
   end
 
-  describe "YTD.Activities server on receiving {:get_activities, user} on the 'activities' channel" do
-    setup do
-      {:ok, _pid} = start_supervised(Activities)
-      :ok
-    end
+  describe "YTD.Activities server on receiving {:refresh_activities, user} on the 'activities' channel" do
+    setup :verify_on_exit!
 
-    test "broadcasts existing activities to the user channel" do
-      user = insert(:user)
-      activities = [insert(:activity, user: user), insert(:activity, user: user)]
-      PubSub.subscribe(:ytd, "user:#{user.id}")
-      PubSub.broadcast!(:ytd, "activities", {:get_activities, user})
-      assert_receive {:existing_activities, broadcast_activities}
-      assert_lists_equal(activities, broadcast_activities, &assert_structs_equal(&1, &2, [:id]))
-    end
-
-    test "broadcasts a get_new_activities message, with the latest activity timestamp, to the strava channel" do
+    test "requests new activities from Strava" do
       user = insert(:user)
       insert(:activity, user: user, start_date: ~U[2021-01-19 14:00:00Z])
       insert(:activity, user: user, start_date: ~U[2021-01-20 21:00:00Z])
-      PubSub.subscribe(:ytd, "strava")
-      PubSub.broadcast!(:ytd, "activities", {:get_activities, user})
-      assert_receive {:get_new_activities, ^user, ~U[2021-01-20 21:00:00Z]}
+      pid = self()
+
+      expect(StravaMock, :stream_activities_since, fn ^pid, ^user, ~U[2021-01-20 21:00:00Z] ->
+        :ok
+      end)
+
+      Activities.fetch_activities(self(), user)
     end
 
     test "requests all activities for the year if there are no saved activities" do
       user = insert(:user)
-      PubSub.subscribe(:ytd, "strava")
-      PubSub.broadcast!(:ytd, "activities", {:get_activities, user})
+      pid = self()
       beginning_of_year = Timex.beginning_of_year(DateTime.utc_now())
-      assert_receive {:get_new_activities, ^user, ^beginning_of_year}
-    end
-  end
-
-  describe "YTD.Activities server on receiving {:refresh_activities, user} on the 'activities' channel" do
-    setup do
-      {:ok, _pid} = start_supervised(Activities)
-      :ok
-    end
-
-    test "broadcasts a get_new_activities message, with the latest activity timestamp, to the strava channel" do
-      user = insert(:user)
-      insert(:activity, user: user, start_date: ~U[2021-01-19 14:00:00Z])
-      insert(:activity, user: user, start_date: ~U[2021-01-20 21:00:00Z])
-      PubSub.subscribe(:ytd, "strava")
-      PubSub.broadcast!(:ytd, "activities", {:refresh_activities, user})
-      assert_receive {:get_new_activities, ^user, ~U[2021-01-20 21:00:00Z]}
+      expect(StravaMock, :stream_activities_since, fn ^pid, ^user, ^beginning_of_year -> :ok end)
+      Activities.fetch_activities(self(), user)
     end
   end
 

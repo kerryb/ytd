@@ -349,22 +349,27 @@ defmodule YTDWeb.IndexLiveTest do
   describe "YTDWeb.IndexLive, when the refresh button is clicked" do
     setup :stub_apis
     setup :authenticate_user
+    setup :verify_on_exit!
 
-    test "broadcasts a :refresh_activities message on the activities channel",
-         %{
-           conn: conn,
-           user: user
-         } do
-      PubSub.subscribe(:ytd, "activities")
-      {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
+    test "requests new activities", %{conn: conn, user: user} do
+      {:ok, %{pid: pid} = view, _html} = live(conn, "/")
+      send(pid, :all_activities_fetched)
+      expect(ActivitiesMock, :refresh_activities, fn ^pid, ^user -> :ok end)
       view |> element("button#refresh") |> render_click()
-      assert_receive {:refresh_activities, ^user}
     end
 
-    test "shows an info message", %{conn: conn, user: user} do
+    test "clears the latest activity", %{conn: conn} do
+      activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
+      send(view.pid, {:existing_activities, [activity]})
+      send(view.pid, :all_activities_fetched)
+      view |> element("button#refresh") |> render_click()
+      refute has_element?(view, "#latest-activity-name")
+    end
+
+    test "shows an info message", %{conn: conn} do
+      {:ok, view, _html} = live(conn, "/")
+      send(view.pid, :all_activities_fetched)
       view |> element("button#refresh") |> render_click()
       assert has_element?(view, "#info", "Refreshing activities …")
     end
@@ -392,11 +397,11 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#count", "0 activities")
     end
 
-    test "clears the latest activity", %{conn: conn, user: user} do
+    test "clears the latest activity", %{conn: conn} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
-      PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
+      send(view.pid, {:existing_activities, [activity]})
+      send(view.pid, :all_activities_fetched)
       render_click(view, :refresh, %{"shift_key" => true})
       refute has_element?(view, "#latest-activity-name")
     end

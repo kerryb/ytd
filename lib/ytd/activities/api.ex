@@ -6,4 +6,5 @@ defmodule YTD.Activities.API do
   alias YTD.Users.User
 
   @callback fetch_activities(pid(), User.t()) :: :ok
+  @callback refresh_activities(pid(), User.t()) :: :ok
 end
