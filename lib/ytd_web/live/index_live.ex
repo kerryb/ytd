@@ -89,7 +89,8 @@ defmodule YTDWeb.IndexLive do
         socket.assigns.targets
       )
 
-    PubSub.broadcast!(:ytd, "activities", {:reset_activities, socket.assigns.user})
+    pid = self()
+    Task.start_link(fn -> :ok = activities_api().reload_activities(pid, socket.assigns.user) end)
 
     {:noreply,
      assign(socket,
@@ -98,7 +99,7 @@ defmodule YTDWeb.IndexLive do
        count: count,
        ytd: ytd,
        stats: stats,
-       info: "Re-fetching all activities …"
+       info: "Reloading all activities …"
      )}
   end
 

@@ -378,21 +378,19 @@ defmodule YTDWeb.IndexLiveTest do
   describe "YTDWeb.IndexLive, when the refresh button is shift-clicked" do
     setup :stub_apis
     setup :authenticate_user
+    setup :verify_on_exit!
 
-    test "broadcasts a :reset_activities message on the activities channel", %{
-      conn: conn,
-      user: user
-    } do
-      PubSub.subscribe(:ytd, "activities")
-      {:ok, view, _html} = live(conn, "/")
+    test "requests all activities", %{conn: conn, user: user} do
+      {:ok, %{pid: pid} = view, _html} = live(conn, "/")
+      send(pid, :all_activities_fetched)
+      expect(ActivitiesMock, :reload_activities, fn ^pid, ^user -> :ok end)
       render_click(view, :refresh, %{"shift_key" => true})
-      assert_receive {:reset_activities, ^user}
     end
 
-    test "clears the activity list", %{conn: conn, user: user} do
+    test "clears the activity list", %{conn: conn} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      send(view.pid, {:existing_activities, [activity]})
       render_click(view, :refresh, %{"shift_key" => true})
       assert has_element?(view, "#count", "0 activities")
     end
@@ -406,18 +404,18 @@ defmodule YTDWeb.IndexLiveTest do
       refute has_element?(view, "#latest-activity-name")
     end
 
-    test "resets the ytd total to zero", %{conn: conn, user: user} do
+    test "resets the ytd total to zero", %{conn: conn} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      send(view.pid, {:existing_activities, [activity]})
       render_click(view, :refresh, %{"shift_key" => true})
       assert has_element?(view, "#total", "0.0")
     end
 
-    test "resets the stats", %{conn: conn, user: user} do
+    test "resets the stats", %{conn: conn} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      send(view.pid, {:existing_activities, [activity]})
       render_click(view, :refresh, %{"shift_key" => true})
       assert has_element?(view, "#weekly-average", "0.0")
     end
@@ -425,7 +423,7 @@ defmodule YTDWeb.IndexLiveTest do
     test "shows an info message", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       render_click(view, :refresh, %{"shift_key" => true})
-      assert has_element?(view, "#info", "Re-fetching all activities …")
+      assert has_element?(view, "#info", "Reloading all activities …")
     end
   end
 

@@ -8,7 +8,7 @@ defmodule YTD.Strava do
 
   alias Strava.Auth
   alias YTD.Strava.Tokens
-  alias YTD.Users
+  alias YTD.{Activities, Users}
   alias YTD.Users.User
 
   @spec authorize_url :: String.t() | no_return()
@@ -28,9 +28,9 @@ defmodule YTD.Strava do
 
     Strava.Paginator.stream(&Strava.Activities.get_logged_in_athlete_activities(client, &1))
     |> Stream.take_while(&(DateTime.compare(&1.start_date, timestamp) == :gt))
-    |> Enum.each(&broadcast_activity(pid, &1))
+    |> Enum.each(&new_activity_received(pid, user, &1))
 
-    broadcast_all_activities_fetched(pid)
+    send(pid, :all_activities_fetched)
     :ok
   end
 
@@ -41,11 +41,8 @@ defmodule YTD.Strava do
     )
   end
 
-  defp broadcast_activity(pid, activity) do
+  defp new_activity_received(pid, user, activity) do
+    Activities.save_activity(user, activity)
     send(pid, {:new_activity, activity})
-  end
-
-  defp broadcast_all_activities_fetched(pid) do
-    send(pid, :all_activities_fetched)
   end
 end
