@@ -13,6 +13,7 @@ defmodule YTD.Activities do
   @impl API
   def fetch_activities(pid, user) do
     send(pid, {:existing_activities, get_existing_activities(user)})
+    # TODO: pass a callback rather than having Strava module know about updating the view etc
     strava_api().stream_activities_since(pid, user, latest_activity_or_beginning_of_year(user))
     :ok
   end
