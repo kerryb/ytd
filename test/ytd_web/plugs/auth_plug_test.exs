@@ -6,7 +6,6 @@ defmodule YTDWeb.AuthPlugTest do
 
   alias Plug.Conn
   alias YTD.Strava.Tokens
-  alias YTD.Users.User
   alias YTDWeb.{AuthPlug, Endpoint}
 
   @athlete_id 123
@@ -72,7 +71,7 @@ defmodule YTDWeb.AuthPlugTest do
       }
 
       stub(StravaMock, :get_tokens_from_code, fn @code -> tokens end)
-      stub(UsersMock, :save_user_tokens, fn ^tokens -> {:ok, %User{}} end)
+      stub(UsersMock, :save_user_tokens, fn ^tokens -> :ok end)
 
       conn =
         build_conn(:get, "/", %{"code" => @code, "scope" => "activity:read,maybe-other-scopes"})
@@ -85,7 +84,7 @@ defmodule YTDWeb.AuthPlugTest do
       conn: conn,
       tokens: tokens
     } do
-      expect(UsersMock, :save_user_tokens, fn ^tokens -> {:ok, %User{}} end)
+      expect(UsersMock, :save_user_tokens, fn ^tokens -> :ok end)
 
       AuthPlug.authorize_with_strava_if_not_signed_in(conn,
         users: UsersMock,
@@ -117,7 +116,7 @@ defmodule YTDWeb.AuthPlugTest do
       }
 
       stub(StravaMock, :get_tokens_from_code, fn @code -> tokens end)
-      stub(UsersMock, :save_user_tokens, fn ^tokens -> {:ok, %User{}} end)
+      stub(UsersMock, :save_user_tokens, fn ^tokens -> :ok end)
 
       conn =
         build_conn(:get, "/", %{"code" => @code, "scope" => "only-other-scopes"})
@@ -144,7 +143,7 @@ defmodule YTDWeb.AuthPlugTest do
       }
 
       stub(StravaMock, :get_tokens_from_code, fn @code -> tokens end)
-      stub(UsersMock, :save_user_tokens, fn ^tokens -> {:ok, %User{}} end)
+      stub(UsersMock, :save_user_tokens, fn ^tokens -> :ok end)
 
       conn =
         build_conn(:get, "/", %{})

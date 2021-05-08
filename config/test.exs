@@ -21,7 +21,8 @@ config :ytd,
   internal_acme_port: 4003,
   sql_sandbox: true,
   activities_api: ActivitiesMock,
-  strava_api: StravaMock
+  strava_api: StravaMock,
+  users_api: UsersMock
 
 config :strava, redirect_uri: "http://localhost:4001"
 

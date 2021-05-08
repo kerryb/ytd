@@ -11,7 +11,8 @@ config :ytd,
   ecto_repos: [YTD.Repo],
   env: Mix.env(),
   activities_api: YTD.Activities,
-  strava_api: YTD.Strava
+  strava_api: YTD.Strava,
+  users_api: YTD.Users
 
 # Configures the endpoint
 config :ytd, YTDWeb.Endpoint,

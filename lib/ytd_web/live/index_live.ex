@@ -6,7 +6,6 @@ defmodule YTDWeb.IndexLive do
 
   use YTDWeb, :live_view
 
-  alias Phoenix.PubSub
   alias YTD.{Stats, Users, Util}
 
   require Logger
@@ -17,8 +16,7 @@ defmodule YTDWeb.IndexLive do
     targets = Users.get_targets(user)
 
     if connected?(socket) do
-      :ok = PubSub.subscribe(:ytd, "user:#{user.id}")
-      get_activities(self(), user)
+      get_activities(user)
       update_name(user)
     end
 
@@ -46,12 +44,14 @@ defmodule YTDWeb.IndexLive do
      )}
   end
 
-  defp get_activities(pid, user) do
+  defp get_activities(user) do
+    pid = self()
     Task.start_link(fn -> :ok = activities_api().fetch_activities(pid, user) end)
   end
 
   defp update_name(user) do
-    Task.start_link(fn -> :ok = PubSub.broadcast!(:ytd, "users", {:update_name, user}) end)
+    pid = self()
+    Task.start_link(fn -> :ok = users_api().update_name(pid, user) end)
   end
 
   @impl true
@@ -252,4 +252,5 @@ defmodule YTDWeb.IndexLive do
   end
 
   defp activities_api, do: Application.fetch_env!(:ytd, :activities_api)
+  defp users_api, do: Application.fetch_env!(:ytd, :users_api)
 end

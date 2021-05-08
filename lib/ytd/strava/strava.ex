@@ -7,22 +7,21 @@ defmodule YTD.Strava do
   @behaviour YTD.Strava.API
 
   alias Strava.Auth
-  alias YTD.Strava.Tokens
+  alias YTD.Strava.{API, Tokens}
   alias YTD.{Activities, Users}
-  alias YTD.Users.User
 
-  @spec authorize_url :: String.t() | no_return()
+  @impl API
   def authorize_url do
     Auth.authorize_url!(scope: "activity:read,activity:read_all")
   end
 
-  @spec get_tokens_from_code(String.t()) :: Tokens.t()
+  @impl API
   def get_tokens_from_code(code) do
     client = Auth.get_token!(code: code, grant_type: "authorization_code")
     Tokens.new(client)
   end
 
-  @spec stream_activities_since(pid(), User.t(), DateTime.t()) :: :ok
+  @impl API
   def stream_activities_since(pid, user, timestamp) do
     client = client(user)
 
@@ -32,6 +31,11 @@ defmodule YTD.Strava do
 
     send(pid, :all_activities_fetched)
     :ok
+  end
+
+  @impl API
+  def get_athlete_details(user) do
+    user |> client() |> Strava.Athletes.get_logged_in_athlete()
   end
 
   defp client(user) do

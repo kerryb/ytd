@@ -6,13 +6,13 @@ defmodule YTDWeb.IndexLiveTest do
   import Phoenix.{ConnTest, LiveViewTest}
 
   alias Ecto.Changeset
-  alias Phoenix.PubSub
   alias YTD.Repo
 
   @endpoint YTDWeb.Endpoint
 
   defp stub_apis(_context) do
     stub(ActivitiesMock, :fetch_activities, fn _pid, _user -> :ok end)
+    stub(UsersMock, :update_name, fn _pid, _user -> :ok end)
     :ok
   end
 
@@ -78,13 +78,12 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, _view, _html} = live(conn, "/")
     end
 
-    test "broadcasts an :update_name message on the users channel", %{
+    test "requests a name update", %{
       conn: conn,
       user: user
     } do
-      PubSub.subscribe(:ytd, "users")
+      expect(UsersMock, :update_name, fn _pid, ^user -> :ok end)
       {:ok, _view, _html} = live(conn, "/")
-      assert_receive {:update_name, ^user}
     end
   end
 
@@ -242,7 +241,7 @@ defmodule YTDWeb.IndexLiveTest do
 
     test "show the new name", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:name_updated, %{user | name: "Freddy Bloggs"}})
+      send(view.pid, {:name_updated, %{user | name: "Freddy Bloggs"}})
       assert has_element?(view, "#name", "Freddy Bloggs")
     end
   end
@@ -251,48 +250,48 @@ defmodule YTDWeb.IndexLiveTest do
     setup :stub_apis
     setup :authenticate_user
 
-    test "updates the total", %{conn: conn, user: user} do
+    test "updates the total", %{conn: conn} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
         build(:activity, type: "Ride", distance: 10_000.0)
       ]
 
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
+      send(view.pid, {:existing_activities, activities})
       assert has_element?(view, "#total", "3.1")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
       assert has_element?(view, "#total", "6.2")
     end
 
-    test "updates the stats", %{conn: conn, user: user} do
+    test "updates the stats", %{conn: conn} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
         build(:activity, type: "Ride", distance: 10_000.0)
       ]
 
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
+      send(view.pid, {:existing_activities, activities})
       avg_element_1 = view |> element("#weekly-average") |> render()
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
       avg_element_2 = view |> element("#weekly-average") |> render()
       refute avg_element_1 == avg_element_2
     end
 
-    test "shows the correct latest activity", %{conn: conn, user: user} do
+    test "shows the correct latest activity", %{conn: conn} do
       activities = [
         build(:activity, type: "Run", name: "Morning run", distance: 5_000.0),
         build(:activity, type: "Ride", name: "Afternoon ride", distance: 10_000.0)
       ]
 
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
-      PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
+      send(view.pid, {:existing_activities, activities})
+      send(view.pid, :all_activities_fetched)
       assert has_element?(view, "#latest-activity-name", "Morning run")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
       assert has_element?(view, "#latest-activity-name", "Afternoon ride")
     end
 
-    test "shows the correct number of activities", %{conn: conn, user: user} do
+    test "shows the correct number of activities", %{conn: conn} do
       activities = [
         build(:activity, type: "Run", name: "Morning run"),
         build(:activity, type: "Run", name: "Evening run"),
@@ -300,8 +299,8 @@ defmodule YTDWeb.IndexLiveTest do
       ]
 
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, activities})
-      PubSub.broadcast!(:ytd, "user:#{user.id}", :all_activities_fetched)
+      send(view.pid, {:existing_activities, activities})
+      send(view.pid, :all_activities_fetched)
       assert has_element?(view, "#count", "2 activities")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
       assert has_element?(view, "#count", "1 activity")
@@ -319,19 +318,19 @@ defmodule YTDWeb.IndexLiveTest do
     setup :stub_apis
     setup :authenticate_user
 
-    test "updates the total", %{conn: conn, user: user} do
+    test "updates the total", %{conn: conn} do
       activity = build(:activity, type: "Run", distance: 5_012.3)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      send(view.pid, {:existing_activities, [activity]})
       assert has_element?(view, "#total", "3.1")
       view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
       assert has_element?(view, "#total", ~r/^5.0$/)
     end
 
-    test "updates the stats", %{conn: conn, user: user} do
+    test "updates the stats", %{conn: conn} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      send(view.pid, {:existing_activities, [activity]})
       avg_element_1 = view |> element("#weekly-average") |> render()
       view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
       avg_element_2 = view |> element("#weekly-average") |> render()
@@ -473,7 +472,7 @@ defmodule YTDWeb.IndexLiveTest do
       insert(:target, user: user, activity_type: "Run", target: 3, unit: "miles")
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "user:#{user.id}", {:existing_activities, [activity]})
+      send(view.pid, {:existing_activities, [activity]})
       assert render(view) =~ ~r/You have hit your target of.*3 miles.*!/
     end
   end

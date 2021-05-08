@@ -7,18 +7,10 @@ defmodule YTD.Application do
 
   def start(_type, _args) do
     opts = [strategy: :one_for_one, name: YTD.Supervisor]
-    Supervisor.start_link(children(Application.fetch_env!(:ytd, :env)), opts)
+    Supervisor.start_link(children(), opts)
   end
 
-  defp children(:test) do
-    default_children()
-  end
-
-  defp children(_env) do
-    default_children() ++ [YTD.Users.Server, YTD.Strava.Server]
-  end
-
-  defp default_children do
+  defp children do
     [
       YTD.Repo,
       YTDWeb.Telemetry,

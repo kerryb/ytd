@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Refactor.ModuleDependencies
 defmodule YTD.Users do
   @moduledoc """
   Context to handle persistance of users.
@@ -12,6 +13,7 @@ defmodule YTD.Users do
     Create,
     Queries,
     SaveTarget,
+    UpdateName,
     UpdateSelectedActivityType,
     UpdateSelectedUnit,
     UpdateTokens
@@ -34,32 +36,58 @@ defmodule YTD.Users do
   def save_user_tokens(tokens) do
     case get_user_from_athlete_id(tokens.athlete_id) do
       nil ->
-        tokens |> Create.call() |> Repo.transaction()
+        {:ok, _result} = tokens |> Create.call() |> Repo.transaction()
 
       user ->
-        user |> UpdateTokens.call(tokens.access_token, tokens.refresh_token) |> Repo.transaction()
+        {:ok, _result} =
+          user
+          |> UpdateTokens.call(tokens.access_token, tokens.refresh_token)
+          |> Repo.transaction()
     end
+
+    :ok
   end
 
   @impl API
   def update_user_tokens(user, client) do
-    user
-    |> UpdateTokens.call(client.token.access_token, client.token.refresh_token)
-    |> Repo.transaction()
+    {:ok, _result} =
+      user
+      |> UpdateTokens.call(client.token.access_token, client.token.refresh_token)
+      |> Repo.transaction()
+
+    :ok
   end
 
   @impl API
   def save_activity_type(user, type) do
-    user |> UpdateSelectedActivityType.call(type) |> Repo.transaction()
+    {:ok, _result} = user |> UpdateSelectedActivityType.call(type) |> Repo.transaction()
+    :ok
   end
 
   @impl API
   def save_unit(user, unit) do
-    user |> UpdateSelectedUnit.call(unit) |> Repo.transaction()
+    {:ok, _result} = user |> UpdateSelectedUnit.call(unit) |> Repo.transaction()
+    :ok
   end
 
   @impl API
   def save_target(user, activity_type, target, unit) do
-    user |> SaveTarget.call(activity_type, target, unit) |> Repo.transaction()
+    {:ok, _result} = user |> SaveTarget.call(activity_type, target, unit) |> Repo.transaction()
+    :ok
   end
+
+  @impl API
+  def update_name(pid, user) do
+    {:ok, athlete} = strava_api().get_athlete_details(user)
+    name = "#{athlete.firstname} #{athlete.lastname}"
+
+    unless user.name == name do
+      {:ok, %{update_name: updated_user}} = user |> UpdateName.call(name) |> Repo.transaction()
+      send(pid, {:name_updated, updated_user})
+    end
+
+    :ok
+  end
+
+  defp strava_api, do: Application.fetch_env!(:ytd, :strava_api)
 end
