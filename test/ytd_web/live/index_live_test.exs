@@ -1,7 +1,8 @@
 defmodule YTDWeb.IndexLiveTest do
   use YTDWeb.ConnCase, async: true
-  import Mox
 
+  import ExUnit.CaptureLog
+  import Mox
   import Plug.Conn
   import Phoenix.{ConnTest, LiveViewTest}
 
@@ -474,6 +475,19 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       send(view.pid, {:existing_activities, [activity]})
       assert render(view) =~ ~r/You have hit your target of.*3 miles.*!/
+    end
+  end
+
+  describe "YTDWeb.IndexLive, when an unexpected message is received" do
+    setup :authenticate_user
+
+    test "logs and ignores it", %{conn: conn} do
+      {:ok, view, _html} = live(conn, "/")
+
+      assert capture_log(fn ->
+               send(view.pid, {:unexpected_message, 42})
+               render(view)
+             end) =~ "unexpected message {:unexpected_message, 42}"
     end
   end
 end
