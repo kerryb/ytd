@@ -12,7 +12,11 @@ defmodule YTDWeb.IndexLiveTest do
   @endpoint YTDWeb.Endpoint
 
   defp stub_apis(_context) do
-    stub(ActivitiesMock, :fetch_activities, fn _pid, _user -> :ok end)
+    ActivitiesMock
+    |> stub(:fetch_activities, fn _pid, _user -> :ok end)
+    |> stub(:refresh_activities, fn _pid, _user -> :ok end)
+    |> stub(:reload_activities, fn _pid, _user -> :ok end)
+
     stub(UsersMock, :update_name, fn _pid, _user -> :ok end)
     :ok
   end
