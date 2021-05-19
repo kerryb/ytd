@@ -18,8 +18,8 @@ defmodule YTDWeb.AuthPlug do
   alias YTD.{Strava, Users}
   alias YTDWeb.AuthView
 
-  plug :get_user_if_signed_in
-  plug :authorize_with_strava_if_not_signed_in
+  plug(:get_user_if_signed_in)
+  plug(:authorize_with_strava_if_not_signed_in)
 
   @spec get_user_if_signed_in(Conn.t(), keyword()) :: Conn.t()
   def get_user_if_signed_in(conn, opts) do

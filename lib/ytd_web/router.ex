@@ -3,19 +3,19 @@ defmodule YTDWeb.Router do
   use YTDWeb, :router
 
   pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, {YTDWeb.LayoutView, :root}
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-    plug YTDWeb.AuthPlug
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_live_flash)
+    plug(:put_root_layout, {YTDWeb.LayoutView, :root})
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
+    plug(YTDWeb.AuthPlug)
   end
 
   scope "/", YTDWeb do
-    pipe_through :browser
+    pipe_through(:browser)
 
-    live "/", IndexLive, :index
+    live("/", IndexLive, :index)
   end
 
   # Enables LiveDashboard only for development
@@ -29,8 +29,8 @@ defmodule YTDWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through :browser
-      live_dashboard "/dashboard", metrics: YTDWeb.Telemetry
+      pipe_through(:browser)
+      live_dashboard("/dashboard", metrics: YTDWeb.Telemetry)
     end
   end
 end
