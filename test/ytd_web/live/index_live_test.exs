@@ -33,11 +33,11 @@ defmodule YTDWeb.IndexLiveTest do
     {:ok, conn: conn, user: user}
   end
 
-  describe "YTDWeb.IndexLive, initially" do
-    setup :stub_apis
-    setup :authenticate_user
-    setup :verify_on_exit!
+  setup :stub_apis
+  setup :authenticate_user
+  setup :verify_on_exit!
 
+  describe "YTDWeb.IndexLive, initially" do
     test "displays the user's name", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       assert has_element?(view, "#name", "Fred Bloggs")
@@ -93,9 +93,6 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when existing activities are received" do
-    setup :stub_apis
-    setup :authenticate_user
-
     test "updates the message", %{conn: conn} do
       activities = [build(:activity), build(:activity)]
       {:ok, view, _html} = live(conn, "/")
@@ -156,9 +153,6 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when a new activity is received" do
-    setup :stub_apis
-    setup :authenticate_user
-
     test "updates the distance", %{conn: conn} do
       existing_activity = build(:activity, type: "Run", distance: 5_000.0)
       new_activity = build(:activity, type: "Run", distance: 10_000.0)
@@ -204,9 +198,6 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when all activities have been received" do
-    setup :stub_apis
-    setup :authenticate_user
-
     test "clears the info message", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       send(view.pid, :all_activities_fetched)
@@ -241,9 +232,6 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when a name_updated message is received" do
-    setup :stub_apis
-    setup :authenticate_user
-
     test "show the new name", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
       send(view.pid, {:name_updated, %{user | name: "Freddy Bloggs"}})
@@ -252,9 +240,6 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when the user switches activity type" do
-    setup :stub_apis
-    setup :authenticate_user
-
     test "updates the total", %{conn: conn} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
@@ -320,9 +305,6 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when the user changes unit" do
-    setup :stub_apis
-    setup :authenticate_user
-
     test "updates the total", %{conn: conn} do
       activity = build(:activity, type: "Run", distance: 5_012.3)
       {:ok, view, _html} = live(conn, "/")
@@ -351,10 +333,6 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when the refresh button is clicked" do
-    setup :stub_apis
-    setup :authenticate_user
-    setup :verify_on_exit!
-
     test "requests new activities", %{conn: conn, user: user} do
       {:ok, %{pid: pid} = view, _html} = live(conn, "/")
       send(pid, :all_activities_fetched)
@@ -380,10 +358,6 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when the refresh button is shift-clicked" do
-    setup :stub_apis
-    setup :authenticate_user
-    setup :verify_on_exit!
-
     test "requests all activities", %{conn: conn, user: user} do
       {:ok, %{pid: pid} = view, _html} = live(conn, "/")
       send(pid, :all_activities_fetched)
@@ -432,9 +406,6 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, setting a new target" do
-    setup :stub_apis
-    setup :authenticate_user
-
     test "saves the target if you press 'Save'", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       view |> element("a#edit-target") |> render_click()
@@ -454,9 +425,6 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, editing an existing target" do
-    setup :stub_apis
-    setup :authenticate_user
-
     test "saves the target", %{conn: conn, user: user} do
       insert(:target, user: user, activity_type: "Run", target: 1000, unit: "miles")
       {:ok, view, _html} = live(conn, "/")
@@ -470,9 +438,6 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when the target has been met" do
-    setup :stub_apis
-    setup :authenticate_user
-
     test "saves the target", %{conn: conn, user: user} do
       insert(:target, user: user, activity_type: "Run", target: 3, unit: "miles")
       activity = build(:activity, type: "Run", distance: 5_000.0)
@@ -483,8 +448,6 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when an unexpected message is received" do
-    setup :authenticate_user
-
     test "logs and ignores it", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
 
