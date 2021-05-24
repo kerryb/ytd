@@ -1,20 +1,37 @@
-# YTD
+# YTDWeb
 
-To start your Phoenix server:
+[Strava year-to-date milage tracker](https://ytd.kerryb.org)
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Install Node.js dependencies with `npm install` inside the `assets` directory
-  * Start Phoenix endpoint with `mix phx.server`
+Built with [Elixir](https://elixir-lang.org/) and
+[Phoenix](http://phoenixframework.org/), and hosted on
+[DigitalOcean](https://www.digitalocean.com/).
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+## Compile, test, etc
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+```bash
+make
+```
 
-## Learn more
+## Set up server
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+Add environment variables to `.profile` and source the file (or log out and
+back in): 
+
+  * CLIENT_SECRET
+  * ACCESS_TOKEN
+  * SECRET_KEY_BASE
+  * YTD_DATABASE_USER
+  * YTD_DATABASE_PASSWORD
+
+Run `install-postgres`
+
+Build a release, and unpack into `/opt/ytd`
+
+## Build and deploy a release
+
+Update the `VERSION` file, then:
+
+```bash
+make build-release
+make deploy-release version=x.y.z
+```
