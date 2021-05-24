@@ -3334,9 +3334,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.3.723":
-  version: 1.3.735
-  resolution: "electron-to-chromium@npm:1.3.735"
-  checksum: 94a458a241d1e54e96e50c0289628c20fd5c013fe05ef7552de1161eb988fd6dded02e2410f253d0952d3f8c14dbc9e842f2fa3be92c1a7848957d3beba21201
+  version: 1.3.736
+  resolution: "electron-to-chromium@npm:1.3.736"
+  checksum: 93502d598c0506948713e43511611bfe81d81d807fb4121159d9ff5037c96efe1ed3ca7a517c68e04535344759679276b99b736dd3169170f3f4e80c1da38aaa
   languageName: node
   linkType: hard
 
@@ -4413,11 +4413,11 @@ fsevents@~2.3.1:
   linkType: hard
 
 "iconv-lite@npm:^0.6.2":
-  version: 0.6.2
-  resolution: "iconv-lite@npm:0.6.2"
+  version: 0.6.3
+  resolution: "iconv-lite@npm:0.6.3"
   dependencies:
     safer-buffer: ">= 2.1.2 < 3.0.0"
-  checksum: 0785670120f57b5912c6a4391d6a69914906746d259b59de884dc6d324a52a0abde38d5804f67370192fec6878d01e7306de525568abcea70eb41c2bceb9f547
+  checksum: 9b4f24db662b717340ae20ec9ebbaf0648b378a2d0fc64aef83c6bccdd9918b622216c020e177ddf2d02eeff8456a732e85b6d989eb2cd3a40519f3e179b273c
   languageName: node
   linkType: hard
 
@@ -6459,9 +6459,9 @@ fsevents@~2.3.1:
   linkType: hard
 
 "phoenix_live_view@file:../deps/phoenix_live_view::locator=root-workspace-0b6124%40workspace%3A.":
-  version: 0.15.5
-  resolution: "phoenix_live_view@file:../deps/phoenix_live_view#../deps/phoenix_live_view::hash=b3d8aa&locator=root-workspace-0b6124%40workspace%3A."
-  checksum: eda14a35e073a71c416ea780e380dce0add63460692c04800519056cf9f427b4fed2ab8cab55977b7a350cc2dad14c54cb974ce1aed2ebc2efc0267dab02e8be
+  version: 0.15.7
+  resolution: "phoenix_live_view@file:../deps/phoenix_live_view#../deps/phoenix_live_view::hash=dd69b9&locator=root-workspace-0b6124%40workspace%3A."
+  checksum: 011db85c25b68d51980ad59f679a8de57fac2537e96d171b749008ab0aa3f26ceeae781bf800ee6b0c99991fb8bdce4f82db74550a3d7dd43830c01d07f0a945
   languageName: node
   linkType: hard
 
