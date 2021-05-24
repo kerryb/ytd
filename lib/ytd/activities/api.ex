@@ -6,8 +6,8 @@ defmodule YTD.Activities.API do
   alias Strava.SummaryActivity
   alias YTD.Users.User
 
-  @callback fetch_activities(pid(), User.t()) :: :ok
-  @callback refresh_activities(pid(), User.t()) :: :ok
-  @callback reload_activities(pid(), User.t()) :: :ok
-  @callback save_activity(User.t(), SummaryActivity.t()) :: :ok
+  @callback fetch_activities(pid :: pid(), user :: User.t()) :: :ok
+  @callback refresh_activities(pid :: pid(), user :: User.t()) :: :ok
+  @callback reload_activities(pid :: pid(), user :: User.t()) :: :ok
+  @callback save_activity(user :: User.t(), activity :: SummaryActivity.t()) :: :ok
 end

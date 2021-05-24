@@ -8,7 +8,8 @@ defmodule YTD.Strava.API do
   alias YTD.Users.User
 
   @callback authorize_url :: String.t() | no_return()
-  @callback get_tokens_from_code(String.t()) :: Tokens.t()
-  @callback stream_activities_since(pid(), User.t(), DateTime.t()) :: :ok
-  @callback get_athlete_details(User.t()) :: {:ok, DetailedAthlete.t()} | {:error, any()}
+  @callback get_tokens_from_code(code :: String.t()) :: Tokens.t()
+  @callback stream_activities_since(pid :: pid(), user :: User.t(), timestamp :: DateTime.t()) ::
+              :ok
+  @callback get_athlete_details(user :: User.t()) :: {:ok, DetailedAthlete.t()} | {:error, any()}
 end
