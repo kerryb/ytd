@@ -12,6 +12,14 @@ Built with [Elixir](https://elixir-lang.org/) and
 make
 ```
 
+## Build a release
+
+Update the `VERSION` file, then:
+
+```bash
+make release
+```
+
 ## Set up server
 
 Add environment variables to `.profile` and source the file (or log out and
@@ -26,12 +34,3 @@ back in):
 Run `install-postgres`
 
 Build a release, and unpack into `/opt/ytd`
-
-## Build and deploy a release
-
-Update the `VERSION` file, then:
-
-```bash
-make build-release
-make deploy-release version=x.y.z
-```

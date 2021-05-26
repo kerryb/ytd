@@ -1,0 +1,16 @@
+*.dump
+*.gz
+.docker_ls
+.git
+_build
+assets/node_modules
+cover
+deps
+doc
+docker
+factories
+priv/static
+tags
+tags.lock
+test
+var
