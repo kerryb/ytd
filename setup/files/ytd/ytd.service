@@ -1,0 +1,18 @@
+[Unit]
+Description=YTD application
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/ytd
+ExecStart=/opt/ytd/current/bin/ytd start
+Restart=on-failure
+RestartSec=5
+EnvironmentFile=/opt/ytd/ytd.env
+SyslogIdentifier=ytd
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
