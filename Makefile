@@ -1,5 +1,5 @@
 .PHONY: clean dialyzer setup style test unit-test update-deps
-all: style dialyzer test docs
+all: style compile dialyzer test docs
 setup:
 	mix deps.get
 	mix ecto.setup
@@ -11,6 +11,8 @@ deep-clean:
 style:
 	mix format --check-formatted
 	mix credo
+compile:
+	mix compile --warnings-as-errors
 dialyzer:
 	mix dialyzer
 test:

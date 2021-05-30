@@ -8,7 +8,6 @@ defmodule YTD.MixProject do
       elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:boundary, :phoenix, :gettext] ++ Mix.compilers(),
-      elixirc_options: [warnings_as_errors: true],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
