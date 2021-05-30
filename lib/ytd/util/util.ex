@@ -3,6 +3,8 @@ defmodule YTD.Util do
   Utility functions for unit conversion etc
   """
 
+  use Boundary, top_level?: true, deps: []
+
   @spec convert(float(), [{:from, String.t()}, {:to, String.t()}]) :: float()
   def convert(distance, from: unit, to: unit), do: distance
   def convert(distance, from: "km", to: "miles"), do: distance / 1.609344

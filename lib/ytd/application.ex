@@ -4,6 +4,7 @@ defmodule YTD.Application do
   @moduledoc false
 
   use Application
+  use Boundary, top_level?: true, deps: [YTD, YTDWeb]
 
   def start(_type, _args) do
     opts = [strategy: :one_for_one, name: YTD.Supervisor]

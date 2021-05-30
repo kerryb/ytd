@@ -7,14 +7,15 @@ defmodule YTD.MixProject do
       version: version(),
       elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:boundary, :phoenix, :gettext] ++ Mix.compilers(),
       elixirc_options: [warnings_as_errors: true],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: preferred_cli_env(),
-      releases: releases()
+      releases: releases(),
+      boundary: boundary()
     ]
   end
 
@@ -38,6 +39,7 @@ defmodule YTD.MixProject do
   defp deps do
     [
       {:assertions, "~> 0.10", only: :test},
+      {:boundary, "~> 0.8", runtime: false},
       {:credo, "~> 1.4", only: [:dev, :test]},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:ecto_sql, "~> 3.4"},
@@ -104,6 +106,16 @@ defmodule YTD.MixProject do
       ytd: [
         include_executables_for: [:unix],
         steps: [:assemble, :tar]
+      ]
+    ]
+  end
+
+  def boundary() do
+    [
+      default: [
+        check: [
+          apps: [:phoenix, :ecto, :strava, {:mix, :runtime}]
+        ]
       ]
     ]
   end

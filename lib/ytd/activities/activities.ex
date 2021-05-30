@@ -5,6 +5,8 @@ defmodule YTD.Activities do
 
   @behaviour YTD.Activities.API
 
+  use Boundary, top_level?: true, deps: [Ecto, YTD.Repo]
+
   import Ecto.Query
 
   alias YTD.Activities.{Activity, API}

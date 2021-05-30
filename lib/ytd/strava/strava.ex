@@ -6,6 +6,8 @@ defmodule YTD.Strava do
 
   @behaviour YTD.Strava.API
 
+  use Boundary, top_level?: true, deps: [Strava]
+
   alias Strava.Auth
   alias YTD.Strava.{API, Tokens}
   alias YTD.{Activities, Users}

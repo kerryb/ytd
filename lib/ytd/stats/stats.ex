@@ -4,6 +4,8 @@ defmodule YTD.Stats do
   target.
   """
 
+  use Boundary, top_level?: true, deps: []
+
   @type t :: %__MODULE__{
           weekly_average: float(),
           projected_annual: float(),

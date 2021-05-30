@@ -5,6 +5,7 @@ defmodule YTD.Users do
   """
 
   @behaviour YTD.Users.API
+  use Boundary, top_level?: true, deps: [Ecto, YTD.Repo]
 
   alias YTD.Repo
 
