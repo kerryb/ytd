@@ -4,7 +4,6 @@ defmodule YTD.Users.API do
   """
 
   alias Ecto.Multi
-  alias OAuth2.Client
   alias YTD.Strava.Tokens
   alias YTD.Users.{Target, User}
 
@@ -16,7 +15,6 @@ defmodule YTD.Users.API do
   @callback get_user_from_athlete_id(athlete_id :: integer()) :: User.t() | nil
   @callback get_targets(user :: User.t()) :: %{String.t() => Target.t()}
   @callback save_user_tokens(tokens :: Tokens.t()) :: :ok
-  @callback update_user_tokens(user :: User.t(), client :: Client.t()) :: :ok
   @callback save_activity_type(user :: User.t(), type :: String.t()) :: :ok
   @callback save_unit(user :: User.t(), unit :: String.t()) :: :ok
   @callback save_target(

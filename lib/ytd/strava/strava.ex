@@ -6,11 +6,11 @@ defmodule YTD.Strava do
 
   @behaviour YTD.Strava.API
 
-  use Boundary, top_level?: true, deps: [Strava]
+  use Boundary, top_level?: true, deps: [Strava, YTD.Users.Tokens]
 
   alias Strava.Auth
-  alias YTD.Strava.{API, Tokens}
-  alias YTD.{Activities, Users}
+  alias YTD.Activities
+  alias YTD.Strava.API
 
   @impl API
   def authorize_url do
@@ -20,7 +20,7 @@ defmodule YTD.Strava do
   @impl API
   def get_tokens_from_code(code) do
     client = Auth.get_token!(code: code, grant_type: "authorization_code")
-    Tokens.new(client)
+    YTD.Strava.Tokens.new(client)
   end
 
   @impl API
@@ -43,7 +43,8 @@ defmodule YTD.Strava do
   defp client(user) do
     Strava.Client.new(user.access_token,
       refresh_token: user.refresh_token,
-      token_refreshed: &Users.update_user_tokens(user, &1)
+      token_refreshed:
+        &YTD.Users.Tokens.update_user_tokens(user, &1.token.access_token, &1.token.refresh_token)
     )
   end
 

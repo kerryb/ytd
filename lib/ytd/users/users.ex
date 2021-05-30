@@ -5,7 +5,7 @@ defmodule YTD.Users do
   """
 
   @behaviour YTD.Users.API
-  use Boundary, top_level?: true, deps: [Ecto, YTD.Repo]
+  use Boundary, top_level?: true, deps: [Ecto, YTD.Repo], exports: [UpdateTokens]
 
   alias YTD.Repo
 
@@ -45,16 +45,6 @@ defmodule YTD.Users do
           |> UpdateTokens.call(tokens.access_token, tokens.refresh_token)
           |> Repo.transaction()
     end
-
-    :ok
-  end
-
-  @impl API
-  def update_user_tokens(user, client) do
-    {:ok, _result} =
-      user
-      |> UpdateTokens.call(client.token.access_token, client.token.refresh_token)
-      |> Repo.transaction()
 
     :ok
   end
