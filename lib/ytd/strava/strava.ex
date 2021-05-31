@@ -31,7 +31,6 @@ defmodule YTD.Strava do
     |> Stream.take_while(&(DateTime.compare(&1.start_date, timestamp) == :gt))
     |> Enum.each(&new_activity_received(pid, user, &1))
 
-    send(pid, :all_activities_fetched)
     :ok
   end
 

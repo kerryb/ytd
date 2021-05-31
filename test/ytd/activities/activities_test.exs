@@ -46,6 +46,12 @@ defmodule YTD.ActivitiesTest do
       expect(StravaMock, :stream_activities_since, fn ^pid, ^user, ^beginning_of_year -> :ok end)
       Activities.fetch_activities(self(), user)
     end
+
+    test "sends a message when all activities have been received" do
+      user = insert(:user)
+      Activities.fetch_activities(self(), user)
+      assert_received :all_activities_fetched
+    end
   end
 
   describe "YTD.Activities.refresh_activities/2" do
@@ -71,6 +77,13 @@ defmodule YTD.ActivitiesTest do
       expect(StravaMock, :stream_activities_since, fn ^pid, ^user, ^beginning_of_year -> :ok end)
       Activities.refresh_activities(self(), user)
     end
+
+    test "sends a message when all activities have been received" do
+      user = insert(:user)
+      stub(StravaMock, :stream_activities_since, fn _pid, _user, _timestamp -> :ok end)
+      Activities.refresh_activities(self(), user)
+      assert_received :all_activities_fetched
+    end
   end
 
   describe "YTD.Activities.reload_activities/2" do
@@ -92,6 +105,13 @@ defmodule YTD.ActivitiesTest do
       beginning_of_year = Timex.beginning_of_year(DateTime.utc_now())
       expect(StravaMock, :stream_activities_since, fn ^pid, ^user, ^beginning_of_year -> :ok end)
       Activities.reload_activities(self(), user)
+    end
+
+    test "sends a message when all activities have been received" do
+      user = insert(:user)
+      stub(StravaMock, :stream_activities_since, fn _pid, _user, _timestamp -> :ok end)
+      Activities.reload_activities(self(), user)
+      assert_received :all_activities_fetched
     end
   end
 
