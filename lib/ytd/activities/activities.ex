@@ -15,25 +15,31 @@ defmodule YTD.Activities do
   @impl API
   def fetch_activities(pid, user) do
     send(pid, {:existing_activities, get_existing_activities(user)})
-    # TODO: pass a callback rather than having Strava module know about updating the view etc
-    strava_api().stream_activities_since(pid, user, latest_activity_or_beginning_of_year(user))
-    send(pid, :all_activities_fetched)
+    stream_activities_from_strava(pid, user, latest_activity_or_beginning_of_year(user))
     :ok
   end
 
   @impl API
   def refresh_activities(pid, user) do
-    strava_api().stream_activities_since(pid, user, latest_activity_or_beginning_of_year(user))
-    send(pid, :all_activities_fetched)
+    stream_activities_from_strava(pid, user, latest_activity_or_beginning_of_year(user))
     :ok
   end
 
   @impl API
   def reload_activities(pid, user) do
     delete_all_activities(user)
-    strava_api().stream_activities_since(pid, user, Timex.beginning_of_year(DateTime.utc_now()))
-    send(pid, :all_activities_fetched)
+    stream_activities_from_strava(pid, user, Timex.beginning_of_year(DateTime.utc_now()))
     :ok
+  end
+
+  defp stream_activities_from_strava(pid, user, timestamp) do
+    strava_api().stream_activities_since(user, timestamp, fn activity ->
+      save_activity(user, activity)
+      # TODO: we should probably send the YTD.Activities.Activity
+      send(pid, {:new_activity, activity})
+    end)
+
+    send(pid, :all_activities_fetched)
   end
 
   defp latest_activity_or_beginning_of_year(user) do

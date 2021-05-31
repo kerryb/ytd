@@ -1,7 +1,9 @@
 defmodule YTD.ActivitiesTest do
   use YTD.DataCase, async: false
 
-  import Assertions, only: [assert_lists_equal: 3, assert_structs_equal: 3]
+  import Assertions,
+    only: [assert_lists_equal: 3, assert_struct_in_list: 3, assert_structs_equal: 3]
+
   import Ecto.Query
   import Mox
 
@@ -30,9 +32,10 @@ defmodule YTD.ActivitiesTest do
       user = insert(:user)
       insert(:activity, user: user, start_date: ~U[2021-01-19 14:00:00Z])
       insert(:activity, user: user, start_date: ~U[2021-01-20 21:00:00Z])
-      pid = self()
 
-      expect(StravaMock, :stream_activities_since, fn ^pid, ^user, ~U[2021-01-20 21:00:00Z] ->
+      expect(StravaMock, :stream_activities_since, fn ^user,
+                                                      ~U[2021-01-20 21:00:00Z],
+                                                      _callback ->
         :ok
       end)
 
@@ -41,10 +44,60 @@ defmodule YTD.ActivitiesTest do
 
     test "requests all activities for the year if there are no saved activities" do
       user = insert(:user)
-      pid = self()
       beginning_of_year = Timex.beginning_of_year(DateTime.utc_now())
-      expect(StravaMock, :stream_activities_since, fn ^pid, ^user, ^beginning_of_year -> :ok end)
+
+      expect(StravaMock, :stream_activities_since, fn ^user, ^beginning_of_year, _callback ->
+        :ok
+      end)
+
       Activities.fetch_activities(self(), user)
+    end
+
+    test "saves activities when it receives a callback" do
+      user = insert(:user)
+
+      stub(StravaMock, :stream_activities_since, fn ^user, _timestamp, callback ->
+        callback.(%SummaryActivity{
+          id: 1234,
+          type: "Run",
+          name: "Morning run",
+          distance: 5678.9,
+          start_date: ~U[2021-01-21 09:00:00Z]
+        })
+
+        :ok
+      end)
+
+      Activities.fetch_activities(self(), user)
+
+      assert_struct_in_list(
+        %Activity{user_id: user.id, strava_id: Decimal.new(1234)},
+        Repo.all(Activity),
+        [
+          :user_id,
+          :strava_id
+        ]
+      )
+    end
+
+    test "sends a message when it receives a callback" do
+      user = insert(:user)
+
+      activity = %SummaryActivity{
+        id: 1234,
+        type: "Run",
+        name: "Morning run",
+        distance: 5678.9,
+        start_date: ~U[2021-01-21 09:00:00Z]
+      }
+
+      stub(StravaMock, :stream_activities_since, fn ^user, _timestamp, callback ->
+        callback.(activity)
+        :ok
+      end)
+
+      Activities.fetch_activities(self(), user)
+      assert_received {:new_activity, ^activity}
     end
 
     test "sends a message when all activities have been received" do
@@ -61,28 +114,14 @@ defmodule YTD.ActivitiesTest do
       user = insert(:user)
       insert(:activity, user: user, start_date: ~U[2021-01-19 14:00:00Z])
       insert(:activity, user: user, start_date: ~U[2021-01-20 21:00:00Z])
-      pid = self()
 
-      expect(StravaMock, :stream_activities_since, fn ^pid, ^user, ~U[2021-01-20 21:00:00Z] ->
+      expect(StravaMock, :stream_activities_since, fn ^user,
+                                                      ~U[2021-01-20 21:00:00Z],
+                                                      _callback ->
         :ok
       end)
 
       Activities.refresh_activities(self(), user)
-    end
-
-    test "requests all activities for the year if there are no saved activities" do
-      user = insert(:user)
-      pid = self()
-      beginning_of_year = Timex.beginning_of_year(DateTime.utc_now())
-      expect(StravaMock, :stream_activities_since, fn ^pid, ^user, ^beginning_of_year -> :ok end)
-      Activities.refresh_activities(self(), user)
-    end
-
-    test "sends a message when all activities have been received" do
-      user = insert(:user)
-      stub(StravaMock, :stream_activities_since, fn _pid, _user, _timestamp -> :ok end)
-      Activities.refresh_activities(self(), user)
-      assert_received :all_activities_fetched
     end
   end
 
@@ -101,17 +140,13 @@ defmodule YTD.ActivitiesTest do
 
     test "requests all activities for the year" do
       user = insert(:user)
-      pid = self()
       beginning_of_year = Timex.beginning_of_year(DateTime.utc_now())
-      expect(StravaMock, :stream_activities_since, fn ^pid, ^user, ^beginning_of_year -> :ok end)
-      Activities.reload_activities(self(), user)
-    end
 
-    test "sends a message when all activities have been received" do
-      user = insert(:user)
-      stub(StravaMock, :stream_activities_since, fn _pid, _user, _timestamp -> :ok end)
+      expect(StravaMock, :stream_activities_since, fn ^user, ^beginning_of_year, _callback ->
+        :ok
+      end)
+
       Activities.reload_activities(self(), user)
-      assert_received :all_activities_fetched
     end
   end
 

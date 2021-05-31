@@ -8,8 +8,7 @@ defmodule YTD.Strava do
 
   use Boundary, top_level?: true, deps: [Strava, YTD.Users.Tokens]
 
-  alias Strava.Auth
-  alias YTD.Activities
+  alias Strava.{Activities, Athletes, Auth, Client}
   alias YTD.Strava.API
 
   @impl API
@@ -24,31 +23,26 @@ defmodule YTD.Strava do
   end
 
   @impl API
-  def stream_activities_since(pid, user, timestamp) do
+  def stream_activities_since(user, timestamp, callback) do
     client = client(user)
 
-    Strava.Paginator.stream(&Strava.Activities.get_logged_in_athlete_activities(client, &1))
+    Strava.Paginator.stream(&Activities.get_logged_in_athlete_activities(client, &1))
     |> Stream.take_while(&(DateTime.compare(&1.start_date, timestamp) == :gt))
-    |> Enum.each(&new_activity_received(pid, user, &1))
+    |> Enum.each(callback)
 
     :ok
   end
 
   @impl API
   def get_athlete_details(user) do
-    user |> client() |> Strava.Athletes.get_logged_in_athlete()
+    user |> client() |> Athletes.get_logged_in_athlete()
   end
 
   defp client(user) do
-    Strava.Client.new(user.access_token,
+    Client.new(user.access_token,
       refresh_token: user.refresh_token,
       token_refreshed:
         &YTD.Users.Tokens.update_user_tokens(user, &1.token.access_token, &1.token.refresh_token)
     )
-  end
-
-  defp new_activity_received(pid, user, activity) do
-    Activities.save_activity(user, activity)
-    send(pid, {:new_activity, activity})
   end
 end
