@@ -3,6 +3,8 @@ defmodule SessionHelper do
   Helper to initialise the session for liveview tests.
   """
 
+  use Boundary, top_level?: true, check: [out: false]
+
   @spec prepare_session(Plug.Conn.t()) :: Plug.Conn.t()
   def prepare_session(conn) do
     session =

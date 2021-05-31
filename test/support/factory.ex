@@ -4,6 +4,7 @@ defmodule YTD.Factory do
   Test tactories, using ex_machina.
   """
 
+  use Boundary, top_level?: true, check: [out: false]
   use ExMachina.Ecto, repo: YTD.Repo
 
   alias YTD.Activities.Activity
