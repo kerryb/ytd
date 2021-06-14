@@ -12,7 +12,7 @@ defmodule YTDWeb.Endpoint do
   def certification do
     SiteEncrypt.configure(
       client: :native,
-      domains: ["ytd.kerryb.org", "www.ytd.kerryb.org"],
+      domains: ["ytd.kerryb.org", "www.ytd.kerryb.org", "beta.ytd.kerryb.org"],
       emails: ["kerryjbuckley@gmail.com"],
       db_folder: System.get_env("SITE_ENCRYPT_DB", Path.join("tmp", "site_encrypt_db")),
       directory_url:
