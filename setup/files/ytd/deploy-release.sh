@@ -17,7 +17,7 @@ deploy() {
 }
 
 find_version() {
-  tar tzf "$tarball" | awk '/^releases\/[0-9.]+\// { FS="/" ; print $2 }' | tail -1
+  tar tzf "$tarball" | awk '/^releases\/[0-9.].*\// { FS="/" ; print $2 }' | tail -1
 }
 
 extract_script() {

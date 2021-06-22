@@ -1,9 +1,9 @@
 import Config
 
 secret_key_base =
-  System.get_env("SECRET_KEY_BASE") ||
+  System.get_env("YTD_SECRET_KEY_BASE") ||
     raise """
-    environment variable SECRET_KEY_BASE is missing.
+    environment variable YTD_SECRET_KEY_BASE is missing.
     You can generate one by calling: mix phx.gen.secret
     """
 

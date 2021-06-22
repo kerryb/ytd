@@ -22,15 +22,5 @@ make release
 
 ## Set up server
 
-Add environment variables to `.profile` and source the file (or log out and
-back in): 
-
-  * CLIENT_SECRET
-  * ACCESS_TOKEN
-  * SECRET_KEY_BASE
-  * YTD_DATABASE_USER
-  * YTD_DATABASE_PASSWORD
-
-Run `install-postgres`
-
-Build a release, and unpack into `/opt/ytd`
+Run `setup/setup-server.sh` on the server, update Strava tokens in
+`/opt/ytd/ytd.env`, then install a release as above.

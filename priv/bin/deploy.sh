@@ -14,8 +14,9 @@ set -o pipefail
 umask 022
 
 deploy() {
-  release_dir="/opt/ytd/releases/$version"
-  shared_var_dir="/opt/ytd/shared/var"
+  base_dir="/opt/ytd"
+  release_dir="$base_dir/releases/$version"
+  shared_var_dir="$base_dir/shared/var"
   unpack_release
   link_release
   migrate_database
@@ -34,8 +35,8 @@ link_release() {
   rm -rf "$release_dir/var"
   ln -s "$shared_var_dir" "$release_dir/var"
 
-  rm -f "$HOME/current"
-  ln -s "$release_dir" "$HOME/current"
+  rm -f "$base_dir/HOME/current"
+  ln -s "$release_dir" "$base_dir/current"
 }
 
 migrate_database() {
@@ -52,7 +53,7 @@ start_server() {
 
 remove_old_releases() {
   # Keep latest five
-  cd $HOME/releases
+  cd $base_dir/releases
   ls -1rt | head -n -5 | xargs rm -rf
   cd -
 }

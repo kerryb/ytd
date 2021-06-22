@@ -25,6 +25,7 @@ set_up_release_dirs() {
   mkdir -p "${base_dir}/releases"
   mkdir -p "${base_dir}/shared/var"
   cp files/ytd/deploy-release.sh ${base_dir}
+  chmod +x ${base_dir}/deploy-release.sh
 }
 
 install_packages() {
@@ -67,6 +68,9 @@ YTD_LIVE_VIEW_SIGNING_SALT='$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32
 YTD_DATABASE_USERNAME='ytd'
 YTD_DATABASE_PASSWORD='${database_password}'
 YTD_DATABASE='ytd'
+YTD_STRAVA_CLIENT_ID"='-----UPDATE ME-----'
+YTD_STRAVA_CLIENT_SECRET='-----UPDATE ME-----'
+YTD_STRAVA_REDIRECT_URL='-----UPDATE ME-----'
 EOF
   fi
 
