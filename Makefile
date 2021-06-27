@@ -23,6 +23,7 @@ update-deps:
 	mix deps.update --all
 	cd assets && rm yarn.lock && yarn install
 release:
+	rm ytd-*.gz
 	docker build --tag=ytd-release -f docker/builder/Dockerfile .
 	docker rm -f ytd-release
 	docker create --name ytd-release ytd-release
