@@ -44,11 +44,11 @@ migrate_database() {
 }
 
 stop_server() {
-  systemctl stop $USER
+  sudo systemctl stop $USER
 }
 
 start_server() {
-  systemctl start $USER
+  sudo systemctl start $USER
 }
 
 remove_old_releases() {

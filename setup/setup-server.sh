@@ -136,6 +136,7 @@ EOF
 install_systemd_service() {
   cp files/ytd/ytd.service /usr/lib/systemd/system/ytd.service
   systemctl enable ytd
+  echo "${user} ALL=(root) NOPASSWD: /bin/systemctl * ytd" > /etc/sudoers.d/${user}
 }
 
 setup
