@@ -74,6 +74,8 @@ set_up_nginx() {
   systemctl enable nginx
   systemctl start nginx
   certbot --nginx -n --agree-tos --email kerryjbuckley@gmail.com --domains ${hostname}
+
+  # NB. The certbot installer messes up the nginx config a bit. You might need to fix it manually.
 }
 
 install_postgres() {
