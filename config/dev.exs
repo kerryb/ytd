@@ -15,7 +15,6 @@ config :ytd, YTD.Repo,
 # with webpack to recompile .js and .css sources.
 config :ytd, YTDWeb.Endpoint,
   http: [port: 4000],
-  https: [port: 4040],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
@@ -36,8 +35,6 @@ config :ytd, YTDWeb.Endpoint,
       ~r"lib/ytd_web/templates/.*(eex|slim|slime)$"
     ]
   ]
-
-config :ytd, :internal_acme_port, 4002
 
 config :strava, redirect_uri: "http://localhost:4000"
 

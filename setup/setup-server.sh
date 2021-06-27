@@ -4,6 +4,7 @@
 
 set -x
 set -e
+user="ytd"
 base_dir="/opt/ytd"
 hostname="beta.ytd.kerryb.org"
 database_root="/var/postgres"
@@ -13,12 +14,23 @@ set -o pipefail
 umask 022
 
 setup() {
+  create_user
   set_up_release_dirs
-  install_packages
+  set_up_maintenance_page_dir
+  install_nginx
+  install_certbot
+  set_up_nginx
+  install_postgres
   set_up_postgres
   create_database
   set_up_environment
   install_systemd_service
+}
+
+create_user() {
+  if ! grep -q "^${user}:" /etc/passwd ; then
+    useradd -m -s /bin/bash -d ${base_dir} "${user}"
+  fi
 }
 
 set_up_release_dirs() {
@@ -28,7 +40,42 @@ set_up_release_dirs() {
   chmod +x ${base_dir}/deploy-release.sh
 }
 
-install_packages() {
+set_up_maintenance_page_dir() {
+  local dir="/etc/${user}"
+  mkdir -p $dir
+  chown $user $dir
+  chmod a+r $dir
+}
+
+install_nginx() {
+  yum install -y yum-utils
+  cp files/yum/nginx.repo /etc/yum.repos.d/nginx.repo
+  yum install -y nginx
+}
+
+install_certbot() {
+  if [[ ! -f /usr/bin/certbot ]] ; then
+    yum install -y epel-release
+    yum install -y snapd
+    systemctl enable --now snapd.socket
+    ln -s /var/lib/snapd/snap /snap
+    snap wait system seed.loaded
+    snap install --classic certbot
+    ln -s /snap/bin/certbot /usr/bin/certbot
+  fi
+}
+
+set_up_nginx() {
+  cp files/nginx/ytd.conf /etc/nginx/conf.d/
+  cp files/nginx/maintenance.html /etc/ytd/maintenance.html.disabled
+  sed -i.bak '/^[# ]   server {/,/^[# ]    }/d' /etc/nginx/nginx.conf
+  setsebool -P httpd_can_network_connect 1
+  systemctl enable nginx
+  systemctl start nginx
+  certbot --nginx -n --agree-tos --email kerryjbuckley@gmail.com --domains ${hostname}
+}
+
+install_postgres() {
   yum update -y
   yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
   yum install -y postgresql13-server
@@ -68,7 +115,7 @@ YTD_LIVE_VIEW_SIGNING_SALT='$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32
 YTD_DATABASE_USERNAME='ytd'
 YTD_DATABASE_PASSWORD='${database_password}'
 YTD_DATABASE='ytd'
-YTD_STRAVA_CLIENT_ID"='-----UPDATE ME-----'
+YTD_STRAVA_CLIENT_ID='-----UPDATE ME-----'
 YTD_STRAVA_CLIENT_SECRET='-----UPDATE ME-----'
 YTD_STRAVA_REDIRECT_URL='-----UPDATE ME-----'
 EOF
