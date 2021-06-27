@@ -35,7 +35,7 @@ link_release() {
   rm -rf "$release_dir/var"
   ln -s "$shared_var_dir" "$release_dir/var"
 
-  rm -f "$base_dir/HOME/current"
+  rm -f "$base_dir/current"
   ln -s "$release_dir" "$base_dir/current"
 }
 
