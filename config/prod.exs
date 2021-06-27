@@ -1,5 +1,11 @@
 use Mix.Config
 
+# Configure your database
+config :ytd, YTD.Repo,
+  database: "ytd",
+  hostname: "localhost",
+  pool_size: 10
+
 # For production, don't forget to configure the url host
 # to something meaningful, Phoenix uses this information
 # when generating URLs.
