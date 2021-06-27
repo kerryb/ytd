@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-User=root
-Group=root
+User=ytd
+Group=ytd
 WorkingDirectory=/opt/ytd
 ExecStart=/opt/ytd/current/bin/ytd start
 Restart=on-failure
