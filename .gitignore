@@ -20,7 +20,7 @@ erl_crash.dump
 *.ez
 
 # Ignore package tarball (built via "mix hex.build").
-ytd-*.tar
+ytd-*.tar.gz
 
 # Yarn 2 stuff
 /assets/.yarn/*
