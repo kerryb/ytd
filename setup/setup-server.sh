@@ -37,6 +37,7 @@ set_up_release_dirs() {
   mkdir -p "${base_dir}/releases"
   mkdir -p "${base_dir}/shared/var"
   cp files/ytd/deploy-release.sh ${base_dir}
+  chown -R #{user} ${base_dir}
   chmod +x ${base_dir}/deploy-release.sh
 }
 
