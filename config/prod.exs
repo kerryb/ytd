@@ -11,7 +11,7 @@ use Mix.Config
 # before starting your production server.
 config :ytd, YTDWeb.Endpoint,
   url: [host: "beta.ytd.kerryb.org", port: 443],
-  port: 4000,
+  http: [port: 4000],
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true,
   root: ".",
