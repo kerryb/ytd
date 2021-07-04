@@ -6,7 +6,6 @@ set -x
 set -e
 user="ytd"
 base_dir="/opt/ytd"
-hostname="ytd.kerryb.org"
 database_root="/var/postgres"
 database_password=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 set -u
@@ -73,9 +72,12 @@ set_up_nginx() {
   setsebool -P httpd_can_network_connect 1
   systemctl enable nginx
   systemctl start nginx
-  certbot --nginx -n --agree-tos --email kerryjbuckley@gmail.com --domains ${hostname}
+  certbot --nginx -n --agree-tos --email kerryjbuckley@gmail.com --domains ytd.kerryb.org
 
-  # NB. The certbot installer messes up the nginx config a bit. You might need to fix it manually.
+  # The certbot installer messes up the nginx config a bit, so put it back (the
+  # one in the project includes the letsencrypt stuff)
+  cp files/nginx/ytd.conf /etc/nginx/conf.d/
+  systemctl restart nginx
 }
 
 install_postgres() {
@@ -112,7 +114,7 @@ RELEASE_NAME='ytd'
 RUN_ERL_LOG_MAXSIZE=200000
 RUN_ERL_LOG_GENERATIONS=50
 YTD_APP_NAME='ytd'
-YTD_HOSTNAME='${hostname}'
+YTD_HOSTNAME='ytd.kerryb.org'
 YTD_SECRET_KEY_BASE='$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 128 | head -n 1)'
 YTD_LIVE_VIEW_SIGNING_SALT='$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)'
 YTD_DATABASE_USERNAME='ytd'

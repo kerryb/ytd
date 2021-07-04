@@ -45,8 +45,7 @@ p.font-thin.text-2xl.mb-2
             label for="target"
               => @type
               ' target:
-            input#target.w-20.text-strava-orange.pl-2.ml-2.rounded type="number" name="target" autofocus="true"
-            value="#{if @targets[@type], do: @targets[@type].target, else: 0}"
+            input#target.w-20.text-strava-orange.pl-2.ml-2.rounded type="number" name="target" autofocus="true" value="#{if @targets[@type], do: @targets[@type].target, else: 0}"
             =<> @unit
           .flex.justify-between
             button> class="font-thin border rounded px-1 bg-strava-orange hover:bg-strava-orange-dark" phx-click="cancel-target" type="button" Cancel
