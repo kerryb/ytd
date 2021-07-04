@@ -15,3 +15,9 @@ config :ytd, YTD.Repo,
   pool_size: 10
 
 config :ytd, YTDWeb.Endpoint, secret_key_base: secret_key_base, server: true
+
+config :strava,
+  client_id: System.get_env("YTD_STRAVA_CLIENT_ID"),
+  client_secret: System.get_env("YTD_STRAVA_CLIENT_SECRET"),
+  redirect_uri: System.get_env("YTD_STRAVA_REDIRECT_URL"),
+  recv_timeout: :timer.minutes(5)

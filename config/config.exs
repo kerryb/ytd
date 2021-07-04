@@ -35,12 +35,6 @@ config :phoenix, :template_engines,
   slime: PhoenixSlime.Engine,
   slimleex: PhoenixSlime.LiveViewEngine
 
-config :strava,
-  client_id: System.get_env("YTD_STRAVA_CLIENT_ID"),
-  client_secret: System.get_env("YTD_STRAVA_CLIENT_SECRET"),
-  redirect_uri: System.get_env("YTD_STRAVA_REDIRECT_URL"),
-  recv_timeout: :timer.minutes(5)
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
