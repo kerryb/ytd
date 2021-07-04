@@ -15,7 +15,7 @@ config :ytd, YTDWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true,
   root: ".",
-  check_origin: ["//localhost", "//127.0.0.1"]
+  check_origin: ["//ytd.kerryb.org", "//beta.ytd.kerryb.org", "//localhost", "//127.0.0.1"]
 
 # Do not print debug messages in production
 config :logger, level: :info
