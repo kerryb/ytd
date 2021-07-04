@@ -6,7 +6,7 @@ set -x
 set -e
 user="ytd"
 base_dir="/opt/ytd"
-hostname="beta.ytd.kerryb.org"
+hostname="ytd.kerryb.org"
 database_root="/var/postgres"
 database_password=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 set -u

@@ -10,12 +10,12 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :ytd, YTDWeb.Endpoint,
-  url: [host: "beta.ytd.kerryb.org", port: 443],
+  url: [host: "ytd.kerryb.org", port: 443],
   http: [port: 4000],
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true,
   root: ".",
-  check_origin: ["//ytd.kerryb.org", "//beta.ytd.kerryb.org", "//localhost", "//127.0.0.1"]
+  check_origin: ["//ytd.kerryb.org", "//localhost", "//127.0.0.1"]
 
 # Do not print debug messages in production
 config :logger, level: :info
