@@ -20,7 +20,7 @@ p.font-thin.text-2xl.mt-2
   | Year to date (
   span#count = @count
   ' ):
-p class="text-5xl sm:text-7xl my-4"
+p class="text-5xl sm:text-7xl my-4 #{if @info, do: "animate-pulse"}"
   span#total.font-extrabold> = @ytd
   span.font-thin = @unit
 p.font-thin.text-2xl.mb-2
@@ -33,7 +33,7 @@ p.font-thin.text-2xl.mb-2
 = if @stats.projected_annual do
   hr.separator
   p.font-thin.text-2xl.mt-2 Projected year total:
-  p class="text-5xl sm:text-7xl my-4"
+  p class="text-5xl sm:text-7xl my-4 #{if @info, do: "animate-pulse"}"
     span#projected-annual.font-extrabold> = @stats.projected_annual
     span.font-thin = @unit
 
@@ -66,7 +66,7 @@ p.font-thin.text-2xl.mb-2
             => @targets[@type].target
             = @targets[@type].unit
           ' , you need to average
-          span.font-extrabold>
+          span.font-extrabold> class="#{if @info, do: "animate-pulse"}"
             => @stats.required_average
             = @unit
           ' a week from now on.
