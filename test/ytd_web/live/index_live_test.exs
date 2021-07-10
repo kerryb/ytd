@@ -181,6 +181,20 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#count", "1 activity")
     end
 
+    test "updates the list of activity types", %{conn: conn} do
+      activity = build(:activity, type: "Run", distance: 10_000.0)
+      {:ok, view, _html} = live(conn, "/")
+      send(view.pid, {:new_activity, activity})
+      assert has_element?(view, "#type option", "Run")
+    end
+
+    test "ignores activity types with no distance", %{conn: conn} do
+      activity = build(:activity, type: "Cardio", distance: 0.0)
+      {:ok, view, _html} = live(conn, "/")
+      send(view.pid, {:new_activity, activity})
+      refute has_element?(view, "#type option", "Cardio")
+    end
+
     test "updates the info message", %{conn: conn} do
       existing_activity = build(:activity)
       new_activity = build(:activity)

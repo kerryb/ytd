@@ -204,7 +204,7 @@ defmodule YTDWeb.IndexLive do
   end
 
   defp types(activities) do
-    activities |> Enum.map(& &1.type) |> Enum.uniq()
+    activities |> Enum.reject(&(&1.distance == 0)) |> Enum.map(& &1.type) |> Enum.uniq()
   end
 
   defp total_distance([], _type, _unit), do: 0.0
