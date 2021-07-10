@@ -78,7 +78,7 @@ hr.separator
 
 .flex.flex-row.justify-between.items-center.text-sm
   = if @info do
-    #info class="text-gray-300 dark:text-gray-700 text-sm font-light animate-pulse" = @info
+    #info class="text-gray-300 dark:text-strava-orange text-sm font-light animate-pulse" = @info
   = if @latest do
     #latest-activity.font-thin
       ' Latest:
