@@ -100,6 +100,21 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#info", "2 activities loaded. Fetching new activities …")
     end
 
+    test "shows the latest activity of the selected type", %{conn: conn} do
+      activities = [
+        build(:activity,
+          name: "Evening run",
+          type: "Run",
+          start_date: Timex.shift(DateTime.utc_now(), days: -2)
+        )
+      ]
+
+      {:ok, view, _html} = live(conn, "/")
+      send(view.pid, {:existing_activities, activities})
+      assert has_element?(view, "#latest-activity-name", "Evening run")
+      assert has_element?(view, "#latest-activity-date", "2 days ago")
+    end
+
     test "copes with there not being any activities", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
       send(view.pid, {:existing_activities, []})
@@ -153,6 +168,14 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when a new activity is received" do
+    test "updates latest activity", %{conn: conn} do
+      new_activity = build(:activity, name: "New run", type: "Run", distance: 10_000.0)
+      {:ok, view, _html} = live(conn, "/")
+      send(view.pid, {:existing_activities, []})
+      send(view.pid, {:new_activity, new_activity})
+      assert has_element?(view, "#latest-activity-name", "New run")
+    end
+
     test "updates the distance", %{conn: conn} do
       existing_activity = build(:activity, type: "Run", distance: 5_000.0)
       new_activity = build(:activity, type: "Run", distance: 10_000.0)
@@ -352,15 +375,6 @@ defmodule YTDWeb.IndexLiveTest do
       send(pid, :all_activities_fetched)
       expect(ActivitiesMock, :refresh_activities, fn ^pid, ^user -> :ok end)
       view |> element("button#refresh") |> render_click()
-    end
-
-    test "clears the latest activity", %{conn: conn} do
-      activity = build(:activity, type: "Run", distance: 5_000.0)
-      {:ok, view, _html} = live(conn, "/")
-      send(view.pid, {:existing_activities, [activity]})
-      send(view.pid, :all_activities_fetched)
-      view |> element("button#refresh") |> render_click()
-      refute has_element?(view, "#latest-activity-name")
     end
 
     test "shows an info message", %{conn: conn} do

@@ -62,7 +62,7 @@ defmodule YTDWeb.IndexLive do
     stats =
       calculate_stats(ytd, socket.assigns.unit, Date.utc_today(), type, socket.assigns.targets)
 
-    latest = latest_activity(socket.assigns.activities, type)
+    latest = latest_activity_of_type(socket.assigns.activities, type)
     Users.save_activity_type(socket.assigns.user, type)
     {:noreply, assign(socket, type: type, ytd: ytd, count: count, stats: stats, latest: latest)}
   end
@@ -106,7 +106,7 @@ defmodule YTDWeb.IndexLive do
   def handle_event("refresh", _params, socket) do
     pid = self()
     Task.start_link(fn -> :ok = activities_api().refresh_activities(pid, socket.assigns.user) end)
-    {:noreply, assign(socket, latest: nil, info: "Refreshing activities …")}
+    {:noreply, assign(socket, info: "Refreshing activities …")}
   end
 
   def handle_event("edit-target", _params, socket) do
@@ -135,6 +135,7 @@ defmodule YTDWeb.IndexLive do
 
   @impl true
   def handle_info({:existing_activities, activities}, socket) do
+    latest = latest_activity_of_type(activities, socket.assigns.type)
     count = activity_count(activities, socket.assigns.type)
     ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
 
@@ -153,6 +154,7 @@ defmodule YTDWeb.IndexLive do
     {:noreply,
      assign(socket,
        activities: activities,
+       latest: latest,
        count: count,
        types: types,
        ytd: ytd,
@@ -163,6 +165,7 @@ defmodule YTDWeb.IndexLive do
 
   def handle_info({:new_activity, activity}, socket) do
     activities = [activity | socket.assigns.activities]
+    latest = latest_activity_of_type(activities, socket.assigns.type)
     count = activity_count(activities, socket.assigns.type)
     ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
 
@@ -181,6 +184,7 @@ defmodule YTDWeb.IndexLive do
     {:noreply,
      assign(socket,
        activities: activities,
+       latest: latest,
        count: count,
        types: types,
        ytd: ytd,
@@ -190,7 +194,7 @@ defmodule YTDWeb.IndexLive do
   end
 
   def handle_info(:all_activities_fetched, socket) do
-    latest = latest_activity(socket.assigns.activities, socket.assigns.type)
+    latest = latest_activity_of_type(socket.assigns.activities, socket.assigns.type)
     {:noreply, assign(socket, info: nil, latest: latest)}
   end
 
@@ -233,13 +237,14 @@ defmodule YTDWeb.IndexLive do
   defp fetching_message(count, noun),
     do: "#{count} #{noun} loaded. Fetching new activities …"
 
-  defp latest_activity([], _type), do: nil
-
-  defp latest_activity(activities, type) do
+  defp latest_activity_of_type(activities, type) do
     activities
     |> Enum.filter(&(&1.type == type))
-    |> Enum.max_by(& &1.start_date, DateTime)
+    |> latest_activity()
   end
+
+  defp latest_activity([]), do: nil
+  defp latest_activity(activities), do: Enum.max_by(activities, & &1.start_date, DateTime)
 
   defp calculate_stats(ytd, unit, date, activity_type, targets) do
     target =

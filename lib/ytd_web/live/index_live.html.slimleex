@@ -77,8 +77,6 @@ p.font-thin.text-2xl.mb-2
 hr.separator
 
 .flex.flex-row.justify-between.items-center.text-sm
-  = if @info do
-    #info class="text-gray-300 dark:text-strava-orange text-sm font-light animate-pulse" = @info
   = if @latest do
     #latest-activity.font-thin
       ' Latest:
@@ -90,6 +88,9 @@ hr.separator
     button#refresh(class="focus:outline-none" phx-click="refresh"
     title="Fetch new activities. Shift-click to discard all activities and reload everything from Strava.")
       i.fas.fa-sync
+= if @info do
+  .flex.flex-row.justify-between.items-center.text-sm
+    #info class="text-gray-300 dark:text-strava-orange text-sm font-light animate-pulse" = @info
 
 hr.separator
 
