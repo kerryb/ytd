@@ -14,7 +14,7 @@ style:
 compile:
 	mix compile --warnings-as-errors
 dialyzer:
-	mix dialyzer
+	mix dialyzer --format dialyxir
 test:
 	mix coveralls.html
 docs:
