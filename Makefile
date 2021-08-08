@@ -1,4 +1,4 @@
-.PHONY: clean dialyzer setup style test unit-test update-deps
+.PHONY: clean deploy dialyzer setup style test unit-test update-deps
 all: style compile dialyzer test docs
 setup:
 	mix deps.get
@@ -28,3 +28,7 @@ release:
 	docker rm -f ytd-release
 	docker create --name ytd-release ytd-release
 	docker cp ytd-release:/app/_build/prod/ytd-`cat VERSION`.tar.gz .
+deploy:
+	scp ytd-`cat VERSION`.tar.gz ytd@ytd.kerryb.org:
+	ssh ytd@ytd.kerryb.org "bash -lc './deploy-release.sh ytd-`cat VERSION`.tar.gz && rm ytd-`cat VERSION`.tar.gz'"
+

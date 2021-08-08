@@ -20,6 +20,12 @@ Update the `VERSION` file, then:
 make release
 ```
 
+## Deploy
+
+```bash
+make deploy
+```
+
 ## Set up server
 
 Run `setup/setup-server.sh` on the server, update Strava tokens in
