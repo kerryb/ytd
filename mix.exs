@@ -12,6 +12,7 @@ defmodule YTD.MixProject do
       aliases: aliases(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
+      dialyzer: dialyzer(),
       preferred_cli_env: preferred_cli_env(),
       releases: releases(),
       boundary: boundary()
@@ -80,6 +81,13 @@ defmodule YTD.MixProject do
       "ecto.migrate": ["ecto.migrate", "ecto.dump"],
       "ecto.rollback": ["ecto.rollback", "ecto.dump"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+    ]
+  end
+
+  defp dialyzer do
+    [
+      plt_add_deps: :app_tree,
+      ignore_warnings: "dialyzer.ignore-warnings"
     ]
   end
 
