@@ -29,7 +29,7 @@ defmodule YTDWeb.Endpoint do
   plug(Plug.Static,
     at: "/",
     from: :ytd,
-    gzip: false,
+    gzip: true,
     only: ~w(css fonts images js favicon-96x96.png apple-icon-180x180.png robots.txt)
   )
 
