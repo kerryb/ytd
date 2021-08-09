@@ -7,6 +7,9 @@ html lang="en"
     = csrf_meta_tag() 
     = live_title_tag assigns[:page_title] || "YTD"
     link rel="stylesheet" href="#{Routes.static_path(@conn, "/css/app.css")}"
+    link rel="apple-touch-icon" sizes="180x180" href="#{Routes.static_path @conn, "/apple-icon-180x180.png"}"
+    link rel="icon" type="image/png" sizes="180x180" href="#{Routes.static_path @conn, "/apple-icon-180x180.png"}"
+    link rel="icon" type="image/png" sizes="96x96" href="#{Routes.static_path @conn, "/favicon-96x96.png"}"
     script defer=true type="text/javascript" src="#{Routes.static_path(@conn, "/js/app.js")}"
   
   body class="bg-strava-orange dark:bg-black text-white dark:text-strava-orange font-sans"
