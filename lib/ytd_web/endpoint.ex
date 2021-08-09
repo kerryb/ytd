@@ -30,7 +30,8 @@ defmodule YTDWeb.Endpoint do
     at: "/",
     from: :ytd,
     gzip: true,
-    only: ~w(css fonts images js favicon-96x96.png apple-icon-180x180.png robots.txt)
+    only: ~w(css fonts images js),
+    only_matching: ~w(favicon.ico favicon apple-icon robots.txt)
   )
 
   # Code reloading can be explicitly enabled under the
