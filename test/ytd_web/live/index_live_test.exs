@@ -465,8 +465,21 @@ defmodule YTDWeb.IndexLiveTest do
     end
   end
 
+  describe "YTDWeb.IndexLive, when on track to meet the target" do
+    test "reports the estimated total", %{conn: conn, user: user} do
+      insert(:target, user: user, activity_type: "Run", target: 1000, unit: "km")
+      activity = build(:activity, type: "Run", distance: 999_000.0)
+      {:ok, view, _html} = live(conn, "/")
+      send(view.pid, {:existing_activities, [activity]})
+
+      html = render(view)
+      assert html =~ ~r/You are on track to hit your target of .*1000 km/
+      assert html =~ ~r/, as long as you average .*\d+\.\d miles.* a week from now on/
+    end
+  end
+
   describe "YTDWeb.IndexLive, when the target has been met" do
-    test "saves the target", %{conn: conn, user: user} do
+    test "reports that the target has been met", %{conn: conn, user: user} do
       insert(:target, user: user, activity_type: "Run", target: 3, unit: "miles")
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")

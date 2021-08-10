@@ -9,6 +9,7 @@ defmodule YTD.Stats do
   @type t :: %__MODULE__{
           weekly_average: float(),
           projected_annual: float(),
+          completed?: boolean() | nil,
           on_target?: boolean() | nil,
           estimated_target_completion: float() | nil,
           required_average: float() | nil
@@ -22,6 +23,7 @@ defmodule YTD.Stats do
   defstruct [
     :weekly_average,
     :projected_annual,
+    :completed?,
     :on_target?,
     :estimated_target_completion,
     :required_average
@@ -41,6 +43,7 @@ defmodule YTD.Stats do
     %__MODULE__{
       weekly_average: weekly_average(ytd, now),
       projected_annual: projected_annual(ytd, now),
+      completed?: ytd >= target,
       on_target?: on_target?(ytd, now, target),
       estimated_target_completion: estimated_target_completion(ytd, now, target),
       required_average: required_average(ytd, now, target)

@@ -24,6 +24,16 @@ defmodule YTD.StatsTest do
       assert stats.estimated_target_completion == nil
     end
 
+    test "reports completed if the ytd distance is at least the target" do
+      stats = Stats.calculate(123, ~D[2017-04-15], 123)
+      assert stats.completed?
+    end
+
+    test "reports not completed if the ytd distance is less than the target" do
+      stats = Stats.calculate(123, ~D[2017-04-15], 124)
+      refute stats.completed?
+    end
+
     test "reports on target if the projected distance is at least the target" do
       stats = Stats.calculate(123, ~D[2017-04-15], 427.5)
       assert stats.on_target?

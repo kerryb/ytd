@@ -53,22 +53,33 @@ p.font-thin.text-2xl.mb-2
   - else
     p.font-thin.text-2xl.mb-2
       = if @targets[@type] do
-        = if @stats.on_target? do
-          ' You have hit your target of
-          a#edit-target.link phx-click="edit-target" href="#"
-            => @targets[@type].target
-            = @targets[@type].unit
-          | !
-        - else
-          ' To hit your target of
-          a#edit-target.link phx-click="edit-target" href="#"
-            => @targets[@type].target
-            = @targets[@type].unit
-          ' , you need to average
-          span.font-extrabold> class="#{if @info, do: "animate-pulse"}"
-            => @stats.required_average
-            = @unit
-          ' a week from now on.
+        = cond do
+          - @stats.completed? ->
+            ' You have hit your target of
+            a#edit-target.link phx-click="edit-target" href="#"
+              => @targets[@type].target
+              = @targets[@type].unit
+            | !
+          - @stats.on_target? ->
+            ' You are on track to hit your target of
+            a#edit-target.link phx-click="edit-target" href="#"
+              => @targets[@type].target
+              = @targets[@type].unit
+            ' , as long as you average
+            span.font-extrabold> class="#{if @info, do: "animate-pulse"}"
+              => @stats.required_average
+              = @unit
+            ' a week from now on.
+          - true ->
+            ' To hit your target of
+            a#edit-target.link phx-click="edit-target" href="#"
+              => @targets[@type].target
+              = @targets[@type].unit
+            ' , you need to average
+            span.font-extrabold> class="#{if @info, do: "animate-pulse"}"
+              => @stats.required_average
+              = @unit
+            ' a week from now on.
       - else
         ' Why not
         a#edit-target.link phx-click="edit-target" href="#" set yourself a target
