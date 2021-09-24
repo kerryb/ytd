@@ -365,7 +365,7 @@ defmodule YTDWeb.IndexLiveTest do
       insert(:target, user: user, activity_type: "Run", target: 1000, unit: "miles")
       {:ok, view, _html} = live(conn, "/")
       html = view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
-      assert html =~ ~r/you need to average .*\d+\.\d km/
+      assert html =~ ~r/you need to average.*\d+\.\d km/s
     end
   end
 
@@ -440,7 +440,7 @@ defmodule YTDWeb.IndexLiveTest do
       html = view |> element("form#edit-target-form") |> render_submit(target: "1000")
 
       assert html =~
-               ~r/To hit your target of .*1000 miles.*, you need to average .*\d+\.\d miles.* a week from now on/
+               ~r/To hit your target of.*1000 miles.*, you need to average.*\d+\.\d miles.* a week from now on/s
     end
 
     test "does not save the target if you press 'Cancel'", %{conn: conn} do
@@ -461,7 +461,7 @@ defmodule YTDWeb.IndexLiveTest do
       html = view |> element("form#edit-target-form") |> render_submit(target: "2000")
 
       assert html =~
-               ~r/To hit your target of.*2000 km.*, you need to average .*\d+\.\d km.* a week from now on/
+               ~r/To hit your target of.*2000 km.*, you need to average.*\d+\.\d km.* a week from now on/s
     end
   end
 
@@ -473,8 +473,8 @@ defmodule YTDWeb.IndexLiveTest do
       send(view.pid, {:existing_activities, [activity]})
 
       html = render(view)
-      assert html =~ ~r/You are on track to hit your target of .*1000 km/
-      assert html =~ ~r/, as long as you average .*\d+\.\d miles.* a week from now on/
+      assert html =~ ~r/You are on track to hit your target of.*1000 km/s
+      assert html =~ ~r/, as long as you average.*\d+\.\d miles.*a week from now on/s
     end
   end
 
@@ -484,7 +484,7 @@ defmodule YTDWeb.IndexLiveTest do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       {:ok, view, _html} = live(conn, "/")
       send(view.pid, {:existing_activities, [activity]})
-      assert render(view) =~ ~r/You have hit your target of.*3 miles.*!/
+      assert render(view) =~ ~r/You have hit your target of.*3 miles.*!/s
     end
   end
 

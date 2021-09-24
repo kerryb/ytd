@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <%= csrf_meta_tag() %>
+    <%= live_title_tag(Map.get(assigns, :page_title, "YTD")) %>
+    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/css/app.css")}/>
+    <link href={Routes.static_path(@conn, "/apple-icon-180x180.png")} rel="apple-touch-icon" sizes="180x180" />
+    <link href={Routes.static_path(@conn, "/apple-icon-180x180.png")} rel="icon" sizes="180x180" type="image/png" />
+    <link href={Routes.static_path(@conn, "/favicon-96x96.png")} rel="icon" sizes="96x96" type="image/png" />
+    <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/js/app.js")}></script>
+  </head>
+  <body class="bg-strava-orange dark:bg-black text-white dark:text-strava-orange font-sans">
+    <div class="flex justify-center items-center">
+      <div class="m-2 w-144">
+        <%= @inner_content %>
+      </div>
+    </div>
+  </body>
+</html>
