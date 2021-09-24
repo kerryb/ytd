@@ -1840,20 +1840,20 @@ __metadata:
   linkType: hard
 
 "autoprefixer@npm:^10.2.3":
-  version: 10.3.4
-  resolution: "autoprefixer@npm:10.3.4"
+  version: 10.3.5
+  resolution: "autoprefixer@npm:10.3.5"
   dependencies:
-    browserslist: ^4.16.8
-    caniuse-lite: ^1.0.30001252
-    colorette: ^1.3.0
+    browserslist: ^4.17.1
+    caniuse-lite: ^1.0.30001259
     fraction.js: ^4.1.1
+    nanocolors: ^0.1.5
     normalize-range: ^0.1.2
     postcss-value-parser: ^4.1.0
   peerDependencies:
     postcss: ^8.1.0
   bin:
     autoprefixer: bin/autoprefixer
-  checksum: 00a9faf0ffef6d0bc19497787d31203de1742a99f7530f72140bedb5cff493e545953bf614015fa77487109e953b68858688f9a4b0d9314beb81cec453292c03
+  checksum: 5c8841f4eaadca1ec606243f71018c929924233dc2f8452c64495c4bf5b94364c610f8c3c53d839c07b6bebeeb852b2d7fa07eb03b7a31d4c28dbe89193fc9bd
   languageName: node
   linkType: hard
 
@@ -1909,14 +1909,14 @@ __metadata:
   linkType: hard
 
 "babel-plugin-polyfill-corejs3@npm:^0.2.2":
-  version: 0.2.4
-  resolution: "babel-plugin-polyfill-corejs3@npm:0.2.4"
+  version: 0.2.5
+  resolution: "babel-plugin-polyfill-corejs3@npm:0.2.5"
   dependencies:
     "@babel/helper-define-polyfill-provider": ^0.2.2
-    core-js-compat: ^3.14.0
+    core-js-compat: ^3.16.2
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 74a81668885e2f23bad422b0f609e68723ce76c087407ef29ac4e75b62ce73f77938a4c536a567a31e6a2ce207ee82b09b2060751fc86c206990225adb902634
+  checksum: 7cd786d8c6d460f0aed35e7fc67d435d2698a09865ae542c9a3306dfd9d9b918cf3b2eb94007b579b59ef5f48870eae7705f5bf9035f5e5bccca43f08409726f
   languageName: node
   linkType: hard
 
@@ -2153,18 +2153,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browserslist@npm:^4.0.0, browserslist@npm:^4.16.6, browserslist@npm:^4.16.8, browserslist@npm:^4.17.0":
-  version: 4.17.0
-  resolution: "browserslist@npm:4.17.0"
+"browserslist@npm:^4.0.0, browserslist@npm:^4.16.6, browserslist@npm:^4.17.0, browserslist@npm:^4.17.1":
+  version: 4.17.1
+  resolution: "browserslist@npm:4.17.1"
   dependencies:
-    caniuse-lite: ^1.0.30001254
-    colorette: ^1.3.0
-    electron-to-chromium: ^1.3.830
+    caniuse-lite: ^1.0.30001259
+    electron-to-chromium: ^1.3.846
     escalade: ^3.1.1
-    node-releases: ^1.1.75
+    nanocolors: ^0.1.5
+    node-releases: ^1.1.76
   bin:
     browserslist: cli.js
-  checksum: e7c4b78520f1e6f547112891d4a2298fa2d9bcba0156fd62b8229d654cd7a6c72db74254d774a55cacf604fbee0966189ac6fb1ce71e8c1a24bb5ce1c2ed9644
+  checksum: 735d4f007dc74f5281d80c7f1677e22d750b78cf9e3c934e8ff4308674fcd4b561c9ec4a8aca7fecd34366077489b29004ca472a480140ccd7674d739c21b7f6
   languageName: node
   linkType: hard
 
@@ -2384,10 +2384,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001252, caniuse-lite@npm:^1.0.30001254":
-  version: 1.0.30001258
-  resolution: "caniuse-lite@npm:1.0.30001258"
-  checksum: ef97b5eb31cf99b4a8e895da133c918d4dc606acf55dec6d9bbde4f94e9b2b18bcfc3b105c2d59c68ea0f51dd11fd83ef7b42cb28489c48f486cc49b4dcb7bfb
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001259":
+  version: 1.0.30001260
+  resolution: "caniuse-lite@npm:1.0.30001260"
+  dependencies:
+    nanocolors: ^0.1.0
+  checksum: 8626bce717bfd29775cab2b90351a4a92e21ba1e59ef82cf24498228d39ec1e9e354fbcff23918ae9cbc848d3a278e75de35edca4eb739317fddbffe0479eaf5
   languageName: node
   linkType: hard
 
@@ -2636,13 +2638,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colorette@npm:^1.2.2, colorette@npm:^1.3.0":
-  version: 1.4.0
-  resolution: "colorette@npm:1.4.0"
-  checksum: 7ef8e1ca16ca7ae4659722ecd103ff89388e1e1e4100ee41e892ad880364a2f8bb9aacbce6c96aa572f25e56a45a2ea7008ff69b8182bc6baf383cd269b963c0
-  languageName: node
-  linkType: hard
-
 "combined-stream@npm:^1.0.6, combined-stream@npm:~1.0.6":
   version: 1.0.8
   resolution: "combined-stream@npm:1.0.8"
@@ -2772,13 +2767,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js-compat@npm:^3.14.0, core-js-compat@npm:^3.16.0":
-  version: 3.17.3
-  resolution: "core-js-compat@npm:3.17.3"
+"core-js-compat@npm:^3.16.0, core-js-compat@npm:^3.16.2":
+  version: 3.18.0
+  resolution: "core-js-compat@npm:3.18.0"
   dependencies:
     browserslist: ^4.17.0
     semver: 7.0.0
-  checksum: 18236c07221571c539d71e5491e850e6de5649ab46ae39b7785ca9ed46d0fb07d16d4bfa5ca6c082dfa319263b29a880355a7c3b76c8df80ab81038c5a19ad14
+  checksum: a0c75f8e235a1b9d5100013e1f6707159c6b460f14c998f02b4c46d6c2e4c02fbe451d432695f6b73c760a39500d5ecc85c52ff946b488f6f395c3461db0954f
   languageName: node
   linkType: hard
 
@@ -3359,10 +3354,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.3.830":
-  version: 1.3.843
-  resolution: "electron-to-chromium@npm:1.3.843"
-  checksum: 0233a98b245add127bc7d7aaefab88d83a1d1312d9eee47841138af6acab1a51bb39e3f12bd864ef2d5b2fa00fd42a77ae1a001e44cbfde277a275f525221e00
+"electron-to-chromium@npm:^1.3.846":
+  version: 1.3.849
+  resolution: "electron-to-chromium@npm:1.3.849"
+  checksum: 9bc0abef83332629958532a034bc5eb6056bf4baf496d4e748925017ea52825e1e46884c59e687a68b28b7308e64b4bead6cc304c64d3e8f776c27a5d893ea0f
   languageName: node
   linkType: hard
 
@@ -4078,7 +4073,21 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.0.0, glob@npm:^7.0.3, glob@npm:^7.1.2, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:~7.1.1":
+"glob@npm:^7.0.0, glob@npm:^7.0.3, glob@npm:^7.1.2, glob@npm:^7.1.3, glob@npm:^7.1.4":
+  version: 7.2.0
+  resolution: "glob@npm:7.2.0"
+  dependencies:
+    fs.realpath: ^1.0.0
+    inflight: ^1.0.4
+    inherits: 2
+    minimatch: ^3.0.4
+    once: ^1.3.0
+    path-is-absolute: ^1.0.0
+  checksum: 1171c3d7b1f5a367499e498826cddafc642aa55ef21e810031a287d3199612a889059d7d2c276a04c636c3ac2fd5943896bfc309110b21fafaeb8a1e0a199d6e
+  languageName: node
+  linkType: hard
+
+"glob@npm:~7.1.1":
   version: 7.1.7
   resolution: "glob@npm:7.1.7"
   dependencies:
@@ -5813,7 +5822,14 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.1.23":
+"nanocolors@npm:^0.1.0, nanocolors@npm:^0.1.5":
+  version: 0.1.12
+  resolution: "nanocolors@npm:0.1.12"
+  checksum: be3529320c895fcd16b79185c830c3c997c83026ca14d1119025d817b9ddcf175ac2b04b50f7e8928edf4082b98a0a106e6723ebc5ad73ccfd7366aeb8ce66a6
+  languageName: node
+  linkType: hard
+
+"nanoid@npm:^3.1.25":
   version: 3.1.25
   resolution: "nanoid@npm:3.1.25"
   bin:
@@ -5944,10 +5960,10 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"node-releases@npm:^1.1.75":
-  version: 1.1.75
-  resolution: "node-releases@npm:1.1.75"
-  checksum: 0ea9d84f2cc899fc033866178f4a86b2ae7abf8fb728e37740f7a6464180ce4d3a5557b6b25fdb375d2b2380edad6c67f2395e84986e7d88cbb87896279e20f5
+"node-releases@npm:^1.1.76":
+  version: 1.1.76
+  resolution: "node-releases@npm:1.1.76"
+  checksum: 965c5a4f5a3d8953e95388178d9d0df76da443eb8108817dc19e7fc9a6c97e3f4c6f7f7728b99912c41d7f80f468573395b47c9c6bdd3e319a61b4bb173fcac4
   languageName: node
   linkType: hard
 
@@ -6482,23 +6498,23 @@ fsevents@~2.3.2:
   linkType: hard
 
 "phoenix@file:../deps/phoenix::locator=root-workspace-0b6124%40workspace%3A.":
-  version: 1.5.12
-  resolution: "phoenix@file:../deps/phoenix#../deps/phoenix::hash=c627fc&locator=root-workspace-0b6124%40workspace%3A."
-  checksum: b81516965c9bee18f80afc78cf9588a69650d14e30a4fac3124d0394383415e66dad0d69a9228b329a8f80d36d4175dadfe7b594ffd93bbd31d52ca955e1fe8d
+  version: 1.6.0
+  resolution: "phoenix@file:../deps/phoenix#../deps/phoenix::hash=b97c41&locator=root-workspace-0b6124%40workspace%3A."
+  checksum: cf6e19b29f1d379c6ef7f43e72fba8ee50f90892275ed24d1c257227585b3ce3018799910f8e4d2af95d35f33c117313989bf1bb2906a286e5470511c4383c1d
   languageName: node
   linkType: hard
 
 "phoenix_html@file:../deps/phoenix_html::locator=root-workspace-0b6124%40workspace%3A.":
-  version: 2.14.3
-  resolution: "phoenix_html@file:../deps/phoenix_html#../deps/phoenix_html::hash=e309b2&locator=root-workspace-0b6124%40workspace%3A."
-  checksum: 2c2b79639eaa0762a629e556e24719b72c7f8f24579f5491fdfbc92fe898505adf1468d40534d3fc52b2182b502d061c550554ce0c68cbdd1183ba1922b27afd
+  version: 3.0.4
+  resolution: "phoenix_html@file:../deps/phoenix_html#../deps/phoenix_html::hash=9ea463&locator=root-workspace-0b6124%40workspace%3A."
+  checksum: ec8faf3d3ae610192232dfeb52146d8425eb90e1410835a592d6e101ecd5117137b19d94655a46a93aacaa653daa714656d8954612fae10b0ffe450a567baa38
   languageName: node
   linkType: hard
 
 "phoenix_live_view@file:../deps/phoenix_live_view::locator=root-workspace-0b6124%40workspace%3A.":
-  version: 0.13.3
-  resolution: "phoenix_live_view@file:../deps/phoenix_live_view#../deps/phoenix_live_view::hash=332ee8&locator=root-workspace-0b6124%40workspace%3A."
-  checksum: 3364f8e4260dec6cf0445dd8b66edeb32fd0f1cb6d328da74edbab7f4e133b27b354c7a983c34cbdac5e0efa2929ce907ab29610e2c815ae47ea86115d0e5581
+  version: 0.16.4
+  resolution: "phoenix_live_view@file:../deps/phoenix_live_view#../deps/phoenix_live_view::hash=64f195&locator=root-workspace-0b6124%40workspace%3A."
+  checksum: 052b918101808b172a3aab95dbfafb463cf33e6f6ae404f9597bb9eeeb49404b739b667fb4cc2fc14377a74ad6f68315d3ec11bc6c2d7137b7b4e9ad2204f6eb
   languageName: node
   linkType: hard
 
@@ -7025,13 +7041,13 @@ fsevents@~2.3.2:
   linkType: hard
 
 "postcss@npm:^8.1.6, postcss@npm:^8.2.1, postcss@npm:^8.2.4":
-  version: 8.3.6
-  resolution: "postcss@npm:8.3.6"
+  version: 8.3.7
+  resolution: "postcss@npm:8.3.7"
   dependencies:
-    colorette: ^1.2.2
-    nanoid: ^3.1.23
+    nanocolors: ^0.1.5
+    nanoid: ^3.1.25
     source-map-js: ^0.6.2
-  checksum: 515c26472861ce0f3b0a7945b9ac4732756d2aab6b12950137f72c7c6d90967136ba56e878815edcbf132c5643005dad1e9bbcb14139a948802af10245a8f6e3
+  checksum: cbcef5f8be9120336cb5dac6681025e9af34d664a5dbde61ab08c557c7a9030411577464b213e35d0f4d5e4a7d3e2cfee073975ac48c80e37f6384a5aa81a7b7
   languageName: node
   linkType: hard
 
