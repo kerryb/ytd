@@ -104,7 +104,7 @@ defmodule YTD.MixProject do
   # without the docker cache being invalidated just because `VERSION` has
   # changed
   defp extract_version({:ok, version}), do: String.trim(version)
-  defp extract_version(_), do: "UNKNOWN"
+  defp extract_version(_), do: "0.0.0"
 
   defp releases do
     [
