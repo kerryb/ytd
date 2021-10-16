@@ -43,6 +43,7 @@ defmodule YTD.MixProject do
       {:credo, "~> 1.4", only: [:dev, :test]},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:ecto_sql, "~> 3.4"},
+      {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
       {:ex_doc, "~> 0.21", only: :dev},
       {:ex_machina, "~> 2.4", only: :test},
       {:excoveralls, "~> 0.13", only: :test},
@@ -79,7 +80,8 @@ defmodule YTD.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       "ecto.migrate": ["ecto.migrate", "ecto.dump"],
       "ecto.rollback": ["ecto.rollback", "ecto.dump"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "assets.deploy": ["esbuild default --minify", "phx.digest"]      
     ]
   end
 

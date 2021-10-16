@@ -30,7 +30,7 @@ defmodule YTDWeb.Endpoint do
     at: "/",
     from: :ytd,
     gzip: true,
-    only: ~w(css fonts images js),
+    only: ~w(assets fonts images),
     only_matching: ~w(favicon.ico favicon apple-icon robots.txt)
   )
 
