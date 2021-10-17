@@ -45,7 +45,7 @@ COPY assets/.yarn/releases assets/.yarn/releases
 RUN cd assets && yarn install
 
 COPY assets assets
-RUN cd assets && yarn run webpack --mode production
+RUN mix assets.deploy
 RUN mix phx.digest
 
 COPY priv priv
