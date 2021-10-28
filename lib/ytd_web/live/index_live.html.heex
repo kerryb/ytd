@@ -22,7 +22,7 @@
 </form>
 <hr class="separator">
 <p class="font-thin text-2xl mt-2">Year to date (<span id="count"><%= @count %></span>): </p>
-<p class="text-5xl sm:text-7xl my-4 {if @info, do: "animate-pulse"}">
+<p class="text-5xl sm:text-7xl my-4 {@loading_class}">
   <span class="font-extrabold" id="total"><%= @ytd %></span>
   <span class="font-thin"><%= @unit %></span>
 </p>
@@ -33,7 +33,7 @@
 <%= if @stats.projected_annual do %>
   <hr class="separator">
   <p class="font-thin text-2xl mt-2">Projected year total:</p>
-  <p class="text-5xl sm:text-7xl my-4 {if @info, do: "animate-pulse"}">
+  <p class="text-5xl sm:text-7xl my-4 {@loading_class}">
     <span class="font-extrabold" id="projected-annual"><%= @stats.projected_annual %></span>
     <span class="font-thin"><%= @unit %></span>
   </p>
@@ -66,14 +66,14 @@
               <a class="link" href="#" id="edit-target" phx-click="edit-target">
                 <%= @targets[@type].target %> <%= @targets[@type].unit %>
               </a>, as long as you average
-              <span class="font-extrabold {if @info, do: "animate-pulse"}"><%= @stats.required_average %> <%= @unit %></span>
+              <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
               a week from now on.
               <% true -> %>
                 To hit your target of
                 <a class="link" href="#" id="edit-target" phx-click="edit-target">
                   <%= @targets[@type].target %> <%= @targets[@type].unit %>
                 </a>, you need to average
-                <span class="font-extrabold {if @info, do: "animate-pulse"}"><%= @stats.required_average %> <%= @unit %></span>
+                <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
                 a week from now on.
               <% end %>
             <% else %>

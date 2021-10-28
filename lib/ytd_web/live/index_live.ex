@@ -10,6 +10,8 @@ defmodule YTDWeb.IndexLive do
 
   require Logger
 
+  @loading_class "animate-pulse"
+
   @impl true
   def mount(_params, session, socket) do
     user = Users.get_user_from_athlete_id(session["athlete_id"])
@@ -39,6 +41,7 @@ defmodule YTDWeb.IndexLive do
            targets
          ),
        info: "Loading activities …",
+       loading_class: nil,
        latest: nil,
        edit_target?: false
      )}
@@ -99,14 +102,15 @@ defmodule YTDWeb.IndexLive do
        count: count,
        ytd: ytd,
        stats: stats,
-       info: "Reloading all activities …"
+       info: "Reloading all activities …",
+       loading_class: @loading_class
      )}
   end
 
   def handle_event("refresh", _params, socket) do
     pid = self()
     Task.start_link(fn -> :ok = activities_api().refresh_activities(pid, socket.assigns.user) end)
-    {:noreply, assign(socket, info: "Refreshing activities …")}
+    {:noreply, assign(socket, info: "Refreshing activities …", loading_class: @loading_class)}
   end
 
   def handle_event("edit-target", _params, socket) do
@@ -159,7 +163,8 @@ defmodule YTDWeb.IndexLive do
        types: types,
        ytd: ytd,
        stats: stats,
-       info: info
+       info: info,
+       loading_class: @loading_class
      )}
   end
 
@@ -189,13 +194,14 @@ defmodule YTDWeb.IndexLive do
        types: types,
        ytd: ytd,
        stats: stats,
-       info: info
+       info: info,
+       loading_class: @loading_class
      )}
   end
 
   def handle_info(:all_activities_fetched, socket) do
     latest = latest_activity_of_type(socket.assigns.activities, socket.assigns.type)
-    {:noreply, assign(socket, info: nil, latest: latest)}
+    {:noreply, assign(socket, info: nil, loading_class: nil, latest: latest)}
   end
 
   def handle_info({:name_updated, user}, socket) do
