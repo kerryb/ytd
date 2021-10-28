@@ -293,7 +293,7 @@ defmodule YTDWeb.IndexLiveTest do
     test "updates the stats", %{conn: conn} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
-        build(:activity, type: "Ride", distance: 10_000.0)
+        build(:activity, type: "Ride", distance: 100_000.0)
       ]
 
       {:ok, view, _html} = live(conn, "/")
