@@ -6,6 +6,7 @@ setup:
 	cd assets && yarn install
 clean:
 	mix clean
+	rm -rf priv/static/assets/*
 deep-clean:
 	rm -rf _build assets/node_modules deps priv/static
 style:
