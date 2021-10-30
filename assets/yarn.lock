@@ -6,29 +6,29 @@ __metadata:
   cacheKey: 7
 
 "@babel/code-frame@npm:^7.0.0":
-  version: 7.15.8
-  resolution: "@babel/code-frame@npm:7.15.8"
+  version: 7.16.0
+  resolution: "@babel/code-frame@npm:7.16.0"
   dependencies:
-    "@babel/highlight": ^7.14.5
-  checksum: 91718136f0334fb6f80f0fcc1f5c75620b75312951fa712e98953e25e7975b5b09325232e7cbe7c1564f06a4ec5bcc5eafb1f3cbbe7825f89627baf3e005dc94
+    "@babel/highlight": ^7.16.0
+  checksum: 68f2008dcf74807f9202d1962b6a848466bde608dc7e07640c9ddf561d7dfea05032e0f4f758ba389288c1812f4d2d56533c2b31869278b1101a044198335944
   languageName: node
   linkType: hard
 
-"@babel/helper-validator-identifier@npm:^7.14.5":
+"@babel/helper-validator-identifier@npm:^7.15.7":
   version: 7.15.7
   resolution: "@babel/helper-validator-identifier@npm:7.15.7"
   checksum: eb3eaea69de1e69c0c74e15b3934aa844b248d3bda6d5fa97f8c46fc16eada6153d2f519379ec3801b794bb5b72a88e087a18bbe6682cd72ce0c7a69144f2f7a
   languageName: node
   linkType: hard
 
-"@babel/highlight@npm:^7.14.5":
-  version: 7.14.5
-  resolution: "@babel/highlight@npm:7.14.5"
+"@babel/highlight@npm:^7.16.0":
+  version: 7.16.0
+  resolution: "@babel/highlight@npm:7.16.0"
   dependencies:
-    "@babel/helper-validator-identifier": ^7.14.5
+    "@babel/helper-validator-identifier": ^7.15.7
     chalk: ^2.0.0
     js-tokens: ^4.0.0
-  checksum: a1ed599c2655eb0b13134875ba2626b547a2634940e532c86a02896fb403f197cd56d1adaa474c7859ae4f53fabc5f1621e90770e75d235ca3350952ba78aa5c
+  checksum: 25bbf22feeb5a4e7a395a9f5206683681273acba3eb1ccba03bd5780dbe4847f47465e549715b37384638b92a7fba70cb025aeefabff171ae6e9afe825647345
   languageName: node
   linkType: hard
 
@@ -238,20 +238,20 @@ __metadata:
   linkType: hard
 
 "autoprefixer@npm:^10.3.7":
-  version: 10.3.7
-  resolution: "autoprefixer@npm:10.3.7"
+  version: 10.4.0
+  resolution: "autoprefixer@npm:10.4.0"
   dependencies:
-    browserslist: ^4.17.3
-    caniuse-lite: ^1.0.30001264
+    browserslist: ^4.17.5
+    caniuse-lite: ^1.0.30001272
     fraction.js: ^4.1.1
     normalize-range: ^0.1.2
-    picocolors: ^0.2.1
+    picocolors: ^1.0.0
     postcss-value-parser: ^4.1.0
   peerDependencies:
     postcss: ^8.1.0
   bin:
     autoprefixer: bin/autoprefixer
-  checksum: bbd835343f14de4aaa9246d2196374eaafa59f2f9de3070ac4f9d7c5a92901b8fd6d03b5b0b33ed2b33c971946a010a69dc3703005456774ced5d98bb0e275e0
+  checksum: 73fb8f7fa8d35485cb6197b37813607df78eecea0bb50335dc1d2f61a2ad57bb440fc2eb999102139ed3722e592835280276d0a1400719022ab675826ec88157
   languageName: node
   linkType: hard
 
@@ -288,7 +288,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browserslist@npm:^4.17.3":
+"browserslist@npm:^4.17.5":
   version: 4.17.5
   resolution: "browserslist@npm:4.17.5"
   dependencies:
@@ -350,10 +350,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001264, caniuse-lite@npm:^1.0.30001271":
-  version: 1.0.30001271
-  resolution: "caniuse-lite@npm:1.0.30001271"
-  checksum: 0d05504a96aea55246d3166a83d63f216aa04d0c9c726423c75e76b724f4d08fe29635a3aedfcf8f9ddb2aee756d5ad4f1683173936e5c6376850b6ab8b16c29
+"caniuse-lite@npm:^1.0.30001271, caniuse-lite@npm:^1.0.30001272":
+  version: 1.0.30001272
+  resolution: "caniuse-lite@npm:1.0.30001272"
+  checksum: 509401c4a990c06de9d7ba37bb93ac8d9bba423b5b4647bd11a5538b4bf516a02902a038625736c8e6714ec08b0fd0a9219467ba69ba15193bdd7813b69252a3
   languageName: node
   linkType: hard
 
@@ -595,9 +595,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.3.878":
-  version: 1.3.879
-  resolution: "electron-to-chromium@npm:1.3.879"
-  checksum: 318762538caa32372b9ff88fc3fa51b2ef077b432895f2050a9624b7a8fcf9aefbab290890dea777c147f196955bd1de3a8002205e606d21c90cd87b925e31de
+  version: 1.3.885
+  resolution: "electron-to-chromium@npm:1.3.885"
+  checksum: 5609c2b595e9ce0bd9e66d338f5f964e0ddd54eb1b94851cb262789f661738fd26cfbc9fd2bb122391085af5dfe25e62d862fdf0c44754766ee928a74a5a0999
   languageName: node
   linkType: hard
 
@@ -1473,13 +1473,6 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"picocolors@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "picocolors@npm:0.2.1"
-  checksum: 84da675558ed004c61a7fa7b0bcce6338c8e3ef1eadb43b5263059d1d745f4567464aa6aa603c506a82942a5a7dfda5bb023605a5f4c9888d7adc154845d579e
-  languageName: node
-  linkType: hard
-
 "picocolors@npm:^1.0.0":
   version: 1.0.0
   resolution: "picocolors@npm:1.0.0"
@@ -1913,8 +1906,8 @@ resolve@^1.20.0:
   linkType: hard
 
 "tailwindcss@npm:^2.2.17":
-  version: 2.2.17
-  resolution: "tailwindcss@npm:2.2.17"
+  version: 2.2.19
+  resolution: "tailwindcss@npm:2.2.19"
   dependencies:
     arg: ^5.0.1
     bytes: ^3.0.0
@@ -1954,7 +1947,7 @@ resolve@^1.20.0:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: 1e1e019c8952af013c9b02aad420f73ed13b4ef729d2aa4c86735a2cfcffb725060006827145edb5792f7361c646072e22f2e1af31faeef8beaec03bf3353800
+  checksum: 6de47bb0ecc3246e84e48684a368380b11e3e5c41fef23c6041db69e10bfd852eaa57a713b55b215fe95a761169b585908413a1efceb6d8f3d9643e414f73c8c
   languageName: node
   linkType: hard
 
