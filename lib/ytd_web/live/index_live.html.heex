@@ -61,25 +61,25 @@
             You have hit your target of
             <a class="link" href="#" id="edit-target" phx-click="edit-target">
               <%= @targets[@type].target %> <%= @targets[@type].unit %></a>!
-            <% @stats.on_target? -> %>
-              You are on track to hit your target of
-              <a class="link" href="#" id="edit-target" phx-click="edit-target">
-                <%= @targets[@type].target %> <%= @targets[@type].unit %>
-              </a>, as long as you average
-              <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
-              a week from now on.
-              <% true -> %>
-                To hit your target of
-                <a class="link" href="#" id="edit-target" phx-click="edit-target">
-                  <%= @targets[@type].target %> <%= @targets[@type].unit %>
-                </a>, you need to average
-                <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
-                a week from now on.
-              <% end %>
-            <% else %>
-              Why not
-              <a class="link" href="#" id="edit-target" phx-click="edit-target">set yourself a target</a>?
-            <% end %>
+          <% @stats.on_target? -> %>
+            You are on track to hit your target of
+            <a class="link" href="#" id="edit-target" phx-click="edit-target">
+              <%= @targets[@type].target %> <%= @targets[@type].unit %>
+            </a>, as long as you average
+            <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
+            a week from now on.
+          <% true -> %>
+            To hit your target of
+            <a class="link" href="#" id="edit-target" phx-click="edit-target">
+              <%= @targets[@type].target %> <%= @targets[@type].unit %>
+            </a>, you need to average
+            <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
+            a week from now on.
+        <% end %>
+      <% else %>
+        Why not
+        <a class="link" href="#" id="edit-target" phx-click="edit-target">set yourself a target</a>?
+      <% end %>
     </p>
   <% end %>
 <% end %>
