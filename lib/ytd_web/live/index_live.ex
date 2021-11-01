@@ -47,6 +47,32 @@ defmodule YTDWeb.IndexLive do
      )}
   end
 
+  @spec target_progress(%{atom() => any()}) :: Phoenix.LiveView.Rendered.t()
+  def target_progress(assigns) do
+    ~H"""
+    <%= cond do %>
+      <% @stats.completed? -> %>
+        You have hit your target of
+        <a class="link" href="#" id="edit-target" phx-click="edit-target">
+          <%= @target.target %> <%= @target.unit %></a>!
+      <% @stats.on_target? -> %>
+        You are on track to hit your target of
+        <a class="link" href="#" id="edit-target" phx-click="edit-target">
+          <%= @target.target %> <%= @target.unit %>
+        </a>, as long as you average
+        <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
+        a week from now on.
+      <% true -> %>
+        To hit your target of
+        <a class="link" href="#" id="edit-target" phx-click="edit-target">
+          <%= @target.target %> <%= @target.unit %>
+        </a>, you need to average
+        <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
+        a week from now on.
+    <% end %>
+    """
+  end
+
   @spec edit_target_modal(%{atom() => any()}) :: Phoenix.LiveView.Rendered.t()
   def edit_target_modal(assigns) do
     ~H"""
