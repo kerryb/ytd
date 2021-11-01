@@ -12,7 +12,9 @@ defmodule YTDWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_ytd_key",
-    signing_salt: "kFsSXZ68"
+    signing_salt: "kFsSXZ68",
+    # basically forever
+    max_age: 100 * 365 * 24 * 60 * 60
   ]
 
   socket("/socket", YTDWeb.UserSocket,
