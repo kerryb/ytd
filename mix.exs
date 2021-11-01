@@ -62,7 +62,7 @@ defmodule YTD.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:strava, "~> 1.0"},
       {:telemetry_metrics, "~> 0.6"},
-      {:telemetry_poller, "~> 0.5"},
+      {:telemetry_poller, "~> 1.0"},
       {:timex, "~> 3.6"}
     ]
   end
