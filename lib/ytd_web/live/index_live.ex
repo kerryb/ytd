@@ -44,8 +44,7 @@ defmodule YTDWeb.IndexLive do
      )}
   end
 
-  @spec target_progress(%{atom() => any()}) :: Phoenix.LiveView.Rendered.t()
-  def target_progress(assigns) do
+  defp target_progress(assigns) do
     ~H"""
     <%= cond do %>
       <% @stats.completed? -> %>
@@ -58,8 +57,7 @@ defmodule YTDWeb.IndexLive do
     """
   end
 
-  @spec target_hit(%{atom() => any()}) :: Phoenix.LiveView.Rendered.t()
-  def target_hit(assigns) do
+  defp target_hit(assigns) do
     ~H"""
     You have hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
@@ -67,8 +65,7 @@ defmodule YTDWeb.IndexLive do
     """
   end
 
-  @spec on_target(%{atom() => any()}) :: Phoenix.LiveView.Rendered.t()
-  def on_target(assigns) do
+  defp on_target(assigns) do
     ~H"""
     You are on track to hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
@@ -79,8 +76,7 @@ defmodule YTDWeb.IndexLive do
     """
   end
 
-  @spec behind_target(%{atom() => any()}) :: Phoenix.LiveView.Rendered.t()
-  def behind_target(assigns) do
+  defp behind_target(assigns) do
     ~H"""
     To hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
@@ -91,8 +87,7 @@ defmodule YTDWeb.IndexLive do
     """
   end
 
-  @spec edit_target_modal(%{atom() => any()}) :: Phoenix.LiveView.Rendered.t()
-  def edit_target_modal(assigns) do
+  defp edit_target_modal(assigns) do
     ~H"""
     <div class="p-4 fixed flex justify-center items-center inset-0 bg-black bg-opacity-75 z-50">
       <div class="max-w-xl max-h-full bg-strava-orange rounded shadow-lg overflow-auto p-4 mb-2">
