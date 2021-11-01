@@ -47,6 +47,27 @@ defmodule YTDWeb.IndexLive do
      )}
   end
 
+  @spec edit_target_modal(%{atom() => any()}) :: Phoenix.LiveView.Rendered.t()
+  def edit_target_modal(assigns) do
+    ~H"""
+    <div class="p-4 fixed flex justify-center items-center inset-0 bg-black bg-opacity-75 z-50">
+      <div class="max-w-xl max-h-full bg-strava-orange rounded shadow-lg overflow-auto p-4 mb-2">
+        <form id="edit-target-form" phx-submit="submit-target">
+          <div class="mb-4">
+            <label for="target"><%= @type %> target: </label>
+            <input autofocus="true" class="w-20 text-strava-orange pl-2 ml-2 rounded" id="target" name="target" type="number" value={if @target, do: @target.target, else: 0}>
+            <%= @unit %>
+          </div>
+          <div class="flex justify-between">
+            <button class="font-thin border rounded px-1 bg-strava-orange hover:bg-strava-orange-dark" phx-click="cancel-target" type="button">Cancel</button>
+            <button class="font-bold border-2 rounded px-1 bg-white text-strava-orange hover:bg-gray-200" type="submit">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    """
+  end
+
   defp get_activities(user) do
     pid = self()
     Task.start_link(fn -> :ok = activities_api().fetch_activities(pid, user) end)
