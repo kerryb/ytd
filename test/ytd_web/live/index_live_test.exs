@@ -440,7 +440,7 @@ defmodule YTDWeb.IndexLiveTest do
       html = view |> element("form#edit-target-form") |> render_submit(target: "1000")
 
       assert html =~
-               ~r/To hit your target of.*1000 miles.*, you need to average.*\d+\.\d miles.* a week from now on/s
+               ~r/To hit your target of.*1000 miles.*, you need to average.*\d+\.\d miles.*a week from now on/s
     end
 
     test "does not save the target if you press 'Cancel'", %{conn: conn} do
@@ -461,7 +461,7 @@ defmodule YTDWeb.IndexLiveTest do
       html = view |> element("form#edit-target-form") |> render_submit(target: "2000")
 
       assert html =~
-               ~r/To hit your target of.*2000 km.*, you need to average.*\d+\.\d km.* a week from now on/s
+               ~r/To hit your target of.*2000 km.*, you need to average.*\d+\.\d km.*a week from now on/s
     end
   end
 

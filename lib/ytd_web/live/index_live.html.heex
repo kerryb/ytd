@@ -22,7 +22,7 @@
 </form>
 <hr class="separator">
 <p class="font-thin text-2xl mt-2">Year to date (<span id="count"><%= @count %></span>): </p>
-<p class="text-5xl sm:text-7xl my-4 {@loading_class}">
+<p class={pulse_if_loading("text-5xl sm:text-7xl my-4", @info)}>
   <span class="font-extrabold" id="total"><%= @ytd %></span>
   <span class="font-thin"><%= @unit %></span>
 </p>
@@ -33,13 +33,13 @@
 <%= if @stats.projected_annual do %>
   <hr class="separator">
   <p class="font-thin text-2xl mt-2">Projected year total:</p>
-  <p class="text-5xl sm:text-7xl my-4 {@loading_class}">
+  <p class={pulse_if_loading("text-5xl sm:text-7xl my-4", @info)}>
     <span class="font-extrabold" id="projected-annual"><%= @stats.projected_annual %></span>
     <span class="font-thin"><%= @unit %></span>
   </p>
   <p class="font-thin text-2xl mb-2">
     <%= if @targets[@type] do %>
-      <.target_progress stats={@stats} unit={@unit} target={@targets[@type]} />
+      <.target_progress stats={@stats} unit={@unit} target={@targets[@type]} info={@info} />
     <% else %>
       Why not
       <a class="link" href="#" id="edit-target" phx-click="edit-target">set yourself a target</a>?

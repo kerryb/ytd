@@ -10,8 +10,6 @@ defmodule YTDWeb.IndexLive do
 
   require Logger
 
-  @loading_class "animate-pulse"
-
   @impl true
   def mount(_params, session, socket) do
     user = Users.get_user_from_athlete_id(session["athlete_id"])
@@ -41,7 +39,6 @@ defmodule YTDWeb.IndexLive do
            targets
          ),
        info: "Loading activities …",
-       loading_class: nil,
        latest: nil,
        edit_target?: false
      )}
@@ -52,24 +49,45 @@ defmodule YTDWeb.IndexLive do
     ~H"""
     <%= cond do %>
       <% @stats.completed? -> %>
-        You have hit your target of
-        <a class="link" href="#" id="edit-target" phx-click="edit-target">
-          <%= @target.target %> <%= @target.unit %></a>!
+        <.target_hit target={@target} />
       <% @stats.on_target? -> %>
-        You are on track to hit your target of
-        <a class="link" href="#" id="edit-target" phx-click="edit-target">
-          <%= @target.target %> <%= @target.unit %>
-        </a>, as long as you average
-        <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
-        a week from now on.
+        <.on_target target={@target} stats={@stats} unit={@unit} info={@info} />
       <% true -> %>
-        To hit your target of
-        <a class="link" href="#" id="edit-target" phx-click="edit-target">
-          <%= @target.target %> <%= @target.unit %>
-        </a>, you need to average
-        <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
-        a week from now on.
+        <.behind_target target={@target} stats={@stats} unit={@unit} info={@info} />
     <% end %>
+    """
+  end
+
+  @spec target_hit(%{atom() => any()}) :: Phoenix.LiveView.Rendered.t()
+  def target_hit(assigns) do
+    ~H"""
+    You have hit your target of
+    <a class="link" href="#" id="edit-target" phx-click="edit-target">
+      <%= @target.target %> <%= @target.unit %></a>!
+    """
+  end
+
+  @spec on_target(%{atom() => any()}) :: Phoenix.LiveView.Rendered.t()
+  def on_target(assigns) do
+    ~H"""
+    You are on track to hit your target of
+    <a class="link" href="#" id="edit-target" phx-click="edit-target">
+      <%= @target.target %> <%= @target.unit %>
+    </a>, as long as you average
+    <span class={pulse_if_loading("font-extrabold", @info)}><%= @stats.required_average %> <%= @unit %></span>
+    a week from now on.
+    """
+  end
+
+  @spec behind_target(%{atom() => any()}) :: Phoenix.LiveView.Rendered.t()
+  def behind_target(assigns) do
+    ~H"""
+    To hit your target of
+    <a class="link" href="#" id="edit-target" phx-click="edit-target">
+      <%= @target.target %> <%= @target.unit %>
+    </a>, you need to average
+    <span class={pulse_if_loading("font-extrabold", @info)}><%= @stats.required_average %> <%= @unit %></span>
+    a week from now on.
     """
   end
 
@@ -93,6 +111,9 @@ defmodule YTDWeb.IndexLive do
     </div>
     """
   end
+
+  defp pulse_if_loading(class, nil), do: class
+  defp pulse_if_loading(class, _info), do: "#{class} animate-pulse"
 
   defp get_activities(user) do
     pid = self()
@@ -149,15 +170,14 @@ defmodule YTDWeb.IndexLive do
        count: count,
        ytd: ytd,
        stats: stats,
-       info: "Reloading all activities …",
-       loading_class: @loading_class
+       info: "Reloading all activities …"
      )}
   end
 
   def handle_event("refresh", _params, socket) do
     pid = self()
     Task.start_link(fn -> :ok = activities_api().refresh_activities(pid, socket.assigns.user) end)
-    {:noreply, assign(socket, info: "Refreshing activities …", loading_class: @loading_class)}
+    {:noreply, assign(socket, info: "Refreshing activities …")}
   end
 
   def handle_event("edit-target", _params, socket) do
@@ -210,8 +230,7 @@ defmodule YTDWeb.IndexLive do
        types: types,
        ytd: ytd,
        stats: stats,
-       info: info,
-       loading_class: @loading_class
+       info: info
      )}
   end
 
@@ -241,14 +260,13 @@ defmodule YTDWeb.IndexLive do
        types: types,
        ytd: ytd,
        stats: stats,
-       info: info,
-       loading_class: @loading_class
+       info: info
      )}
   end
 
   def handle_info(:all_activities_fetched, socket) do
     latest = latest_activity_of_type(socket.assigns.activities, socket.assigns.type)
-    {:noreply, assign(socket, info: nil, loading_class: nil, latest: latest)}
+    {:noreply, assign(socket, info: nil, latest: latest)}
   end
 
   def handle_info({:name_updated, user}, socket) do
