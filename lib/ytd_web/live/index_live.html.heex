@@ -37,6 +37,33 @@
     <span class="font-extrabold" id="projected-annual"><%= @stats.projected_annual %></span>
     <span class="font-thin"><%= @unit %></span>
   </p>
+  <p class="font-thin text-2xl mb-2">
+    <%= if @targets[@type] do %>
+      <%= cond do %>
+        <% @stats.completed? -> %>
+          You have hit your target of
+          <a class="link" href="#" id="edit-target" phx-click="edit-target">
+            <%= @targets[@type].target %> <%= @targets[@type].unit %></a>!
+        <% @stats.on_target? -> %>
+          You are on track to hit your target of
+          <a class="link" href="#" id="edit-target" phx-click="edit-target">
+            <%= @targets[@type].target %> <%= @targets[@type].unit %>
+          </a>, as long as you average
+          <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
+          a week from now on.
+        <% true -> %>
+          To hit your target of
+          <a class="link" href="#" id="edit-target" phx-click="edit-target">
+            <%= @targets[@type].target %> <%= @targets[@type].unit %>
+          </a>, you need to average
+          <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
+          a week from now on.
+      <% end %>
+    <% else %>
+      Why not
+      <a class="link" href="#" id="edit-target" phx-click="edit-target">set yourself a target</a>?
+    <% end %>
+  </p>
   <%= if @edit_target? do %>
     <div class="p-4 fixed flex justify-center items-center inset-0 bg-black bg-opacity-75 z-50">
       <div class="max-w-xl max-h-full bg-strava-orange rounded shadow-lg overflow-auto p-4 mb-2">
@@ -53,34 +80,6 @@
         </form>
       </div>
     </div>
-  <% else %>
-    <p class="font-thin text-2xl mb-2">
-      <%= if @targets[@type] do %>
-        <%= cond do %>
-          <% @stats.completed? -> %>
-            You have hit your target of
-            <a class="link" href="#" id="edit-target" phx-click="edit-target">
-              <%= @targets[@type].target %> <%= @targets[@type].unit %></a>!
-          <% @stats.on_target? -> %>
-            You are on track to hit your target of
-            <a class="link" href="#" id="edit-target" phx-click="edit-target">
-              <%= @targets[@type].target %> <%= @targets[@type].unit %>
-            </a>, as long as you average
-            <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
-            a week from now on.
-          <% true -> %>
-            To hit your target of
-            <a class="link" href="#" id="edit-target" phx-click="edit-target">
-              <%= @targets[@type].target %> <%= @targets[@type].unit %>
-            </a>, you need to average
-            <span class="font-extrabold {@loading_class}"><%= @stats.required_average %> <%= @unit %></span>
-            a week from now on.
-        <% end %>
-      <% else %>
-        Why not
-        <a class="link" href="#" id="edit-target" phx-click="edit-target">set yourself a target</a>?
-      <% end %>
-    </p>
   <% end %>
 <% end %>
 <hr class="separator">
