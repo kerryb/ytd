@@ -45,10 +45,11 @@ COPY assets/.yarn/releases assets/.yarn/releases
 RUN cd assets && yarn install
 
 COPY assets assets
+COPY priv priv
+RUN rm -rf priv/static/assets
 RUN mix assets.deploy
 RUN mix phx.digest
 
-COPY priv priv
 COPY lib lib
 COPY VERSION VERSION
 RUN mix compile
