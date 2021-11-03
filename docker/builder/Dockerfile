@@ -37,20 +37,26 @@ ENV MIX_ENV=prod
 
 COPY mix.exs mix.lock ./
 COPY config config
-RUN mix deps.get
+RUN mix deps.get --only prod
 RUN mix deps.compile
 
-COPY assets/package.json assets/yarn.lock assets/.yarnrc.yml assets/
+COPY assets/.yarnrc.yml assets/.yarnrc
+COPY assets/css assets/css
+COPY assets/js assets/js
+COPY assets/package.json assets/package.json
+COPY assets/postcss.config.js assets/postcss.config.js
+COPY assets/tailwind.config.js assets/tailwind.config.js
+COPY assets/vendor assets/vendor
+COPY assets/yarn.lock assets/yarn.lock
 COPY assets/.yarn/releases assets/.yarn/releases
 RUN cd assets && yarn install
 
-COPY assets assets
-COPY priv priv
-RUN rm -rf priv/static/assets
 RUN mix assets.deploy
 RUN mix phx.digest
 
 COPY lib lib
+copy priv/repo/migrations priv/repo/migrations
+COPY priv/bin priv/bin
 COPY VERSION VERSION
 RUN mix compile
 

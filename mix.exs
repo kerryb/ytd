@@ -84,7 +84,6 @@ defmodule YTD.MixProject do
       "assets.deploy": [
         "cmd --cd assets yarn run deploy",
         "esbuild default --minify",
-        "cmd --cd assets npx tailwindcss --input=css/app.css --output=../priv/static/assets/app.css --postcss",
         "phx.digest"
       ]
     ]
