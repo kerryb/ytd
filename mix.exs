@@ -82,7 +82,7 @@ defmodule YTD.MixProject do
       "ecto.rollback": ["ecto.rollback", "ecto.dump"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.deploy": [
-        "cmd --cd assets yarn run deploy",
+        "cmd --cd assets npm run deploy",
         "esbuild default --minify",
         "phx.digest"
       ]
