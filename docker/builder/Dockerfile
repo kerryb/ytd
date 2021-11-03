@@ -36,7 +36,6 @@ RUN mix local.hex --force \
 ENV MIX_ENV=prod
 
 COPY mix.exs mix.lock ./
-COPY config config
 RUN mix deps.get --only prod
 RUN mix deps.compile
 
@@ -54,6 +53,7 @@ RUN cd assets && yarn install
 RUN mix assets.deploy
 RUN mix phx.digest
 
+COPY config config
 COPY lib lib
 copy priv/repo/migrations priv/repo/migrations
 COPY priv/bin priv/bin
