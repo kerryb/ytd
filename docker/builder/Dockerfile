@@ -49,8 +49,7 @@ RUN cd assets && npm install
 
 COPY lib lib
 COPY config config
-copy priv/repo/migrations priv/repo/migrations
-COPY priv/bin priv/bin
+copy priv priv
 COPY VERSION VERSION
 COPY rel rel
 
