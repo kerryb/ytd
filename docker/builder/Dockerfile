@@ -38,18 +38,14 @@ COPY mix.exs mix.lock ./
 RUN mix deps.get --only prod
 RUN mix deps.compile
 
-COPY assets/css assets/css
-COPY assets/js assets/js
 COPY assets/package.json assets/package.json
-COPY assets/postcss.config.js assets/postcss.config.js
-COPY assets/tailwind.config.js assets/tailwind.config.js
-COPY assets/vendor assets/vendor
 COPY assets/package-lock.json assets/package-lock.json
 RUN cd assets && npm install
 
-COPY lib lib
+COPY assets assets
 COPY config config
-copy priv priv
+COPY lib lib
+COPY priv priv
 COPY VERSION VERSION
 COPY rel rel
 
