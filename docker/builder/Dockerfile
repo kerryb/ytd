@@ -10,9 +10,11 @@ RUN set -xe \
   && yum install -y gcc-c++ git make unzip
 
 RUN set -xe \
-  && curl -sL https://rpm.nodesource.com/setup_12.x | bash - \
+  && curl -sL https://rpm.nodesource.com/setup_17.x | bash - \
   && yum install -y nodejs \
-  && npm install --global yarn
+
+RUN mkdir /app
+WORKDIR /app
 
 COPY .tool-versions ./
 
@@ -27,9 +29,6 @@ RUN set -xe \
   && unzip -d /usr/local elixir-precompiled.zip \
   && rm elixir-precompiled.zip
 
-RUN mkdir /app
-WORKDIR /app
-
 RUN mix local.hex --force \
   && mix local.rebar --force
 
@@ -39,28 +38,28 @@ COPY mix.exs mix.lock ./
 RUN mix deps.get --only prod
 RUN mix deps.compile
 
-COPY assets/.yarnrc.yml assets/.yarnrc
 COPY assets/css assets/css
 COPY assets/js assets/js
 COPY assets/package.json assets/package.json
 COPY assets/postcss.config.js assets/postcss.config.js
 COPY assets/tailwind.config.js assets/tailwind.config.js
 COPY assets/vendor assets/vendor
-COPY assets/yarn.lock assets/yarn.lock
-COPY assets/.yarn/releases assets/.yarn/releases
-RUN cd assets && yarn install
+COPY assets/package-lock.json assets/package-lock.json
+RUN cd assets && npm install
 
-RUN mix assets.deploy
-RUN mix phx.digest
-
-COPY config config
 COPY lib lib
+COPY config config
 copy priv/repo/migrations priv/repo/migrations
 COPY priv/bin priv/bin
 COPY VERSION VERSION
+COPY rel rel
+
 RUN mix compile
 
-COPY rel rel
+RUN cd assets && npx postcss css/app.css -o ../priv/static/assets/app.css
+RUN mix esbuild default --minify
+RUN mix phx.digest
+
 RUN set -xe \
   && rm -rf _build/prod/rel/ytd/releases/* \
   && mix release

@@ -3,7 +3,7 @@ all: style compile dialyzer test docs
 setup:
 	mix deps.get
 	mix ecto.setup
-	cd assets && yarn install
+	cd assets && npm install
 clean:
 	mix clean
 	rm -rf priv/static/assets/*
@@ -22,7 +22,7 @@ docs:
 	mix docs
 update-deps:
 	mix deps.update --all
-	cd assets && rm yarn.lock && yarn install
+	cd assets && npm update
 release:
 	rm -f ytd-*.gz
 	docker build --tag=ytd-release -f docker/builder/Dockerfile .

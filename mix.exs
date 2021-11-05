@@ -80,12 +80,7 @@ defmodule YTD.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       "ecto.migrate": ["ecto.migrate", "ecto.dump"],
       "ecto.rollback": ["ecto.rollback", "ecto.dump"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.deploy": [
-        "cmd --cd assets npm run deploy",
-        "esbuild default --minify",
-        "phx.digest"
-      ]
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]
   end
 
