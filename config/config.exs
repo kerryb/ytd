@@ -8,6 +8,7 @@
 use Mix.Config
 
 config :ytd,
+  namespace: YTD,
   ecto_repos: [YTD.Repo],
   env: Mix.env(),
   activities_api: YTD.Activities,
