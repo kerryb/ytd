@@ -1,5 +1,5 @@
 .PHONY: clean deploy dialyzer setup style test unit-test update-deps
-all: style compile dialyzer test docs
+all: clean style compile dialyzer test docs
 setup:
 	mix deps.get
 	mix ecto.setup
