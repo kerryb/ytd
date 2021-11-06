@@ -16,6 +16,7 @@ defmodule YTDWeb.Router do
     pipe_through(:browser)
 
     live("/", IndexLive, :index)
+    live("/:activity_type", IndexLive, :index)
   end
 
   # Enables LiveDashboard only for development

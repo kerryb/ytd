@@ -287,6 +287,8 @@ defmodule YTDWeb.IndexLiveTest do
       send(view.pid, {:existing_activities, activities})
       assert has_element?(view, "#total", "3.1")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
+      path = assert_patch(view)
+      assert path == "/Ride"
       assert has_element?(view, "#total", "6.2")
     end
 

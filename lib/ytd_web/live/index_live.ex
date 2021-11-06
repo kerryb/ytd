@@ -7,6 +7,9 @@ defmodule YTDWeb.IndexLive do
   use YTDWeb, :live_view
 
   alias YTD.{Stats, Users, Util}
+  alias YTDWeb.Endpoint
+  # credo:disable-for-next-line Credo.Check.Readability.AliasAs
+  alias YTDWeb.Router.Helpers, as: Routes
 
   require Logger
 
@@ -121,7 +124,7 @@ defmodule YTDWeb.IndexLive do
   end
 
   @impl true
-  def handle_event("select", %{"_target" => ["type"], "type" => type}, socket) do
+  def handle_params(%{"activity_type" => type}, _uri, socket) do
     ytd = total_distance(socket.assigns.activities, type, socket.assigns.unit)
     count = activity_count(socket.assigns.activities, type)
 
@@ -131,6 +134,15 @@ defmodule YTDWeb.IndexLive do
     latest = latest_activity_of_type(socket.assigns.activities, type)
     Users.save_activity_type(socket.assigns.user, type)
     {:noreply, assign(socket, type: type, ytd: ytd, count: count, stats: stats, latest: latest)}
+  end
+
+  def handle_params(_params, _uri, socket) do
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("select", %{"_target" => ["type"], "type" => type}, socket) do
+    {:noreply, push_patch(socket, to: Routes.index_path(Endpoint, :index, type))}
   end
 
   def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket) do
