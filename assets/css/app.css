@@ -14,4 +14,14 @@
   .link {
     @apply border-b border-dotted font-extrabold dark:border-strava-orange;
   }
+
+  .tabs {
+    @apply grid grid-flow-col auto-cols-auto my-1 border border-b-0;
+  }
+
+  .tab {
+  }
+
+  .tab-active {
+  }
 }
