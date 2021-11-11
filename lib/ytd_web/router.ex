@@ -12,11 +12,19 @@ defmodule YTDWeb.Router do
     plug(YTDWeb.AuthPlug)
   end
 
+  pipeline :webhook do
+    plug :accepts, ["json"]
+  end
+
   scope "/", YTDWeb do
     pipe_through(:browser)
 
     live("/", IndexLive, :index)
     live("/:activity_type", IndexLive, :index)
+  end
+
+  scope "/webhooks", YTDWeb do
+    get "/events", EventsController, :validate
   end
 
   # Enables LiveDashboard only for development
