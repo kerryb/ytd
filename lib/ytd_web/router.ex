@@ -25,6 +25,7 @@ defmodule YTDWeb.Router do
 
   scope "/webhooks", YTDWeb do
     get "/events", EventsController, :validate
+    post "/events", EventsController, :event
   end
 
   # Enables LiveDashboard only for development

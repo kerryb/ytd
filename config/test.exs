@@ -25,4 +25,4 @@ config :ytd,
 config :strava, redirect_uri: "http://localhost:4001"
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, level: :info
