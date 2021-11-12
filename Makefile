@@ -1,5 +1,5 @@
-.PHONY: clean deploy dialyzer setup style test unit-test update-deps
-all: clean style compile dialyzer test docs
+.PHONY: bumbailiff clean deploy dialyzer setup style test unit-test update-deps
+all: clean style compile dialyzer test docs bumbailiff
 setup:
 	mix deps.get
 	mix ecto.setup
@@ -12,6 +12,8 @@ deep-clean:
 style:
 	mix format --check-formatted
 	mix credo
+bumbailiff:
+	./bumbailiff
 compile:
 	mix compile --warnings-as-errors
 dialyzer:
