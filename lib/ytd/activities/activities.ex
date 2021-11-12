@@ -34,9 +34,8 @@ defmodule YTD.Activities do
 
   defp stream_activities_from_strava(pid, user, timestamp) do
     strava_api().stream_activities_since(user, timestamp, fn activity ->
-      save_activity(user, activity)
-      # TODO: we should probably send the YTD.Activities.Activity
-      send(pid, {:new_activity, activity})
+      saved_activity = save_activity(user, activity)
+      send(pid, {:new_activity, saved_activity})
     end)
 
     send(pid, :all_activities_fetched)

@@ -97,7 +97,8 @@ defmodule YTD.ActivitiesTest do
       end)
 
       Activities.fetch_activities(self(), user)
-      assert_received {:new_activity, ^activity}
+      assert_received {:new_activity, %{id: id}}
+      assert [%{id: ^id}] = Repo.all(Activity)
     end
 
     test "sends a message when all activities have been received" do
