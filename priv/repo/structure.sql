@@ -103,6 +103,37 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: subscription; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.subscription (
+    id bigint NOT NULL,
+    strava_id numeric,
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
+);
+
+
+--
+-- Name: subscription_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.subscription_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: subscription_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.subscription_id_seq OWNED BY public.subscription.id;
+
+
+--
 -- Name: targets; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -144,6 +175,13 @@ ALTER TABLE ONLY public.activities ALTER COLUMN id SET DEFAULT nextval('public.a
 
 
 --
+-- Name: subscription id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subscription ALTER COLUMN id SET DEFAULT nextval('public.subscription_id_seq'::regclass);
+
+
+--
 -- Name: targets id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -182,6 +220,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: subscription subscription_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subscription
+    ADD CONSTRAINT subscription_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: targets targets_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -194,6 +240,13 @@ ALTER TABLE ONLY public.targets
 --
 
 CREATE UNIQUE INDEX activities_strava_id_index ON public.activities USING btree (strava_id);
+
+
+--
+-- Name: subscription_strava_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX subscription_strava_id_index ON public.subscription USING btree (strava_id);
 
 
 --
@@ -231,3 +284,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20200817213538);
 INSERT INTO public."schema_migrations" (version) VALUES (20210131134621);
 INSERT INTO public."schema_migrations" (version) VALUES (20210303204557);
 INSERT INTO public."schema_migrations" (version) VALUES (20210328202433);
+INSERT INTO public."schema_migrations" (version) VALUES (20211112221650);
