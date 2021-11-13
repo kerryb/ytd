@@ -10,7 +10,7 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :ytd, YTDWeb.Endpoint,
-  url: [host: "ytd.kerryb.org", port: 443],
+  url: [host: "ytd.kerryb.org", scheme: "https"],
   http: [port: 4000],
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true,
