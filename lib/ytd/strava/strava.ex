@@ -57,7 +57,7 @@ defmodule YTD.Strava do
             [
               client_id: Application.get_env(:strava, :client_id),
               client_secret: Application.get_env(:strava, :client_secret),
-              callback_url: Routes.events_path(Endpoint, :validate),
+              callback_url: Routes.events_url(Endpoint, :validate),
               verify_token: "ytd"
             ]},
            with_body: true
