@@ -21,7 +21,9 @@ defmodule YTDWeb do
   and import those modules here.
   """
 
-  use Boundary, deps: [Phoenix, YTD, YTD.{Stats, Users, Util}], exports: [Endpoint]
+  use Boundary,
+    deps: [Phoenix, YTD, YTD.{Stats, Users, Util}],
+    exports: [Endpoint, Router.Helpers]
 
   def controller do
     quote do

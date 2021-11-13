@@ -15,4 +15,5 @@ defmodule YTD.Strava.API do
               callback :: (SummaryActivity -> any())
             ) :: :ok
   @callback get_athlete_details(user :: User.t()) :: {:ok, DetailedAthlete.t()} | {:error, any()}
+  @callback subscribe_to_events :: {:ok, integer()} | {:error, any()}
 end

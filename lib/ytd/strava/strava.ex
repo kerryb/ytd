@@ -6,10 +6,13 @@ defmodule YTD.Strava do
 
   @behaviour YTD.Strava.API
 
-  use Boundary, top_level?: true, deps: [Strava, YTD.Users.Tokens]
+  use Boundary, top_level?: true, deps: [Strava, YTD.Users.Tokens, YTDWeb]
 
   alias Strava.{Activities, Athletes, Auth, Client}
   alias YTD.Strava.API
+  alias YTDWeb.Endpoint
+  # credo:disable-for-next-line Credo.Check.Readability.AliasAs
+  alias YTDWeb.Router.Helpers, as: Routes
 
   @impl API
   def authorize_url do
@@ -36,6 +39,32 @@ defmodule YTD.Strava do
   @impl API
   def get_athlete_details(user) do
     user |> client() |> Athletes.get_logged_in_athlete()
+  end
+
+  @impl API
+  def subscribe_to_events do
+    case request_subscription() do
+      {:ok, %{"id" => id}} -> {:ok, id}
+      error -> error
+    end
+  end
+
+  defp request_subscription do
+    case :hackney.post(
+           "https://www.strava.com/api/v3/push_subscriptions",
+           [],
+           {:form,
+            [
+              client_id: Application.get_env(:strava, :client_id),
+              client_secret: Application.get_env(:strava, :client_secret),
+              callback_url: Routes.events_path(Endpoint, :validate),
+              verify_token: "ytd"
+            ]},
+           with_body: true
+         ) do
+      {:ok, 200, _, body} -> Jason.decode(body)
+      error -> error
+    end
   end
 
   defp client(user) do
