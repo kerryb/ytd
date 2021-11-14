@@ -72,8 +72,7 @@ defmodule YTDWeb.IndexLive do
     ~H"""
     You are on track to hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
-      <%= @target.target %> <%= @target.unit %>
-    </a>, as long as you average
+      <%= @target.target %> <%= @target.unit %></a>, as long as you average
     <span class={pulse_if_loading("font-extrabold", @info)}><%= @stats.required_average %> <%= @unit %></span>
     a week from now on.
     """
@@ -83,8 +82,7 @@ defmodule YTDWeb.IndexLive do
     ~H"""
     To hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
-      <%= @target.target %> <%= @target.unit %>
-    </a>, you need to average
+      <%= @target.target %> <%= @target.unit %></a>, you need to average
     <span class={pulse_if_loading("font-extrabold", @info)}><%= @stats.required_average %> <%= @unit %></span>
     a week from now on.
     """
