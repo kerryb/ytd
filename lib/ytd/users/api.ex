@@ -23,5 +23,5 @@ defmodule YTD.Users.API do
               target :: String.t(),
               unit :: String.t()
             ) :: :ok
-  @callback update_name(pid :: pid(), user :: User.t()) :: :ok
+  @callback update_name(User.t()) :: :ok
 end

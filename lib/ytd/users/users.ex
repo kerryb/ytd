@@ -7,6 +7,7 @@ defmodule YTD.Users do
   @behaviour YTD.Users.API
   use Boundary, top_level?: true, deps: [Ecto, YTD.Repo], exports: [UpdateTokens]
 
+  alias Phoenix.PubSub
   alias YTD.Repo
 
   alias YTD.Users.{
@@ -68,13 +69,13 @@ defmodule YTD.Users do
   end
 
   @impl API
-  def update_name(pid, user) do
+  def update_name(user) do
     {:ok, athlete} = strava_api().get_athlete_details(user)
     name = "#{athlete.firstname} #{athlete.lastname}"
 
     unless user.name == name do
       {:ok, %{update_name: updated_user}} = user |> UpdateName.call(name) |> Repo.transaction()
-      send(pid, {:name_updated, updated_user})
+      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:name_updated, updated_user})
     end
 
     :ok

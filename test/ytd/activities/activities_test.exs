@@ -7,30 +7,34 @@ defmodule YTD.ActivitiesTest do
   import Ecto.Query
   import Mox
 
+  alias Phoenix.PubSub
   alias Strava.SummaryActivity
   alias YTD.{Activities, Repo}
   alias YTD.Activities.Activity
 
   defp stub_strava(_context) do
-    stub(StravaMock, :stream_activities_since, fn _pid, _user, _timestamp -> :ok end)
+    stub(StravaMock, :stream_activities_since, fn _user, _timestamp, _callback -> :ok end)
     :ok
+  end
+
+  setup do
+    user = insert(:user)
+    PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
+    {:ok, user: user}
   end
 
   describe "YTD.Activities.fetch_activities/2" do
     setup :stub_strava
     setup :verify_on_exit!
 
-    test "sends existing activities from the database" do
-      user = insert(:user)
+    test "sends existing activities from the database", %{user: user} do
       activities = [insert(:activity, user: user), insert(:activity, user: user)]
-      Activities.fetch_activities(self(), user)
+      Activities.fetch_activities(user)
       assert_receive {:existing_activities, broadcast_activities}
       assert_lists_equal(activities, broadcast_activities, &assert_structs_equal(&1, &2, [:id]))
     end
 
-    test "requests new activities from Strava" do
-      user = insert(:user)
-      insert(:activity, user: user, start_date: ~U[2021-01-19 14:00:00Z])
+    test "requests new activities from Strava", %{user: user} do
       insert(:activity, user: user, start_date: ~U[2021-01-20 21:00:00Z])
 
       expect(StravaMock, :stream_activities_since, fn ^user,
@@ -39,23 +43,20 @@ defmodule YTD.ActivitiesTest do
         :ok
       end)
 
-      Activities.fetch_activities(self(), user)
+      Activities.fetch_activities(user)
     end
 
-    test "requests all activities for the year if there are no saved activities" do
-      user = insert(:user)
+    test "requests all activities for the year if there are no saved activities", %{user: user} do
       beginning_of_year = Timex.beginning_of_year(DateTime.utc_now())
 
       expect(StravaMock, :stream_activities_since, fn ^user, ^beginning_of_year, _callback ->
         :ok
       end)
 
-      Activities.fetch_activities(self(), user)
+      Activities.fetch_activities(user)
     end
 
-    test "saves activities when it receives a callback" do
-      user = insert(:user)
-
+    test "saves activities when it receives a callback", %{user: user} do
       stub(StravaMock, :stream_activities_since, fn ^user, _timestamp, callback ->
         callback.(%SummaryActivity{
           id: 1234,
@@ -68,7 +69,7 @@ defmodule YTD.ActivitiesTest do
         :ok
       end)
 
-      Activities.fetch_activities(self(), user)
+      Activities.fetch_activities(user)
 
       assert_struct_in_list(
         %Activity{user_id: user.id, strava_id: Decimal.new(1234)},
@@ -80,9 +81,7 @@ defmodule YTD.ActivitiesTest do
       )
     end
 
-    test "sends a message when it receives a callback" do
-      user = insert(:user)
-
+    test "sends a message when it receives a callback", %{user: user} do
       activity = %SummaryActivity{
         id: 1234,
         type: "Run",
@@ -96,14 +95,13 @@ defmodule YTD.ActivitiesTest do
         :ok
       end)
 
-      Activities.fetch_activities(self(), user)
+      Activities.fetch_activities(user)
       assert_received {:new_activity, %{id: id}}
       assert [%{id: ^id}] = Repo.all(Activity)
     end
 
-    test "sends a message when all activities have been received" do
-      user = insert(:user)
-      Activities.fetch_activities(self(), user)
+    test "sends a message when all activities have been received", %{user: user} do
+      Activities.fetch_activities(user)
       assert_received :all_activities_fetched
     end
   end
@@ -111,8 +109,7 @@ defmodule YTD.ActivitiesTest do
   describe "YTD.Activities.refresh_activities/2" do
     setup :verify_on_exit!
 
-    test "requests new activities from Strava" do
-      user = insert(:user)
+    test "requests new activities from Strava", %{user: user} do
       insert(:activity, user: user, start_date: ~U[2021-01-19 14:00:00Z])
       insert(:activity, user: user, start_date: ~U[2021-01-20 21:00:00Z])
 
@@ -122,7 +119,7 @@ defmodule YTD.ActivitiesTest do
         :ok
       end)
 
-      Activities.refresh_activities(self(), user)
+      Activities.refresh_activities(user)
     end
   end
 
@@ -130,31 +127,27 @@ defmodule YTD.ActivitiesTest do
     setup :stub_strava
     setup :verify_on_exit!
 
-    test "deletes all the user's activities" do
-      user = insert(:user)
+    test "deletes all the user's activities", %{user: user} do
       another_user = insert(:user)
       insert(:activity, user: user)
       other_user_activity = insert(:activity, user: another_user)
-      Activities.reload_activities(self(), user)
+      Activities.reload_activities(user)
       assert Repo.all(from a in Activity, select: a.id) == [other_user_activity.id]
     end
 
-    test "requests all activities for the year" do
-      user = insert(:user)
+    test "requests all activities for the year", %{user: user} do
       beginning_of_year = Timex.beginning_of_year(DateTime.utc_now())
 
       expect(StravaMock, :stream_activities_since, fn ^user, ^beginning_of_year, _callback ->
         :ok
       end)
 
-      Activities.reload_activities(self(), user)
+      Activities.reload_activities(user)
     end
   end
 
   describe "YTD.Activities.save_activity/2" do
-    setup do
-      user = insert(:user)
-
+    setup %{user: user} do
       activity = %SummaryActivity{
         name: "Morning run",
         type: "Run",

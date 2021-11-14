@@ -3,6 +3,7 @@ defmodule YTD.UsersTest do
 
   import Mox
 
+  alias Phoenix.PubSub
   alias Strava.DetailedAthlete
   alias YTD.{Repo, Users}
   alias YTD.Strava.Tokens
@@ -82,9 +83,10 @@ defmodule YTD.UsersTest do
     end
   end
 
-  describe "YTD.Users.update_name/2" do
+  describe "YTD.Users.update_name/1" do
     setup do
       user = insert(:user, name: "Fred Bloggs")
+      PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
       {:ok, user: user}
     end
 
@@ -94,21 +96,21 @@ defmodule YTD.UsersTest do
     test "sends a :name_updated message if the name has changed", %{user: user} do
       athlete = %DetailedAthlete{firstname: "Freddy", lastname: "Bloggs"}
       stub(StravaMock, :get_athlete_details, fn ^user -> {:ok, athlete} end)
-      :ok = Users.update_name(self(), user)
+      :ok = Users.update_name(user)
       assert_receive {:name_updated, %User{name: "Freddy Bloggs"}}
     end
 
     test "doesn't broadcast a name_updated message if the name has not changed", %{user: user} do
       athlete = %DetailedAthlete{firstname: "Fred", lastname: "Bloggs"}
       stub(StravaMock, :get_athlete_details, fn ^user -> {:ok, athlete} end)
-      :ok = Users.update_name(self(), user)
+      :ok = Users.update_name(user)
       refute_receive {:name_updated, _}
     end
 
     test "updates the user if the name has changed", %{user: user} do
       athlete = %DetailedAthlete{firstname: "Freddy", lastname: "Bloggs"}
       stub(StravaMock, :get_athlete_details, fn ^user -> {:ok, athlete} end)
-      :ok = Users.update_name(self(), user)
+      :ok = Users.update_name(user)
       updated_user = Repo.get(User, user.id)
       assert updated_user.name == "Freddy Bloggs"
     end

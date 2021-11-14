@@ -6,6 +6,7 @@ defmodule YTDWeb.IndexLive do
 
   use YTDWeb, :live_view
 
+  alias Phoenix.PubSub
   alias YTD.{Stats, Users, Util}
   alias YTDWeb.Endpoint
   # credo:disable-for-next-line Credo.Check.Readability.AliasAs
@@ -19,6 +20,7 @@ defmodule YTDWeb.IndexLive do
     targets = Users.get_targets(user)
 
     if connected?(socket) do
+      PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
       get_activities(user)
       update_name(user)
     end
@@ -112,13 +114,11 @@ defmodule YTDWeb.IndexLive do
   defp pulse_if_loading(class, _info), do: "#{class} animate-pulse"
 
   defp get_activities(user) do
-    pid = self()
-    Task.start_link(fn -> :ok = activities_api().fetch_activities(pid, user) end)
+    Task.start_link(fn -> :ok = activities_api().fetch_activities(user) end)
   end
 
   defp update_name(user) do
-    pid = self()
-    Task.start_link(fn -> :ok = users_api().update_name(pid, user) end)
+    Task.start_link(fn -> :ok = users_api().update_name(user) end)
   end
 
   @impl true
@@ -165,8 +165,7 @@ defmodule YTDWeb.IndexLive do
         socket.assigns.targets
       )
 
-    pid = self()
-    Task.start_link(fn -> :ok = activities_api().reload_activities(pid, socket.assigns.user) end)
+    Task.start_link(fn -> :ok = activities_api().reload_activities(socket.assigns.user) end)
 
     {:noreply,
      assign(socket,
@@ -180,8 +179,7 @@ defmodule YTDWeb.IndexLive do
   end
 
   def handle_event("refresh", _params, socket) do
-    pid = self()
-    Task.start_link(fn -> :ok = activities_api().refresh_activities(pid, socket.assigns.user) end)
+    Task.start_link(fn -> :ok = activities_api().refresh_activities(socket.assigns.user) end)
     {:noreply, assign(socket, info: "Refreshing activities …")}
   end
 

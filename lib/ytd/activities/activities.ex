@@ -9,36 +9,42 @@ defmodule YTD.Activities do
 
   import Ecto.Query
 
+  alias Phoenix.PubSub
   alias YTD.Activities.{Activity, API}
   alias YTD.Repo
 
   @impl API
-  def fetch_activities(pid, user) do
-    send(pid, {:existing_activities, get_existing_activities(user)})
-    stream_activities_from_strava(pid, user, latest_activity_or_beginning_of_year(user))
+  def fetch_activities(user) do
+    PubSub.broadcast!(
+      :ytd,
+      "athlete:#{user.athlete_id}",
+      {:existing_activities, get_existing_activities(user)}
+    )
+
+    stream_activities_from_strava(user, latest_activity_or_beginning_of_year(user))
     :ok
   end
 
   @impl API
-  def refresh_activities(pid, user) do
-    stream_activities_from_strava(pid, user, latest_activity_or_beginning_of_year(user))
+  def refresh_activities(user) do
+    stream_activities_from_strava(user, latest_activity_or_beginning_of_year(user))
     :ok
   end
 
   @impl API
-  def reload_activities(pid, user) do
+  def reload_activities(user) do
     delete_all_activities(user)
-    stream_activities_from_strava(pid, user, Timex.beginning_of_year(DateTime.utc_now()))
+    stream_activities_from_strava(user, Timex.beginning_of_year(DateTime.utc_now()))
     :ok
   end
 
-  defp stream_activities_from_strava(pid, user, timestamp) do
+  defp stream_activities_from_strava(user, timestamp) do
     strava_api().stream_activities_since(user, timestamp, fn activity ->
       saved_activity = save_activity(user, activity)
-      send(pid, {:new_activity, saved_activity})
+      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:new_activity, saved_activity})
     end)
 
-    send(pid, :all_activities_fetched)
+    PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", :all_activities_fetched)
   end
 
   defp latest_activity_or_beginning_of_year(user) do
