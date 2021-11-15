@@ -25,7 +25,7 @@ defmodule YTD.MixProject do
   def application do
     [
       mod: {YTD.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :os_mon]
     ]
   end
 
@@ -42,6 +42,7 @@ defmodule YTD.MixProject do
       {:boundary, "~> 0.8", runtime: false},
       {:credo, "~> 1.4", only: [:dev, :test]},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
+      {:ecto_psql_extras, "~> 0.6"},
       {:ecto_sql, "~> 3.4"},
       {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
       {:ex_doc, "~> 0.21", only: :dev},
