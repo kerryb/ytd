@@ -27,7 +27,7 @@ SET default_table_access_method = heap;
 CREATE TABLE public.activities (
     id bigint NOT NULL,
     user_id bigint,
-    strava_id numeric,
+    strava_id bigint,
     type text,
     name text,
     distance double precision,
@@ -62,7 +62,7 @@ ALTER SEQUENCE public.activities_id_seq OWNED BY public.activities.id;
 
 CREATE TABLE public.users (
     id bigint NOT NULL,
-    athlete_id integer,
+    athlete_id bigint,
     access_token text,
     inserted_at timestamp(0) without time zone NOT NULL,
     updated_at timestamp(0) without time zone NOT NULL,
@@ -108,7 +108,7 @@ CREATE TABLE public.schema_migrations (
 
 CREATE TABLE public.subscription (
     id bigint NOT NULL,
-    strava_id numeric,
+    strava_id bigint,
     inserted_at timestamp(0) without time zone NOT NULL,
     updated_at timestamp(0) without time zone NOT NULL
 );
@@ -278,3 +278,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20210131134621);
 INSERT INTO public."schema_migrations" (version) VALUES (20210303204557);
 INSERT INTO public."schema_migrations" (version) VALUES (20210328202433);
 INSERT INTO public."schema_migrations" (version) VALUES (20211112221650);
+INSERT INTO public."schema_migrations" (version) VALUES (20211115113803);

@@ -11,7 +11,7 @@ defmodule YTD.Activities.Activity do
   @type t :: %__MODULE__{}
 
   schema "activities" do
-    field :strava_id, :decimal
+    field :strava_id, :integer
     field :type, :string
     field :name, :string
     field :distance, :float

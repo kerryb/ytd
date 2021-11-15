@@ -11,7 +11,7 @@ defmodule YTD.SubscriptionsTest do
       stub(StravaMock, :subscribe_to_events, fn -> {:ok, 1234} end)
       {:ok, _} = Subscriptions.subscribe()
       [subscription] = Repo.all(Subscription)
-      assert subscription.strava_id == Decimal.new(1234)
+      assert subscription.strava_id == 1234
     end
 
     test "returns the error on failure" do

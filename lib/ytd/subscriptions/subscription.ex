@@ -8,7 +8,7 @@ defmodule YTD.Subscriptions.Subscription do
   @type t :: %__MODULE__{}
 
   schema "subscription" do
-    field :strava_id, :decimal
+    field :strava_id, :integer
     timestamps()
   end
 end

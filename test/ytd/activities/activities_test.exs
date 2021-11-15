@@ -72,7 +72,7 @@ defmodule YTD.ActivitiesTest do
       Activities.fetch_activities(user)
 
       assert_struct_in_list(
-        %Activity{user_id: user.id, strava_id: Decimal.new(1234)},
+        %Activity{user_id: user.id, strava_id: 1234},
         Repo.all(Activity),
         [
           :user_id,
