@@ -49,6 +49,11 @@ defmodule YTD.Strava do
     end
   end
 
+  @impl API
+  def get_activity(user, activity_id) do
+    user |> client() |> Activities.get_activity_by_id(activity_id)
+  end
+
   defp request_subscription do
     case :hackney.post(
            "https://www.strava.com/api/v3/push_subscriptions",

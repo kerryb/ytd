@@ -5,7 +5,7 @@ defmodule YTD.Users do
   """
 
   @behaviour YTD.Users.API
-  use Boundary, top_level?: true, deps: [Ecto, YTD.Repo], exports: [UpdateTokens]
+  use Boundary, top_level?: true, deps: [Ecto, YTD.Repo], exports: [UpdateTokens, User]
 
   alias Phoenix.PubSub
   alias YTD.Repo
@@ -78,6 +78,18 @@ defmodule YTD.Users do
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:name_updated, updated_user})
     end
 
+    :ok
+  end
+
+  @impl API
+  def athlete_updated(_athlete_id) do
+    # TODO
+    :ok
+  end
+
+  @impl API
+  def athlete_deleted(_athlete_id) do
+    # TODO
     :ok
   end
 

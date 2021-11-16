@@ -24,4 +24,6 @@ defmodule YTD.Users.API do
               unit :: String.t()
             ) :: :ok
   @callback update_name(User.t()) :: :ok
+  @callback athlete_updated(athlete_id :: integer()) :: :ok
+  @callback athlete_deleted(athlete_id :: integer()) :: :ok
 end

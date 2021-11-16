@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Refactor.ModuleDependencies
 defmodule YTD.Activities do
   @moduledoc """
   Context (and server) to handle persistance of activities.
@@ -5,13 +6,14 @@ defmodule YTD.Activities do
 
   @behaviour YTD.Activities.API
 
-  use Boundary, top_level?: true, deps: [Ecto, YTD.Repo]
+  use Boundary, top_level?: true, deps: [Ecto, YTD.Repo, YTD.Users]
 
   import Ecto.Query
 
   alias Phoenix.PubSub
   alias YTD.Activities.{Activity, API}
   alias YTD.Repo
+  alias YTD.Users.User
 
   @impl API
   def fetch_activities(user) do
@@ -71,8 +73,37 @@ defmodule YTD.Activities do
   @impl API
   def save_activity(user, activity) do
     activity
-    |> Activity.from_strava_activity_summary(user)
-    |> Repo.insert!()
+    |> Activity.from_strava_activity(user)
+    |> Repo.insert!(
+      on_conflict: {:replace, [:name, :type, :start_date, :distance, :updated_at]},
+      conflict_target: :strava_id
+    )
+  end
+
+  @impl API
+  def activity_created(athlete_id, activity_id) do
+    with user <- Repo.one(from u in User, where: u.athlete_id == ^athlete_id),
+         {:ok, activity} <- strava_api().get_activity(user, activity_id) do
+      saved_activity =
+        activity
+        |> Activity.from_strava_activity(user)
+        |> Repo.insert!()
+
+      PubSub.broadcast!(:ytd, "athlete:#{athlete_id}", {:new_activity, saved_activity})
+      :ok
+    end
+  end
+
+  @impl API
+  def activity_updated(_athlete_id, _activity_id) do
+    # TODO
+    :ok
+  end
+
+  @impl API
+  def activity_deleted(_athlete_id, _activity_id) do
+    # TODO
+    :ok
   end
 
   defp strava_api, do: Application.fetch_env!(:ytd, :strava_api)

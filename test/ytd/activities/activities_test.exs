@@ -2,13 +2,18 @@ defmodule YTD.ActivitiesTest do
   use YTD.DataCase, async: false
 
   import Assertions,
-    only: [assert_lists_equal: 3, assert_struct_in_list: 3, assert_structs_equal: 3]
+    only: [
+      assert_lists_equal: 3,
+      assert_maps_equal: 3,
+      assert_struct_in_list: 3,
+      assert_structs_equal: 3
+    ]
 
   import Ecto.Query
   import Mox
 
   alias Phoenix.PubSub
-  alias Strava.SummaryActivity
+  alias Strava.{DetailedActivity, SummaryActivity}
   alias YTD.{Activities, Repo}
   alias YTD.Activities.Activity
 
@@ -147,7 +152,7 @@ defmodule YTD.ActivitiesTest do
   end
 
   describe "YTD.Activities.save_activity/2" do
-    setup %{user: user} do
+    test "inserts an activity record for a new activity", %{user: user} do
       activity = %SummaryActivity{
         name: "Morning run",
         type: "Run",
@@ -156,12 +161,74 @@ defmodule YTD.ActivitiesTest do
         id: 2
       }
 
-      {:ok, user: user, activity: activity}
+      Activities.save_activity(user, activity)
+      saved_activity = Repo.one(from(a in Activity))
+      assert saved_activity.strava_id == 2
+      assert_maps_equal(activity, saved_activity, [:name, :type, :start_date, :distance])
     end
 
-    test "inserts an activity record", %{user: user, activity: activity} do
-      Activities.save_activity(user, activity)
-      assert %{name: "Morning run"} = Repo.one(from(a in Activity))
+    test "updates an activity record if it already exists", %{user: user} do
+      Activities.save_activity(user, %SummaryActivity{
+        name: "Morning run",
+        type: "Run",
+        start_date: ~U[2021-01-02 11:09:19Z],
+        distance: 1234.5,
+        id: 2
+      })
+
+      updated_activity = %SummaryActivity{
+        name: "Morning ride",
+        type: "Ride",
+        start_date: ~U[2021-01-03 12:10:20Z],
+        distance: 2345.6,
+        id: 2
+      }
+
+      Activities.save_activity(user, updated_activity)
+
+      saved_activity = Repo.one(from(a in Activity))
+      assert_maps_equal(updated_activity, saved_activity, [:name, :type, :start_date, :distance])
+    end
+  end
+
+  describe "YTD.Activities.activity_created/2" do
+    test "gets the activity details from Strava and saves it in the database" do
+      %{id: user_id} = user = insert(:user)
+
+      %{id: activity_id} =
+        activity = %DetailedActivity{
+          id: 1234,
+          type: "Run",
+          name: "Morning run",
+          distance: 5678.9,
+          start_date: ~U[2021-01-21 09:00:00Z]
+        }
+
+      stub(StravaMock, :get_activity, fn ^user, ^activity_id -> {:ok, activity} end)
+      Activities.activity_created(user.athlete_id, activity.id)
+
+      saved_activity = Repo.one(from(a in Activity))
+      assert %{user_id: ^user_id, strava_id: ^activity_id} = saved_activity
+      assert_maps_equal(activity, saved_activity, [:name, :type, :start_date, :distance])
+    end
+
+    test "broadcasts the new activity on the appropriate channel" do
+      user = insert(:user)
+      PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
+
+      activity = %DetailedActivity{
+        id: 1234,
+        type: "Run",
+        name: "Morning run",
+        distance: 5678.9,
+        start_date: ~U[2021-01-21 09:00:00Z]
+      }
+
+      stub(StravaMock, :get_activity, fn _user, _activity_id -> {:ok, activity} end)
+      Activities.activity_created(user.athlete_id, activity.id)
+
+      saved_activity = Repo.one(from(a in Activity))
+      assert_receive {:new_activity, ^saved_activity}
     end
   end
 end

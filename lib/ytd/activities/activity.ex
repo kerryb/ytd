@@ -20,8 +20,8 @@ defmodule YTD.Activities.Activity do
     belongs_to :user, User
   end
 
-  @spec from_strava_activity_summary(SummaryActivity.t(), User.t()) :: t()
-  def from_strava_activity_summary(summary, user) do
+  @spec from_strava_activity(SummaryActivity.t(), User.t()) :: t()
+  def from_strava_activity(summary, user) do
     %__MODULE__{
       user_id: user.id,
       strava_id: summary.id,

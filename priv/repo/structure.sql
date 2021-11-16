@@ -243,6 +243,13 @@ CREATE UNIQUE INDEX activities_strava_id_index ON public.activities USING btree 
 
 
 --
+-- Name: subscription_strava_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX subscription_strava_id_index ON public.subscription USING btree (strava_id);
+
+
+--
 -- Name: targets_user_id_activity_type_index; Type: INDEX; Schema: public; Owner: -
 --
 

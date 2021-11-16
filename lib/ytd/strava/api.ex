@@ -3,7 +3,7 @@ defmodule YTD.Strava.API do
   API behaviour for the Strava context.
   """
 
-  alias Strava.{DetailedAthlete, SummaryActivity}
+  alias Strava.{DetailedActivity, DetailedAthlete, SummaryActivity}
   alias YTD.Strava.Tokens
   alias YTD.Users.User
 
@@ -15,5 +15,7 @@ defmodule YTD.Strava.API do
               callback :: (SummaryActivity -> any())
             ) :: :ok
   @callback get_athlete_details(user :: User.t()) :: {:ok, DetailedAthlete.t()} | {:error, any()}
+  @callback get_activity(user :: User.t(), activity_id :: integer()) ::
+              {:ok, DetailedActivity.t()} | {:error, any()}
   @callback subscribe_to_events :: {:ok, integer()} | {:error, any()}
 end
