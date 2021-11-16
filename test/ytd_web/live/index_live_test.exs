@@ -230,27 +230,6 @@ defmodule YTDWeb.IndexLiveTest do
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:new_activity, activity})
       refute has_element?(view, "#type option", "Cardio")
     end
-
-    test "updates the info message", %{conn: conn, user: user} do
-      existing_activity = build(:activity)
-      new_activity = build(:activity)
-
-      {:ok, view, _html} = live(conn, "/")
-
-      PubSub.broadcast!(
-        :ytd,
-        "athlete:#{user.athlete_id}",
-        {:existing_activities, [existing_activity]}
-      )
-
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:new_activity, new_activity})
-
-      assert has_element?(
-               view,
-               "#info",
-               "2 activities loaded. Fetching new activities …"
-             )
-    end
   end
 
   describe "YTDWeb.IndexLive, when all activities have been received" do

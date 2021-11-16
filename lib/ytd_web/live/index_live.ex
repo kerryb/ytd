@@ -253,7 +253,6 @@ defmodule YTDWeb.IndexLive do
       )
 
     types = types(activities)
-    info = fetching_message(activities)
 
     {:noreply,
      assign(socket,
@@ -262,8 +261,7 @@ defmodule YTDWeb.IndexLive do
        count: count,
        types: types,
        ytd: ytd,
-       stats: stats,
-       info: info
+       stats: stats
      )}
   end
 
