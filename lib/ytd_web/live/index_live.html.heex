@@ -22,7 +22,7 @@
 </form>
 <hr class="separator">
 <p class="font-thin text-2xl mt-2">Year to date (<span id="count"><%= @count %></span>): </p>
-<p class={pulse_if_loading("text-5xl sm:text-7xl my-4", @info)}>
+<p class="text-5xl sm:text-7xl my-4"}>
   <span class="font-extrabold" id="total"><%= @ytd %></span>
   <span class="font-thin"><%= @unit %></span>
 </p>
@@ -33,13 +33,13 @@
 <%= if @stats.projected_annual do %>
   <hr class="separator">
   <p class="font-thin text-2xl mt-2">Projected year total:</p>
-  <p class={pulse_if_loading("text-5xl sm:text-7xl my-4", @info)}>
+  <p class="text-5xl sm:text-7xl my-4"}>
     <span class="font-extrabold" id="projected-annual"><%= @stats.projected_annual %></span>
     <span class="font-thin"><%= @unit %></span>
   </p>
   <p class="font-thin text-2xl mb-2">
     <%= if @targets[@type] do %>
-      <.target_progress stats={@stats} unit={@unit} target={@targets[@type]} info={@info} />
+      <.target_progress stats={@stats} unit={@unit} target={@targets[@type]} />
     <% else %>
       Why not
       <a class="link" href="#" id="edit-target" phx-click="edit-target">set yourself a target</a>?
@@ -57,19 +57,16 @@
       (<span id="latest-activity-date"><%= Timex.format!(@latest.start_date, "{relative}", :relative) %></span>)
     </div>
   <% end %>
-  <%= unless @info do %>
+  <%= if @refreshing? do %>
+    <button class="outline-none" id="refresh" disabled>
+      <i class="fas fa-sync fa-spin opacity-50"></i>
+    </button>
+  <% else %>
     <button class="focus:outline-none" id="refresh" phx-click="refresh" title="Fetch new activities. Shift-click to discard all activities and reload everything from Strava.">
       <i class="fas fa-sync"></i>
     </button>
   <% end %>
 </div>
-<%= if @info do %>
-  <div class="flex flex-row justify-between items-center text-sm">
-    <div class="text-gray-300 dark:text-strava-orange text-sm font-light animate-pulse" id="info">
-      <%= @info %>
-    </div>
-  </div>
-<% end %>
 <hr class="separator">
 <div class="flex flex-row justify-between items-end text-xs opacity-50">
   <%= img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/api_logo_pwrdBy_strava_horiz_white.png"), width: "113", class: "dark:hidden") %>

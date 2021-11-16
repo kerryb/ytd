@@ -14,6 +14,7 @@ defmodule YTDWeb.IndexLiveTest do
 
   defp stub_apis(_context) do
     ActivitiesMock
+    |> stub(:get_existing_activities, fn _user -> [] end)
     |> stub(:fetch_activities, fn _user -> :ok end)
     |> stub(:refresh_activities, fn _user -> :ok end)
     |> stub(:reload_activities, fn _user -> :ok end)
@@ -44,23 +45,10 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#name", "Fred Bloggs")
     end
 
-    test "displays a 'loading activities' message", %{conn: conn} do
-      {:ok, view, _html} = live(conn, "/")
-      assert has_element?(view, "#info", "Loading activities …")
-    end
-
-    test "displays 0.0 miles", %{conn: conn} do
-      {:ok, view, _html} = live(conn, "/")
-      assert has_element?(view, "#total", "0.0")
-    end
-
-    test "shows zero activities", %{conn: conn} do
-      {:ok, view, _html} = live(conn, "/")
-      assert has_element?(view, "#count", "0 activities")
-    end
-
     test "uses the saved selection for activity type", %{conn: conn, user: user} do
-      user |> Changeset.change(selected_activity_type: "Ride") |> Repo.update!()
+      user = user |> Changeset.change(selected_activity_type: "Ride") |> Repo.update!()
+      activities = [build(:activity, type: "Run"), build(:activity, type: "Ride")]
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
       assert has_element?(view, "#type option[selected]", "Ride")
     end
@@ -73,32 +61,17 @@ defmodule YTDWeb.IndexLiveTest do
 
     test "does not enable the refresh button", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
-      refute has_element?(view, "button")
+      assert has_element?(view, "button[disabled]")
     end
 
-    test "requests the user's activities", %{
-      conn: conn,
-      user: user
-    } do
+    test "requests any new activities", %{conn: conn, user: user} do
       expect(ActivitiesMock, :fetch_activities, fn ^user -> :ok end)
       {:ok, _view, _html} = live(conn, "/")
     end
 
-    test "requests a name update", %{
-      conn: conn,
-      user: user
-    } do
+    test "requests a name update", %{conn: conn, user: user} do
       expect(UsersMock, :update_name, fn ^user -> :ok end)
       {:ok, _view, _html} = live(conn, "/")
-    end
-  end
-
-  describe "YTDWeb.IndexLive, when existing activities are received" do
-    test "updates the message", %{conn: conn, user: user} do
-      activities = [build(:activity), build(:activity)]
-      {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, activities})
-      assert has_element?(view, "#info", "2 activities loaded. Fetching new activities …")
     end
 
     test "shows the latest activity of the selected type", %{conn: conn, user: user} do
@@ -110,16 +83,10 @@ defmodule YTDWeb.IndexLiveTest do
         )
       ]
 
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, activities})
       assert has_element?(view, "#latest-activity-name", "Evening run")
       assert has_element?(view, "#latest-activity-date", "2 days ago")
-    end
-
-    test "copes with there not being any activities", %{conn: conn, user: user} do
-      {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, []})
-      assert has_element?(view, "#info", "0 activities loaded. Fetching new activities …")
     end
 
     test "updates the distance", %{conn: conn, user: user} do
@@ -128,8 +95,8 @@ defmodule YTDWeb.IndexLiveTest do
         build(:activity, type: "Run", distance: 10_000.0)
       ]
 
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, activities})
       assert has_element?(view, "#total", "9.3")
     end
 
@@ -139,16 +106,16 @@ defmodule YTDWeb.IndexLiveTest do
         build(:activity, type: "Run", distance: 10_000.0)
       ]
 
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, activities})
       assert has_element?(view, "#count", "2 activities")
     end
 
     test "updates the weekly average", %{conn: conn, user: user} do
       activities = [build(:activity, type: "Run", distance: 5_000.0)]
 
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, activities})
       avg_element = view |> element("#weekly-average") |> render()
       [avg] = Regex.run(~r/>(\d+\.\d)/, avg_element, capture: :all_but_first)
       refute avg == "0.0"
@@ -157,8 +124,8 @@ defmodule YTDWeb.IndexLiveTest do
     test "updates the projected annual total", %{conn: conn, user: user} do
       activities = [build(:activity, type: "Run", distance: 5_000.0)]
 
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, activities})
       projected_annual_element = view |> element("#projected-annual") |> render()
 
       [projected_annual] =
@@ -166,13 +133,19 @@ defmodule YTDWeb.IndexLiveTest do
 
       refute projected_annual == "0.0"
     end
+
+    test "copes with there not being any activities", %{conn: conn, user: user} do
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [] end)
+      {:ok, view, _html} = live(conn, "/")
+      refute has_element?(view, "#latest-activity-name")
+    end
   end
 
   describe "YTDWeb.IndexLive, when a new activity is received" do
     test "updates latest activity", %{conn: conn, user: user} do
       new_activity = build(:activity, name: "New run", type: "Run", distance: 10_000.0)
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [] end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, []})
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:new_activity, new_activity})
       assert has_element?(view, "#latest-activity-name", "New run")
     end
@@ -181,14 +154,8 @@ defmodule YTDWeb.IndexLiveTest do
       existing_activity = build(:activity, type: "Run", distance: 5_000.0)
       new_activity = build(:activity, type: "Run", distance: 10_000.0)
 
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [existing_activity] end)
       {:ok, view, _html} = live(conn, "/")
-
-      PubSub.broadcast!(
-        :ytd,
-        "athlete:#{user.athlete_id}",
-        {:existing_activities, [existing_activity]}
-      )
-
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:new_activity, new_activity})
       assert has_element?(view, "#total", "9.3")
     end
@@ -196,14 +163,8 @@ defmodule YTDWeb.IndexLiveTest do
     test "updates the stats", %{conn: conn, user: user} do
       existing_activity = build(:activity, type: "Run", distance: 5_000.0)
       new_activity = build(:activity, type: "Run", distance: 10_000.0)
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [existing_activity] end)
       {:ok, view, _html} = live(conn, "/")
-
-      PubSub.broadcast!(
-        :ytd,
-        "athlete:#{user.athlete_id}",
-        {:existing_activities, [existing_activity]}
-      )
-
       avg_element_1 = view |> element("#weekly-average") |> render()
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:new_activity, new_activity})
       avg_element_2 = view |> element("#weekly-average") |> render()
@@ -258,8 +219,8 @@ defmodule YTDWeb.IndexLiveTest do
         )
       ]
 
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, activities})
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", :all_activities_fetched)
       assert has_element?(view, "#latest-activity-name", "Evening run")
       assert has_element?(view, "#latest-activity-date", "2 days ago")
@@ -287,8 +248,8 @@ defmodule YTDWeb.IndexLiveTest do
         build(:activity, type: "Ride", distance: 10_000.0)
       ]
 
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, activities})
       assert has_element?(view, "#total", "3.1")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
       path = assert_patch(view)
@@ -302,8 +263,8 @@ defmodule YTDWeb.IndexLiveTest do
         build(:activity, type: "Ride", distance: 100_000.0)
       ]
 
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, activities})
       avg_element_1 = view |> element("#weekly-average") |> render()
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
       avg_element_2 = view |> element("#weekly-average") |> render()
@@ -316,8 +277,8 @@ defmodule YTDWeb.IndexLiveTest do
         build(:activity, type: "Ride", name: "Afternoon ride", distance: 10_000.0)
       ]
 
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, activities})
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", :all_activities_fetched)
       assert has_element?(view, "#latest-activity-name", "Morning run")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
@@ -331,8 +292,8 @@ defmodule YTDWeb.IndexLiveTest do
         build(:activity, type: "Ride", name: "Afternoon ride")
       ]
 
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, activities})
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", :all_activities_fetched)
       assert has_element?(view, "#count", "2 activities")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
@@ -340,18 +301,21 @@ defmodule YTDWeb.IndexLiveTest do
     end
 
     test "persists the change", %{conn: conn} do
+      activities = [build(:activity, type: "Run"), build(:activity, type: "Ride")]
+      stub(ActivitiesMock, :get_existing_activities, fn _user -> activities end)
       {:ok, view, _html} = live(conn, "/")
+      assert has_element?(view, "#type option[selected]", "Run")
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
-      {:ok, reloaded_view, _html} = live(conn, "/")
-      assert has_element?(reloaded_view, "#type option[selected]", "Ride")
+      {:ok, updated_view, _html} = live(conn, "/")
+      assert has_element?(updated_view, "#type option[selected]", "Ride")
     end
   end
 
   describe "YTDWeb.IndexLive, when the user changes unit" do
     test "updates the total", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_012.3)
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, [activity]})
       assert has_element?(view, "#total", "3.1")
       view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
       assert has_element?(view, "#total", ~r/^5.0$/)
@@ -359,8 +323,8 @@ defmodule YTDWeb.IndexLiveTest do
 
     test "updates the stats", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, [activity]})
       avg_element_1 = view |> element("#weekly-average") |> render()
       view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
       avg_element_2 = view |> element("#weekly-average") |> render()
@@ -383,11 +347,11 @@ defmodule YTDWeb.IndexLiveTest do
       view |> element("button#refresh") |> render_click()
     end
 
-    test "shows an info message", %{conn: conn, user: user} do
+    test "disables and animates the refresh button", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", :all_activities_fetched)
       view |> element("button#refresh") |> render_click()
-      assert has_element?(view, "#info", "Refreshing activities …")
+      assert view |> element("button#refresh[disabled] .fa-spin") |> has_element?()
     end
   end
 
@@ -401,16 +365,16 @@ defmodule YTDWeb.IndexLiveTest do
 
     test "clears the activity list", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, [activity]})
       render_click(view, :refresh, %{"shift_key" => true})
       assert has_element?(view, "#count", "0 activities")
     end
 
     test "clears the latest activity", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, [activity]})
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", :all_activities_fetched)
       render_click(view, :refresh, %{"shift_key" => true})
       refute has_element?(view, "#latest-activity-name")
@@ -418,24 +382,25 @@ defmodule YTDWeb.IndexLiveTest do
 
     test "resets the ytd total to zero", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, [activity]})
       render_click(view, :refresh, %{"shift_key" => true})
       assert has_element?(view, "#total", "0.0")
     end
 
     test "resets the stats", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, [activity]})
       render_click(view, :refresh, %{"shift_key" => true})
       assert has_element?(view, "#weekly-average", "0.0")
     end
 
-    test "shows an info message", %{conn: conn} do
+    test "disables and animates the refresh button", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
-      render_click(view, :refresh, %{"shift_key" => true})
-      assert has_element?(view, "#info", "Reloading all activities …")
+      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", :all_activities_fetched)
+      view |> element("button#refresh") |> render_click(%{"shift_key" => true})
+      assert view |> element("button#refresh[disabled] .fa-spin") |> has_element?()
     end
   end
 
@@ -475,9 +440,8 @@ defmodule YTDWeb.IndexLiveTest do
     test "reports the estimated total", %{conn: conn, user: user} do
       insert(:target, user: user, activity_type: "Run", target: 1000, unit: "km")
       activity = build(:activity, type: "Run", distance: 999_000.0)
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, [activity]})
-
       html = render(view)
       assert html =~ ~r/You are on track to hit your target of.*1000 km/s
       assert html =~ ~r/, as long as you average.*\d+\.\d miles.*a week from now on/s
@@ -488,8 +452,8 @@ defmodule YTDWeb.IndexLiveTest do
     test "reports that the target has been met", %{conn: conn, user: user} do
       insert(:target, user: user, activity_type: "Run", target: 3, unit: "miles")
       activity = build(:activity, type: "Run", distance: 5_000.0)
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
       {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:existing_activities, [activity]})
       assert render(view) =~ ~r/You have hit your target of.*3 miles.*!/s
     end
   end

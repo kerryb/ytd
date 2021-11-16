@@ -16,13 +16,12 @@ defmodule YTD.Activities do
   alias YTD.Users.User
 
   @impl API
-  def fetch_activities(user) do
-    PubSub.broadcast!(
-      :ytd,
-      "athlete:#{user.athlete_id}",
-      {:existing_activities, get_existing_activities(user)}
-    )
+  def get_existing_activities(user) do
+    Repo.all(from a in Activity, where: a.user_id == ^user.id)
+  end
 
+  @impl API
+  def fetch_activities(user) do
     stream_activities_from_strava(user, latest_activity_or_beginning_of_year(user))
     :ok
   end
@@ -54,10 +53,6 @@ defmodule YTD.Activities do
       nil -> Timex.beginning_of_year(DateTime.utc_now())
       activity -> activity.start_date
     end
-  end
-
-  defp get_existing_activities(user) do
-    Repo.all(from a in Activity, where: a.user_id == ^user.id)
   end
 
   defp get_latest_activity(user) do

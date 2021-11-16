@@ -4,8 +4,10 @@ defmodule YTD.Activities.API do
   """
 
   alias Strava.SummaryActivity
+  alias YTD.Activities.Activity
   alias YTD.Users.User
 
+  @callback get_existing_activities(User.t()) :: [Activity.t()]
   @callback fetch_activities(User.t()) :: :ok
   @callback refresh_activities(User.t()) :: :ok
   @callback reload_activities(User.t()) :: :ok

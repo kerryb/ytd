@@ -18,34 +18,35 @@ defmodule YTDWeb.IndexLive do
   def mount(_params, session, socket) do
     user = Users.get_user_from_athlete_id(session["athlete_id"])
     targets = Users.get_targets(user)
+    activities = activities_api().get_existing_activities(user)
+    type = user.selected_activity_type
+    latest = latest_activity_of_type(activities, type)
+    count = activity_count(activities, type)
+    unit = user.selected_unit
+    ytd = total_distance(activities, type, unit)
+    stats = calculate_stats(ytd, unit, Date.utc_today(), type, targets)
+    types = types(activities)
 
     if connected?(socket) do
       PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
-      get_activities(user)
+      fetch_new_activities(user)
       update_name(user)
     end
 
     {:ok,
      assign(socket,
        user: user,
-       activities: [],
+       activities: activities,
        targets: targets,
-       count: activity_count([], user.selected_activity_type),
-       types: [user.selected_activity_type],
-       type: user.selected_activity_type,
-       unit: user.selected_unit,
-       ytd: 0.0,
-       stats:
-         calculate_stats(
-           0.0,
-           user.selected_unit,
-           Date.utc_today(),
-           user.selected_activity_type,
-           targets
-         ),
-       info: "Loading activities …",
-       latest: nil,
-       edit_target?: false
+       count: count,
+       types: types,
+       type: type,
+       unit: unit,
+       latest: latest,
+       stats: stats,
+       ytd: ytd,
+       edit_target?: false,
+       refreshing?: true
      )}
   end
 
@@ -55,9 +56,9 @@ defmodule YTDWeb.IndexLive do
       <% @stats.completed? -> %>
         <.target_hit target={@target} />
       <% @stats.on_target? -> %>
-        <.on_target target={@target} stats={@stats} unit={@unit} info={@info} />
+        <.on_target target={@target} stats={@stats} unit={@unit} />
       <% true -> %>
-        <.behind_target target={@target} stats={@stats} unit={@unit} info={@info} />
+        <.behind_target target={@target} stats={@stats} unit={@unit} />
     <% end %>
     """
   end
@@ -75,7 +76,7 @@ defmodule YTDWeb.IndexLive do
     You are on track to hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
       <%= @target.target %> <%= @target.unit %></a>, as long as you average
-    <span class={pulse_if_loading("font-extrabold", @info)}><%= @stats.required_average %> <%= @unit %></span>
+    <span class="font-extrabold"><%= @stats.required_average %> <%= @unit %></span>
     a week from now on.
     """
   end
@@ -85,7 +86,7 @@ defmodule YTDWeb.IndexLive do
     To hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
       <%= @target.target %> <%= @target.unit %></a>, you need to average
-    <span class={pulse_if_loading("font-extrabold", @info)}><%= @stats.required_average %> <%= @unit %></span>
+    <span class="font-extrabold"><%= @stats.required_average %> <%= @unit %></span>
     a week from now on.
     """
   end
@@ -110,10 +111,7 @@ defmodule YTDWeb.IndexLive do
     """
   end
 
-  defp pulse_if_loading(class, nil), do: class
-  defp pulse_if_loading(class, _info), do: "#{class} animate-pulse"
-
-  defp get_activities(user) do
+  defp fetch_new_activities(user) do
     Task.start_link(fn -> :ok = activities_api().fetch_activities(user) end)
   end
 
@@ -174,13 +172,13 @@ defmodule YTDWeb.IndexLive do
        count: count,
        ytd: ytd,
        stats: stats,
-       info: "Reloading all activities …"
+       refreshing?: true
      )}
   end
 
   def handle_event("refresh", _params, socket) do
     Task.start_link(fn -> :ok = activities_api().refresh_activities(socket.assigns.user) end)
-    {:noreply, assign(socket, info: "Refreshing activities …")}
+    {:noreply, assign(socket, refreshing?: true)}
   end
 
   def handle_event("edit-target", _params, socket) do
@@ -205,36 +203,6 @@ defmodule YTDWeb.IndexLive do
 
   def handle_event("cancel-target", _params, socket) do
     {:noreply, assign(socket, edit_target?: false)}
-  end
-
-  @impl true
-  def handle_info({:existing_activities, activities}, socket) do
-    latest = latest_activity_of_type(activities, socket.assigns.type)
-    count = activity_count(activities, socket.assigns.type)
-    ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
-
-    stats =
-      calculate_stats(
-        ytd,
-        socket.assigns.unit,
-        Date.utc_today(),
-        socket.assigns.type,
-        socket.assigns.targets
-      )
-
-    types = types(activities)
-    info = fetching_message(activities)
-
-    {:noreply,
-     assign(socket,
-       activities: activities,
-       latest: latest,
-       count: count,
-       types: types,
-       ytd: ytd,
-       stats: stats,
-       info: info
-     )}
   end
 
   def handle_info({:new_activity, activity}, socket) do
@@ -265,9 +233,10 @@ defmodule YTDWeb.IndexLive do
      )}
   end
 
+  @impl true
   def handle_info(:all_activities_fetched, socket) do
     latest = latest_activity_of_type(socket.assigns.activities, socket.assigns.type)
-    {:noreply, assign(socket, info: nil, latest: latest)}
+    {:noreply, assign(socket, latest: latest, refreshing?: false)}
   end
 
   def handle_info({:name_updated, user}, socket) do
@@ -302,12 +271,6 @@ defmodule YTDWeb.IndexLive do
       count -> "#{count} activities"
     end
   end
-
-  defp fetching_message([_activity]), do: fetching_message(1, "activity")
-  defp fetching_message(activities), do: fetching_message(length(activities), "activities")
-
-  defp fetching_message(count, noun),
-    do: "#{count} #{noun} loaded. Fetching new activities …"
 
   defp latest_activity_of_type(activities, type) do
     activities
