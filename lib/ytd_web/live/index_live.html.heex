@@ -51,12 +51,13 @@
 <% end %>
 <hr class="separator">
 <div class="flex flex-row justify-between items-center text-sm">
-  <%= if @latest do %>
-    <div class="font-thin" id="latest-activity">Latest:
+  <div class="font-thin" id="latest-activity">
+    <%= if @latest do %>
+      Latest:
       <span class="font-bold" id="latest-activity-name"><%= @latest.name %></span>
       (<span id="latest-activity-date"><%= Timex.format!(@latest.start_date, "{relative}", :relative) %></span>)
-    </div>
-  <% end %>
+    <% end %>
+  </div>
   <%= if @refreshing? do %>
     <button class="outline-none" id="refresh" disabled>
       <i class="fas fa-sync fa-spin opacity-50"></i>
