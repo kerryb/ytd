@@ -20,12 +20,7 @@ defmodule YTDWeb.IndexLive do
     targets = Users.get_targets(user)
     activities = activities_api().get_existing_activities(user)
     type = user.selected_activity_type
-    latest = latest_activity_of_type(activities, type)
-    count = activity_count(activities, type)
     unit = user.selected_unit
-    ytd = total_distance(activities, type, unit)
-    stats = calculate_stats(ytd, unit, Date.utc_today(), type, targets)
-    types = types(activities)
 
     if connected?(socket) do
       PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
@@ -34,20 +29,17 @@ defmodule YTDWeb.IndexLive do
     end
 
     {:ok,
-     assign(socket,
+     socket
+     |> assign(
        user: user,
        activities: activities,
        targets: targets,
-       count: count,
-       types: types,
        type: type,
        unit: unit,
-       latest: latest,
-       stats: stats,
-       ytd: ytd,
        edit_target?: false,
        refreshing?: true
-     )}
+     )
+     |> update_calculated_values()}
   end
 
   defp target_progress(assigns) do
@@ -121,15 +113,8 @@ defmodule YTDWeb.IndexLive do
 
   @impl true
   def handle_params(%{"activity_type" => type}, _uri, socket) do
-    ytd = total_distance(socket.assigns.activities, type, socket.assigns.unit)
-    count = activity_count(socket.assigns.activities, type)
-
-    stats =
-      calculate_stats(ytd, socket.assigns.unit, Date.utc_today(), type, socket.assigns.targets)
-
-    latest = latest_activity_of_type(socket.assigns.activities, type)
     Users.save_activity_type(socket.assigns.user, type)
-    {:noreply, assign(socket, type: type, ytd: ytd, count: count, stats: stats, latest: latest)}
+    {:noreply, socket |> assign(type: type) |> update_calculated_values()}
   end
 
   def handle_params(_params, _uri, socket) do
@@ -142,38 +127,12 @@ defmodule YTDWeb.IndexLive do
   end
 
   def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket) do
-    ytd = total_distance(socket.assigns.activities, socket.assigns.type, unit)
-
-    stats =
-      calculate_stats(ytd, unit, Date.utc_today(), socket.assigns.type, socket.assigns.targets)
-
-    {:noreply, assign(socket, unit: unit, ytd: ytd, stats: stats)}
+    {:noreply, socket |> assign(unit: unit) |> update_calculated_values()}
   end
 
   def handle_event("refresh", %{"shift_key" => true}, socket) do
-    count = activity_count([], socket.assigns.type)
-    ytd = 0.0
-
-    stats =
-      calculate_stats(
-        0.0,
-        socket.assigns.unit,
-        Date.utc_today(),
-        socket.assigns.type,
-        socket.assigns.targets
-      )
-
     Task.start_link(fn -> :ok = activities_api().reload_activities(socket.assigns.user) end)
-
-    {:noreply,
-     assign(socket,
-       activities: [],
-       latest: nil,
-       count: count,
-       ytd: ytd,
-       stats: stats,
-       refreshing?: true
-     )}
+    {:noreply, socket |> assign(activities: [], refreshing?: true) |> update_calculated_values()}
   end
 
   def handle_event("refresh", _params, socket) do
@@ -189,16 +148,8 @@ defmodule YTDWeb.IndexLive do
     Users.save_target(socket.assigns.user, socket.assigns.type, target, socket.assigns.unit)
     targets = Users.get_targets(socket.assigns.user)
 
-    stats =
-      calculate_stats(
-        socket.assigns.ytd,
-        socket.assigns.unit,
-        Date.utc_today(),
-        socket.assigns.type,
-        targets
-      )
-
-    {:noreply, assign(socket, targets: targets, stats: stats, edit_target?: false)}
+    {:noreply,
+     socket |> assign(targets: targets, edit_target?: false) |> update_calculated_values()}
   end
 
   def handle_event("cancel-target", _params, socket) do
@@ -207,30 +158,7 @@ defmodule YTDWeb.IndexLive do
 
   def handle_info({:new_activity, activity}, socket) do
     activities = [activity | socket.assigns.activities]
-    latest = latest_activity_of_type(activities, socket.assigns.type)
-    count = activity_count(activities, socket.assigns.type)
-    ytd = total_distance(activities, socket.assigns.type, socket.assigns.unit)
-
-    stats =
-      calculate_stats(
-        ytd,
-        socket.assigns.unit,
-        Date.utc_today(),
-        socket.assigns.type,
-        socket.assigns.targets
-      )
-
-    types = types(activities)
-
-    {:noreply,
-     assign(socket,
-       activities: activities,
-       latest: latest,
-       count: count,
-       types: types,
-       ytd: ytd,
-       stats: stats
-     )}
+    {:noreply, socket |> assign(activities: activities) |> update_calculated_values()}
   end
 
   @impl true
@@ -246,6 +174,27 @@ defmodule YTDWeb.IndexLive do
   def handle_info(message, socket) do
     Logger.warn("#{__MODULE__} Received unexpected message #{inspect(message)}")
     {:noreply, socket}
+  end
+
+  defp update_calculated_values(socket) do
+    activities = socket.assigns.activities
+    type = socket.assigns.type
+    unit = socket.assigns.unit
+    targets = socket.assigns.targets
+
+    count = activity_count(activities, type)
+    types = types(activities)
+    latest = latest_activity_of_type(activities, type)
+    ytd = total_distance(activities, type, unit)
+    stats = calculate_stats(ytd, unit, Date.utc_today(), type, targets)
+
+    assign(socket,
+      count: count,
+      types: types,
+      latest: latest,
+      stats: stats,
+      ytd: ytd
+    )
   end
 
   defp types(activities) do
