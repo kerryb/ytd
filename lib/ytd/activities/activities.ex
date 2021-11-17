@@ -79,13 +79,8 @@ defmodule YTD.Activities do
   def activity_created(athlete_id, activity_id) do
     with user <- Repo.one(from u in User, where: u.athlete_id == ^athlete_id),
          {:ok, activity} <- strava_api().get_activity(user, activity_id) do
-      saved_activity =
-        activity
-        |> Activity.from_strava_activity(user)
-        |> Repo.insert!()
-
+      saved_activity = save_activity(user, activity)
       PubSub.broadcast!(:ytd, "athlete:#{athlete_id}", {:new_activity, saved_activity})
-      :ok
     end
   end
 
