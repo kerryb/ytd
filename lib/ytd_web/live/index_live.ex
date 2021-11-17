@@ -26,6 +26,7 @@ defmodule YTDWeb.IndexLive do
       PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
       fetch_new_activities(user)
       update_name(user)
+      Process.send_after(self(), :refresh_stats, :timer.minutes(1))
     end
 
     {:ok,
@@ -181,12 +182,16 @@ defmodule YTDWeb.IndexLive do
 
   @impl true
   def handle_info(:all_activities_fetched, socket) do
-    latest = latest_activity_of_type(socket.assigns.activities, socket.assigns.type)
-    {:noreply, assign(socket, latest: latest, refreshing?: false)}
+    {:noreply, assign(socket, refreshing?: false)}
   end
 
   def handle_info({:name_updated, user}, socket) do
     {:noreply, assign(socket, user: user)}
+  end
+
+  def handle_info(:refresh_stats, socket) do
+    Process.send_after(self(), :refresh_stats, :timer.minutes(1))
+    {:noreply, update_calculated_values(socket)}
   end
 
   def handle_info(message, socket) do
@@ -202,14 +207,20 @@ defmodule YTDWeb.IndexLive do
 
     count = activity_count(activities, type)
     types = types(activities)
-    latest = latest_activity_of_type(activities, type)
+    latest_activity = latest_activity_of_type(activities, type)
+    latest_activity_name = if(latest_activity, do: latest_activity.name)
+
+    latest_activity_time =
+      if(latest_activity, do: Timex.format!(latest_activity.start_date, "{relative}", :relative))
+
     ytd = total_distance(activities, type, unit)
     stats = calculate_stats(ytd, unit, Date.utc_today(), type, targets)
 
     assign(socket,
       count: count,
       types: types,
-      latest: latest,
+      latest_activity_name: latest_activity_name,
+      latest_activity_time: latest_activity_time,
       stats: stats,
       ytd: ytd
     )

@@ -276,6 +276,27 @@ defmodule YTDWeb.IndexLiveTest do
     end
   end
 
+  describe "YTDWeb.IndexLive, on timed stats refresh" do
+    test "updates current-time-related values", %{conn: conn, user: user} do
+      activity =
+        build(:activity,
+          strava_id: 5678,
+          name: "Afternoon run",
+          type: "Run",
+          distance: 100_000.0,
+          start_date: DateTime.truncate(DateTime.utc_now(), :second)
+        )
+
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
+      {:ok, view, _html} = live(conn, "/")
+      activity_date_1 = view |> element("#latest-activity-date") |> render()
+      Process.sleep(:timer.seconds(1))
+      send(view.pid, :refresh_stats)
+      activity_date_2 = view |> element("#latest-activity-date") |> render()
+      refute activity_date_1 == activity_date_2
+    end
+  end
+
   describe "YTDWeb.IndexLive, when all activities have been received" do
     test "clears the info message", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
