@@ -174,6 +174,11 @@ defmodule YTDWeb.IndexLive do
     {:noreply, socket |> assign(activities: activities) |> update_calculated_values()}
   end
 
+  def handle_info({:deleted_activity, strava_id}, socket) do
+    activities = Enum.reject(socket.assigns.activities, &(&1.strava_id == strava_id))
+    {:noreply, socket |> assign(activities: activities) |> update_calculated_values()}
+  end
+
   @impl true
   def handle_info(:all_activities_fetched, socket) do
     latest = latest_activity_of_type(socket.assigns.activities, socket.assigns.type)

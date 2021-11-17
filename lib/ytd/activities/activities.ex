@@ -94,9 +94,9 @@ defmodule YTD.Activities do
   end
 
   @impl API
-  def activity_deleted(_athlete_id, _activity_id) do
-    # TODO
-    :ok
+  def activity_deleted(athlete_id, activity_id) do
+    Repo.delete_all(from a in Activity, where: a.strava_id == ^activity_id)
+    PubSub.broadcast!(:ytd, "athlete:#{athlete_id}", {:deleted_activity, activity_id})
   end
 
   defp strava_api, do: Application.fetch_env!(:ytd, :strava_api)

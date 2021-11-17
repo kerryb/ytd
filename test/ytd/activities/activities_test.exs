@@ -258,4 +258,25 @@ defmodule YTD.ActivitiesTest do
       assert_receive {:updated_activity, ^saved_activity}
     end
   end
+
+  describe "YTD.Activities.activity_deleted/2" do
+    test "deletes the activity from the database" do
+      user = insert(:user)
+      insert(:activity, user: user, strava_id: 1234)
+      Activities.activity_deleted(user.athlete_id, 1234)
+      assert Repo.all(Activity) == []
+    end
+
+    test "does nothing if the activity is not found" do
+      user = insert(:user)
+      :ok = Activities.activity_deleted(user.athlete_id, 1234)
+    end
+
+    test "broadcasts the deleted activity id on the appropriate channel" do
+      user = insert(:user)
+      PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
+      Activities.activity_deleted(user.athlete_id, 1234)
+      assert_receive {:deleted_activity, 1234}
+    end
+  end
 end

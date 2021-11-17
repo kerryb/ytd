@@ -197,7 +197,7 @@ defmodule YTDWeb.IndexLiveTest do
     setup %{conn: conn, user: user} do
       existing_activity =
         build(:activity,
-          name: "New run",
+          name: "Afternoon run",
           type: "Run",
           distance: 50_000.0,
           start_date: DateTime.truncate(DateTime.utc_now(), :second)
@@ -228,6 +228,49 @@ defmodule YTDWeb.IndexLiveTest do
     test "updates the stats", %{view: view, user: user, updated_activity: updated_activity} do
       avg_element_1 = view |> element("#weekly-average") |> render()
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:updated_activity, updated_activity})
+      avg_element_2 = view |> element("#weekly-average") |> render()
+      refute avg_element_1 == avg_element_2
+    end
+  end
+
+  describe "YTDWeb.IndexLive, when an activity is deleted" do
+    setup %{conn: conn, user: user} do
+      old_activity =
+        build(:activity,
+          strava_id: 1234,
+          name: "Old run",
+          type: "Run",
+          distance: 50_000.0,
+          start_date: DateTime.utc_now() |> Timex.shift(days: -1) |> DateTime.truncate(:second)
+        )
+
+      activity =
+        build(:activity,
+          strava_id: 5678,
+          name: "Afternoon run",
+          type: "Run",
+          distance: 100_000.0,
+          start_date: DateTime.truncate(DateTime.utc_now(), :second)
+        )
+
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [old_activity, activity] end)
+      {:ok, view, _html} = live(conn, "/")
+      {:ok, view: view}
+    end
+
+    test "updates latest activity if necessary", %{view: view, user: user} do
+      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:deleted_activity, 5678})
+      assert has_element?(view, "#latest-activity-name", "Old run")
+    end
+
+    test "updates the distance", %{view: view, user: user} do
+      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:deleted_activity, 5678})
+      assert has_element?(view, "#total", "31.1")
+    end
+
+    test "updates the stats", %{view: view, user: user} do
+      avg_element_1 = view |> element("#weekly-average") |> render()
+      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:deleted_activity, 5678})
       avg_element_2 = view |> element("#weekly-average") |> render()
       refute avg_element_1 == avg_element_2
     end
