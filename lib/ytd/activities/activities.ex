@@ -85,9 +85,12 @@ defmodule YTD.Activities do
   end
 
   @impl API
-  def activity_updated(_athlete_id, _activity_id) do
-    # TODO
-    :ok
+  def activity_updated(athlete_id, activity_id) do
+    with user <- Repo.one(from u in User, where: u.athlete_id == ^athlete_id),
+         {:ok, activity} <- strava_api().get_activity(user, activity_id) do
+      saved_activity = save_activity(user, activity)
+      PubSub.broadcast!(:ytd, "athlete:#{athlete_id}", {:updated_activity, saved_activity})
+    end
   end
 
   @impl API

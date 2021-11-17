@@ -161,6 +161,19 @@ defmodule YTDWeb.IndexLive do
     {:noreply, socket |> assign(activities: activities) |> update_calculated_values()}
   end
 
+  def handle_info({:updated_activity, %{strava_id: strava_id} = activity}, socket) do
+    activities =
+      Enum.map(
+        socket.assigns.activities,
+        fn
+          %{strava_id: ^strava_id} -> activity
+          other -> other
+        end
+      )
+
+    {:noreply, socket |> assign(activities: activities) |> update_calculated_values()}
+  end
+
   @impl true
   def handle_info(:all_activities_fetched, socket) do
     latest = latest_activity_of_type(socket.assigns.activities, socket.assigns.type)

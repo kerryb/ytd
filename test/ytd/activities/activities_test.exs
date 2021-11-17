@@ -217,4 +217,45 @@ defmodule YTD.ActivitiesTest do
       assert_receive {:new_activity, ^saved_activity}
     end
   end
+
+  describe "YTD.Activities.activity_updated/2" do
+    test "gets the activity details from Strava and saves it in the database" do
+      user = insert(:user)
+      insert(:activity, user: user, strava_id: 1234)
+
+      %{id: activity_id} =
+        activity = %DetailedActivity{
+          id: 1234,
+          type: "Run",
+          name: "Edited run",
+          distance: 5678.9,
+          start_date: ~U[2021-01-21 09:00:00Z]
+        }
+
+      stub(StravaMock, :get_activity, fn ^user, ^activity_id -> {:ok, activity} end)
+      Activities.activity_updated(user.athlete_id, activity.id)
+
+      saved_activity = Repo.one(from(a in Activity))
+      assert_maps_equal(activity, saved_activity, [:name, :type, :start_date, :distance])
+    end
+
+    test "broadcasts the updated activity on the appropriate channel" do
+      user = insert(:user)
+      PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
+
+      activity = %DetailedActivity{
+        id: 1234,
+        type: "Run",
+        name: "Morning run",
+        distance: 5678.9,
+        start_date: ~U[2021-01-21 09:00:00Z]
+      }
+
+      stub(StravaMock, :get_activity, fn _user, _activity_id -> {:ok, activity} end)
+      Activities.activity_updated(user.athlete_id, activity.id)
+
+      saved_activity = Repo.one(from(a in Activity))
+      assert_receive {:updated_activity, ^saved_activity}
+    end
+  end
 end

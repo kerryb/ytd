@@ -193,6 +193,46 @@ defmodule YTDWeb.IndexLiveTest do
     end
   end
 
+  describe "YTDWeb.IndexLive, when an activity is updated" do
+    setup %{conn: conn, user: user} do
+      existing_activity =
+        build(:activity,
+          name: "New run",
+          type: "Run",
+          distance: 50_000.0,
+          start_date: DateTime.truncate(DateTime.utc_now(), :second)
+        )
+
+      updated_activity =
+        Repo.insert!(%{existing_activity | name: "Renamed run", distance: 10_000.0})
+
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [existing_activity] end)
+      {:ok, view, _html} = live(conn, "/")
+      {:ok, updated_activity: updated_activity, view: view}
+    end
+
+    test "updates latest activity if necessary", %{
+      view: view,
+      user: user,
+      updated_activity: updated_activity
+    } do
+      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:updated_activity, updated_activity})
+      assert has_element?(view, "#latest-activity-name", "Renamed run")
+    end
+
+    test "updates the distance", %{view: view, user: user, updated_activity: updated_activity} do
+      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:updated_activity, updated_activity})
+      assert has_element?(view, "#total", "6.2")
+    end
+
+    test "updates the stats", %{view: view, user: user, updated_activity: updated_activity} do
+      avg_element_1 = view |> element("#weekly-average") |> render()
+      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:updated_activity, updated_activity})
+      avg_element_2 = view |> element("#weekly-average") |> render()
+      refute avg_element_1 == avg_element_2
+    end
+  end
+
   describe "YTDWeb.IndexLive, when all activities have been received" do
     test "clears the info message", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
