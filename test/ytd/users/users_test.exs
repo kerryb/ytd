@@ -153,6 +153,7 @@ defmodule YTD.UsersTest do
     setup do
       user = insert(:user, name: "Fred Bloggs")
       insert(:activity, user: user)
+      insert(:target, user: user)
       PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
       {:ok, user: user}
     end

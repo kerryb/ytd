@@ -269,7 +269,7 @@ ALTER TABLE ONLY public.activities
 --
 
 ALTER TABLE ONLY public.targets
-    ADD CONSTRAINT targets_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT targets_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -287,3 +287,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20210328202433);
 INSERT INTO public."schema_migrations" (version) VALUES (20211112221650);
 INSERT INTO public."schema_migrations" (version) VALUES (20211115113803);
 INSERT INTO public."schema_migrations" (version) VALUES (20211118095110);
+INSERT INTO public."schema_migrations" (version) VALUES (20211118120745);
