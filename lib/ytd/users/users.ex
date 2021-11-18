@@ -82,9 +82,8 @@ defmodule YTD.Users do
   end
 
   @impl API
-  def athlete_updated(_athlete_id) do
-    # TODO
-    :ok
+  def athlete_updated(athlete_id) do
+    athlete_id |> get_user_from_athlete_id() |> update_name()
   end
 
   @impl API
