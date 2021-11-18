@@ -22,7 +22,8 @@ defmodule YTDWeb.EventsControllerTest do
           "event_time" => DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix(),
           "object_id" => 1234,
           "object_type" => "activity",
-          "owner_id" => 5678
+          "owner_id" => 5678,
+          "updates" => %{}
         })
 
       assert text_response(conn, 200) =~ ""
@@ -37,7 +38,8 @@ defmodule YTDWeb.EventsControllerTest do
           "event_time" => DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix(),
           "object_id" => 1234,
           "object_type" => "activity",
-          "owner_id" => 5678
+          "owner_id" => 5678,
+          "updates" => %{}
         })
 
       assert text_response(conn, 200) =~ ""
@@ -52,14 +54,15 @@ defmodule YTDWeb.EventsControllerTest do
           "event_time" => DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix(),
           "object_id" => 1234,
           "object_type" => "activity",
-          "owner_id" => 5678
+          "owner_id" => 5678,
+          "updates" => %{}
         })
 
       assert text_response(conn, 200) =~ ""
     end
 
     test "reports athlete update events to the Users context" do
-      expect(UsersMock, :athlete_updated, fn 1234 -> :ok end)
+      expect(UsersMock, :athlete_updated, fn 1234, %{"authorized" => "false"} -> :ok end)
 
       conn =
         post(build_conn(), "/webhooks/events", %{
@@ -67,7 +70,8 @@ defmodule YTDWeb.EventsControllerTest do
           "event_time" => DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix(),
           "object_id" => 1234,
           "object_type" => "athlete",
-          "owner_id" => 1234
+          "owner_id" => 1234,
+          "updates" => %{"authorized" => "false"}
         })
 
       assert text_response(conn, 200) =~ ""
@@ -82,7 +86,8 @@ defmodule YTDWeb.EventsControllerTest do
           "event_time" => DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix(),
           "object_id" => 1234,
           "object_type" => "athlete",
-          "owner_id" => 1234
+          "owner_id" => 1234,
+          "updates" => %{}
         })
 
       assert text_response(conn, 200) =~ ""
@@ -95,7 +100,8 @@ defmodule YTDWeb.EventsControllerTest do
           "event_time" => DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix(),
           "object_id" => 1234,
           "object_type" => "athlete",
-          "owner_id" => 1234
+          "owner_id" => 1234,
+          "updates" => %{}
         })
 
       assert text_response(conn, 200) =~ ""

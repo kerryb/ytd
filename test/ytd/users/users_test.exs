@@ -116,7 +116,27 @@ defmodule YTD.UsersTest do
     end
   end
 
-  describe "YTD.Users.athlete_updated/1" do
+  describe "YTD.Users.athlete_updated/1, for deauthorisation events" do
+    setup do
+      user = insert(:user, name: "Fred Bloggs")
+      insert(:activity, user: user)
+      insert(:target, user: user)
+      PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
+      {:ok, user: user}
+    end
+
+    test "deletes the user", %{user: user} do
+      :ok = Users.athlete_updated(user.athlete_id, %{"authorized" => "false"})
+      assert Repo.all(User) == []
+    end
+
+    test "sends a :deauthorised message", %{user: user} do
+      :ok = Users.athlete_updated(user.athlete_id, %{"authorized" => "false"})
+      assert_receive :deauthorised
+    end
+  end
+
+  describe "YTD.Users.athlete_updated/1, other than for deauthorisation events" do
     setup do
       user = insert(:user, name: "Fred Bloggs")
       PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
@@ -129,21 +149,21 @@ defmodule YTD.UsersTest do
     test "sends a :name_updated message if the name has changed", %{user: user} do
       athlete = %DetailedAthlete{firstname: "Freddy", lastname: "Bloggs"}
       stub(StravaMock, :get_athlete_details, fn ^user -> {:ok, athlete} end)
-      :ok = Users.athlete_updated(user.athlete_id)
+      :ok = Users.athlete_updated(user.athlete_id, %{})
       assert_receive {:name_updated, %User{name: "Freddy Bloggs"}}
     end
 
     test "doesn't broadcast a name_updated message if the name has not changed", %{user: user} do
       athlete = %DetailedAthlete{firstname: "Fred", lastname: "Bloggs"}
       stub(StravaMock, :get_athlete_details, fn ^user -> {:ok, athlete} end)
-      :ok = Users.athlete_updated(user.athlete_id)
+      :ok = Users.athlete_updated(user.athlete_id, %{})
       refute_receive {:name_updated, _}
     end
 
     test "updates the user if the name has changed", %{user: user} do
       athlete = %DetailedAthlete{firstname: "Freddy", lastname: "Bloggs"}
       stub(StravaMock, :get_athlete_details, fn ^user -> {:ok, athlete} end)
-      :ok = Users.athlete_updated(user.athlete_id)
+      :ok = Users.athlete_updated(user.athlete_id, %{})
       updated_user = Repo.get(User, user.id)
       assert updated_user.name == "Freddy Bloggs"
     end

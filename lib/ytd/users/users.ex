@@ -82,7 +82,11 @@ defmodule YTD.Users do
   end
 
   @impl API
-  def athlete_updated(athlete_id) do
+  def athlete_updated(athlete_id, %{"authorized" => "false"}) do
+    athlete_deleted(athlete_id)
+  end
+
+  def athlete_updated(athlete_id, _updates) do
     athlete_id |> get_user_from_athlete_id() |> update_name()
   end
 

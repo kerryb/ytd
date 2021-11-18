@@ -15,22 +15,27 @@ defmodule YTDWeb.EventsController do
   end
 
   @spec event(Conn.t(), %{String.t() => String.t()}) :: Conn.t()
-  def event(conn, %{
-        "aspect_type" => operation,
-        "object_id" => id,
-        "object_type" => type,
-        "owner_id" => athlete_id
-      }) do
+  def event(conn, event) do
+    Logger.info("Received webhook event #{inspect(event)}")
+    handle_event(event)
+    text(conn, "")
+  end
+
+  defp handle_event(%{
+         "aspect_type" => operation,
+         "object_id" => id,
+         "object_type" => type,
+         "owner_id" => athlete_id,
+         "updates" => updates
+       }) do
     case {type, operation} do
       {"activity", "create"} -> activities_api().activity_created(athlete_id, id)
       {"activity", "update"} -> activities_api().activity_updated(athlete_id, id)
       {"activity", "delete"} -> activities_api().activity_deleted(athlete_id, id)
-      {"athlete", "update"} -> users_api().athlete_updated(athlete_id)
+      {"athlete", "update"} -> users_api().athlete_updated(athlete_id, updates)
       {"athlete", "delete"} -> users_api().athlete_deleted(athlete_id)
       _params -> :ok
     end
-
-    text(conn, "")
   end
 
   defp activities_api, do: Application.fetch_env!(:ytd, :activities_api)
