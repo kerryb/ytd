@@ -243,6 +243,13 @@ CREATE UNIQUE INDEX activities_strava_id_index ON public.activities USING btree 
 
 
 --
+-- Name: subscription_strava_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX subscription_strava_id_index ON public.subscription USING btree (strava_id);
+
+
+--
 -- Name: targets_user_id_activity_type_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -254,7 +261,7 @@ CREATE UNIQUE INDEX targets_user_id_activity_type_index ON public.targets USING 
 --
 
 ALTER TABLE ONLY public.activities
-    ADD CONSTRAINT activities_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT activities_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -279,3 +286,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20210303204557);
 INSERT INTO public."schema_migrations" (version) VALUES (20210328202433);
 INSERT INTO public."schema_migrations" (version) VALUES (20211112221650);
 INSERT INTO public."schema_migrations" (version) VALUES (20211115113803);
+INSERT INTO public."schema_migrations" (version) VALUES (20211118095110);

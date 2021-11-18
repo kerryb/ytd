@@ -87,9 +87,9 @@ defmodule YTD.Users do
   end
 
   @impl API
-  def athlete_deleted(_athlete_id) do
-    # TODO
-    :ok
+  def athlete_deleted(athlete_id) do
+    athlete_id |> Queries.get_user_from_athlete_id() |> Repo.delete_all()
+    PubSub.broadcast!(:ytd, "athlete:#{athlete_id}", :deauthorised)
   end
 
   defp strava_api, do: Application.fetch_env!(:ytd, :strava_api)

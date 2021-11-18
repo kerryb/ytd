@@ -189,6 +189,10 @@ defmodule YTDWeb.IndexLive do
     {:noreply, assign(socket, user: user)}
   end
 
+  def handle_info(:deauthorised, socket) do
+    {:noreply, redirect(socket, to: "/")}
+  end
+
   def handle_info(:refresh_stats, socket) do
     Process.send_after(self(), :refresh_stats, :timer.minutes(1))
     {:noreply, update_calculated_values(socket)}

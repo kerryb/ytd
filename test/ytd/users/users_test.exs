@@ -148,4 +148,23 @@ defmodule YTD.UsersTest do
       assert updated_user.name == "Freddy Bloggs"
     end
   end
+
+  describe "YTD.Users.athlete_deleted/1" do
+    setup do
+      user = insert(:user, name: "Fred Bloggs")
+      insert(:activity, user: user)
+      PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
+      {:ok, user: user}
+    end
+
+    test "deletes the user", %{user: user} do
+      :ok = Users.athlete_deleted(user.athlete_id)
+      assert Repo.all(User) == []
+    end
+
+    test "sends a :deauthorised message", %{user: user} do
+      :ok = Users.athlete_deleted(user.athlete_id)
+      assert_receive :deauthorised
+    end
+  end
 end

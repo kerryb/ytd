@@ -332,7 +332,7 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when a name_updated message is received" do
-    test "show the new name", %{conn: conn, user: user} do
+    test "shows the new name", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
 
       PubSub.broadcast!(
@@ -342,6 +342,17 @@ defmodule YTDWeb.IndexLiveTest do
       )
 
       assert has_element?(view, "#name", "Freddy Bloggs")
+    end
+  end
+
+  describe "YTDWeb.IndexLive, when a 'deauthorised' message is received" do
+    test "redirects to / (which will be the login page, as the user no longer exists)", %{
+      conn: conn,
+      user: user
+    } do
+      {:ok, view, _html} = live(conn, "/")
+      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", :deauthorised)
+      assert_redirect(view, "/")
     end
   end
 
