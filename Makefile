@@ -1,4 +1,5 @@
-.PHONY: bumbailiff clean deploy dialyzer setup style test unit-test update-deps
+.PHONY: bumbailiff check-working-dir-clean check-version-up-to-date clean deploy dialyzer \
+	setup style test unit-test update-deps
 all: clean style compile dialyzer test docs bumbailiff
 setup:
 	mix deps.get
@@ -25,12 +26,17 @@ docs:
 update-deps:
 	mix deps.update --all
 	cd assets && npm update
-release:
+release: check-working-dir-clean check-version-up-to-date
 	rm -f ytd-*.gz
 	docker build --tag=ytd-release -f docker/builder/Dockerfile .
 	docker rm -f ytd-release
 	docker create --name ytd-release ytd-release
 	docker cp ytd-release:/app/_build/prod/ytd-`cat VERSION`.tar.gz .
+check-working-dir-clean:
+	[[ -z "`git status --porcelain`" ]] || (echo "There are uncommitted changes" >&2 ; exit 1)
+check-version-up-to-date:
+	[[ `git log -1 --pretty=format:'%h'` == `git log -1 --pretty=format:'%h' VERSION` ]] \
+	  || (echo "There have been changes since VERSION was updated" >&2 ; exit 1)
 deploy:
 	scp ytd-`cat VERSION`.tar.gz ytd@ytd.kerryb.org:
 	ssh ytd@ytd.kerryb.org "bash -lc './deploy-release.sh ytd-`cat VERSION`.tar.gz && rm ytd-`cat VERSION`.tar.gz'"
