@@ -219,6 +219,7 @@ defmodule YTDWeb.IndexLive do
 
     ytd = total_distance(activities, type, unit)
     stats = calculate_stats(ytd, unit, Date.utc_today(), type, targets)
+    copy_text = "#{today_distance(activities, unit)}/#{ytd}"
 
     assign(socket,
       count: count,
@@ -226,7 +227,8 @@ defmodule YTDWeb.IndexLive do
       latest_activity_name: latest_activity_name,
       latest_activity_time: latest_activity_time,
       stats: stats,
-      ytd: ytd
+      ytd: ytd,
+      copy_text: copy_text
     )
   end
 
@@ -271,6 +273,17 @@ defmodule YTDWeb.IndexLive do
       end
 
     Stats.calculate(ytd, date, target)
+  end
+
+  defp today_distance(activities, unit) do
+    start_of_day = Timex.beginning_of_day(DateTime.utc_now())
+
+    activities
+    |> Enum.reject(&(DateTime.compare(&1.start_date, start_of_day) == :lt))
+    |> Enum.map(& &1.distance)
+    |> Enum.sum()
+    |> Util.convert(from: "metres", to: unit)
+    |> Float.round(1)
   end
 
   defp activities_api, do: Application.fetch_env!(:ytd, :activities_api)

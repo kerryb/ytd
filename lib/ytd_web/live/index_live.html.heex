@@ -23,8 +23,10 @@
 <hr class="separator">
 <p class="font-thin text-2xl mt-2">Year to date (<span id="count"><%= @count %></span>): </p>
 <p class="text-5xl sm:text-7xl my-4"}>
-  <span class="font-extrabold" id="total"><%= @ytd %></span>
-  <span class="font-thin"><%= @unit %></span>
+  <a href="#" id="copy" onClick={"navigator.clipboard.writeText('#{@copy_text}'); return false;"}>
+    <span class="font-extrabold" id="total"><%= @ytd %></span>
+    <span class="font-thin"><%= @unit %></span>
+  </a>
 </p>
 <p class="font-thin text-2xl mb-2">(That’s
   <span class="font-extrabold" id="weekly-average"><%= @stats.weekly_average %> <%= @unit %></span>

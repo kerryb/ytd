@@ -100,6 +100,22 @@ defmodule YTDWeb.IndexLiveTest do
       assert has_element?(view, "#total", "9.3")
     end
 
+    test "allows the text '<today's distance>/<ytd>' to be copied", %{conn: conn, user: user} do
+      activities = [
+        build(:activity,
+          type: "Run",
+          distance: 5_000.0,
+          start_date: Timex.shift(DateTime.utc_now(), days: -1)
+        ),
+        build(:activity, type: "Run", distance: 10_000.0, start_date: DateTime.utc_now()),
+        build(:activity, type: "Run", distance: 20_000.0, start_date: DateTime.utc_now())
+      ]
+
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
+      {:ok, view, _html} = live(conn, "/")
+      assert view |> element("a#copy") |> render() =~ "18.6/21.7"
+    end
+
     test "updates the number of activities", %{conn: conn, user: user} do
       activities = [
         build(:activity, type: "Run", distance: 5_000.0),
