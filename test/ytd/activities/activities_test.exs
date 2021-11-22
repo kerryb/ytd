@@ -1,7 +1,7 @@
 defmodule YTD.ActivitiesTest do
   use YTD.DataCase, async: false
 
-  import Assertions, only: [assert_maps_equal: 3, assert_struct_in_list: 3]
+  import Assertions, only: [assert_lists_equal: 2, assert_maps_equal: 3, assert_struct_in_list: 3]
   import Ecto.Query
   import Mox
 
@@ -19,6 +19,19 @@ defmodule YTD.ActivitiesTest do
     user = insert(:user)
     PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
     {:ok, user: user}
+  end
+
+  describe "YTD.Activities.get_existing_activities/1" do
+    test "returns all the user's activities from the database", %{user: user} do
+      insert(:activity, user: user, name: "Morning run")
+      insert(:activity, user: user, name: "Afternoon run")
+      insert(:activity, user: build(:user), name: "Someone else's run")
+
+      assert_lists_equal(user |> Activities.get_existing_activities() |> Enum.map(& &1.name), [
+        "Morning run",
+        "Afternoon run"
+      ])
+    end
   end
 
   describe "YTD.Activities.fetch_activities/2" do
