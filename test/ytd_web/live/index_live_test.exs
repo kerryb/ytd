@@ -108,6 +108,7 @@ defmodule YTDWeb.IndexLiveTest do
           start_date: Timex.shift(DateTime.utc_now(), days: -1)
         ),
         build(:activity, type: "Run", distance: 10_000.0, start_date: DateTime.utc_now()),
+        build(:activity, type: "Ride", distance: 50_000.0, start_date: DateTime.utc_now()),
         build(:activity, type: "Run", distance: 20_000.0, start_date: DateTime.utc_now())
       ]
 
