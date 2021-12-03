@@ -48,7 +48,8 @@ defmodule YTD.MixProject do
       {:ex_doc, "~> 0.21", only: :dev},
       {:ex_machina, "~> 2.4", only: :test},
       {:excoveralls, "~> 0.13", only: :test},
-      {:faker, "~> 0.16", only: :test},
+      # Waiting for 0.17, supporting Elixir 1.13
+      {:faker, "~> 0.16", github: "elixirs/faker", only: :test},
       {:floki, ">= 0.0.0", only: :test},
       {:gettext, "~> 0.11"},
       {:hammox, "~> 0.2", only: :test},
