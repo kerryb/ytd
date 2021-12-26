@@ -61,7 +61,7 @@ defmodule YTD.StatsTest do
       assert stats.on_target? == nil
     end
 
-    test "returns nil for reuired weekly average" do
+    test "returns nil for required weekly average" do
       stats = Stats.calculate(123, ~D[2017-04-15])
       assert stats.required_average == nil
     end
