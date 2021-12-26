@@ -216,14 +216,25 @@ defmodule YTDWeb.IndexLiveTest do
         build(:activity,
           name: "Afternoon run",
           type: "Run",
-          distance: 50_000.0,
+          distance: 1_000.0,
           start_date: DateTime.truncate(DateTime.utc_now(), :second)
+        )
+
+      another_activity =
+        build(:activity,
+          name: "Morning run",
+          type: "Run",
+          distance: 10_000.0,
+          start_date: DateTime.utc_now() |> DateTime.truncate(:second) |> Timex.shift(days: -1)
         )
 
       updated_activity =
         Repo.insert!(%{existing_activity | name: "Renamed run", distance: 10_000.0})
 
-      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [existing_activity] end)
+      stub(ActivitiesMock, :get_existing_activities, fn ^user ->
+        [existing_activity, another_activity]
+      end)
+
       {:ok, view, _html} = live(conn, "/")
       {:ok, updated_activity: updated_activity, view: view}
     end
@@ -239,7 +250,7 @@ defmodule YTDWeb.IndexLiveTest do
 
     test "updates the distance", %{view: view, user: user, updated_activity: updated_activity} do
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:updated_activity, updated_activity})
-      assert has_element?(view, "#total", "6.2")
+      assert has_element?(view, "#total", "12.4")
     end
 
     test "updates the stats", %{view: view, user: user, updated_activity: updated_activity} do
