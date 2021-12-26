@@ -62,15 +62,12 @@ defmodule YTD.Stats do
 
   defp on_target?(ytd, now, target), do: projected_annual(ytd, now) >= target
 
-  defp estimated_target_completion(_ytd, _now, nil), do: nil
   defp estimated_target_completion(0.0, _now, _target), do: nil
 
   defp estimated_target_completion(ytd, now, target) do
     days = Timex.day(now)
     Timex.shift(Timex.beginning_of_year(now), days: round(days * target / ytd))
   end
-
-  defp required_average(_ytd, _now, nil), do: 0
 
   defp required_average(ytd, now, target) do
     days_left = Timex.diff(Timex.end_of_year(now), now, :days) + 1
