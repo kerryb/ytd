@@ -19,11 +19,6 @@ defmodule YTD.StatsTest do
       assert leap_year_stats.projected_annual > normal_year_stats.projected_annual
     end
 
-    test "returns nil for estimated annual total if there's no distance yet" do
-      stats = Stats.calculate(0.0, ~D[2017-04-15], 400)
-      assert stats.estimated_target_completion == nil
-    end
-
     test "reports completed if the ytd distance is at least the target" do
       stats = Stats.calculate(123, ~D[2017-04-15], 123)
       assert stats.completed?
@@ -49,7 +44,12 @@ defmodule YTD.StatsTest do
       assert stats.estimated_target_completion == ~D[2017-12-08]
     end
 
-    test "returns the weekly average needed from now to hit the target, to 1dp" do
+    test "returns nil for estimated target completion if there's no distance yet" do
+      stats = Stats.calculate(0.0, ~D[2017-04-15], 400)
+      assert stats.estimated_target_completion == nil
+    end
+
+    test "returns the required weekly average from now to hit the target, to 1dp" do
       stats = Stats.calculate(123, ~D[2017-04-15], 456)
       assert_in_delta(stats.required_average, 8.9, 0.0001)
     end
