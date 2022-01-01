@@ -17,7 +17,13 @@ defmodule YTD.Activities do
 
   @impl API
   def get_existing_activities(user) do
-    Repo.all(from a in Activity, where: a.user_id == ^user.id)
+    beginning_of_year = Timex.beginning_of_year(DateTime.utc_now())
+
+    Repo.all(
+      from a in Activity,
+        where: a.user_id == ^user.id,
+        where: a.start_date >= ^beginning_of_year
+    )
   end
 
   @impl API

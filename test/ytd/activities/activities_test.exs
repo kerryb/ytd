@@ -22,10 +22,30 @@ defmodule YTD.ActivitiesTest do
   end
 
   describe "YTD.Activities.get_existing_activities/1" do
-    test "returns all the user's activities from the database", %{user: user} do
-      insert(:activity, user: user, name: "Morning run")
-      insert(:activity, user: user, name: "Afternoon run")
-      insert(:activity, user: build(:user), name: "Someone else's run")
+    test "returns all the user's activities for the current year from the database", %{user: user} do
+      insert(:activity,
+        user: user,
+        name: "Old run",
+        start_date: DateTime.utc_now() |> Timex.shift(years: -1) |> DateTime.truncate(:second)
+      )
+
+      insert(:activity,
+        user: user,
+        name: "Morning run",
+        start_date: DateTime.truncate(DateTime.utc_now(), :second)
+      )
+
+      insert(:activity,
+        user: user,
+        name: "Afternoon run",
+        start_date: DateTime.truncate(DateTime.utc_now(), :second)
+      )
+
+      insert(:activity,
+        user: build(:user),
+        name: "Someone else's run",
+        start_date: DateTime.truncate(DateTime.utc_now(), :second)
+      )
 
       assert_lists_equal(user |> Activities.get_existing_activities() |> Enum.map(& &1.name), [
         "Morning run",
