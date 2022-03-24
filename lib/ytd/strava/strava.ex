@@ -67,7 +67,7 @@ defmodule YTD.Strava do
             ]},
            with_body: true
          ) do
-      {:ok, 200, _, body} -> Jason.decode(body)
+      {:ok, 200, _headers, body} -> Jason.decode(body)
       error -> error
     end
   end

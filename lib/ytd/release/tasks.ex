@@ -12,13 +12,13 @@ defmodule YTD.Release.Tasks do
   @spec migrate :: [{:ok, any(), any()}] | no_return()
   def migrate do
     for repo <- repos() do
-      {:ok, _, _} = Migrator.with_repo(repo, &Migrator.run(&1, :up, all: true))
+      {:ok, _return, _apps} = Migrator.with_repo(repo, &Migrator.run(&1, :up, all: true))
     end
   end
 
   @spec rollback(Repo.t(), integer()) :: {:ok, any(), any()} | no_return()
   def rollback(repo, version) do
-    {:ok, _, _} = Migrator.with_repo(repo, &Migrator.run(&1, :down, to: version))
+    {:ok, _return, _apps} = Migrator.with_repo(repo, &Migrator.run(&1, :down, to: version))
   end
 
   defp repos do
