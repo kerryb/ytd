@@ -26,7 +26,7 @@ make release
 make deploy
 ```
 
-## Set up server
+## Set up server
 
 Run `setup/setup-server.sh` on the server, update Strava tokens in
 `/opt/ytd/ytd.env`, then install a release as above.
