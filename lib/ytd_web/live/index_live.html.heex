@@ -36,7 +36,7 @@
   <hr class="separator">
   <p class="font-thin text-2xl mt-2">Projected year total:</p>
   <p class="text-5xl sm:text-7xl my-4"}>
-    <span class="font-extrabold" id="projected-annual"><%= @stats.projected_annual %></span>
+    <span class="font-extrabold" id="projected-annual"><%= :io_lib.format '~.1f', [@stats.projected_annual] %></span>
     <span class="font-thin"><%= @unit %></span>
   </p>
   <p class="font-thin text-2xl mb-2">
