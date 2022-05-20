@@ -134,7 +134,7 @@ defmodule YTDWeb.IndexLiveTest do
       stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
       avg_element = view |> element("#weekly-average") |> render()
-      [avg] = Regex.run(~r/>(\d+\.\d)/, avg_element, capture: :all_but_first)
+      [avg] = Regex.run(~r/\d+\.\d/, avg_element)
       refute avg == "0.0"
     end
 
@@ -144,10 +144,7 @@ defmodule YTDWeb.IndexLiveTest do
       stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
       projected_annual_element = view |> element("#projected-annual") |> render()
-
-      [projected_annual] =
-        Regex.run(~r/>(\d+\.\d)</, projected_annual_element, capture: :all_but_first)
-
+      [projected_annual] = Regex.run(~r/\d+\.\d/, projected_annual_element)
       refute projected_annual == "0.0"
     end
 

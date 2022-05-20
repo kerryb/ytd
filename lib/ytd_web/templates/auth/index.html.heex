@@ -7,23 +7,29 @@
   Track your progress towards a yearly distance target for running or cycling
   (or any other activity you track on Strava).
 </p>
-<%= img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/screenshot.png"), class: "border mx-auto mb-5 transform -rotate-2 drop-shadow-lg dark:hidden") %>
-<%= img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/screenshot-dark.png"), class: "border border-strava-orange mx-auto mb-5 transform -rotate-2 hidden dark:block") %>
+<%= img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/screenshot.png"),
+  class: "border mx-auto mb-5 transform -rotate-2 drop-shadow-lg dark:hidden"
+) %>
+<%= img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/screenshot-dark.png"),
+  class: "border border-strava-orange mx-auto mb-5 transform -rotate-2 hidden dark:block"
+) %>
 <p class="font-thin text-2xl mb-5">
-  Click the button below to connect with Strava, and allow your activities to 
-  be fetched (you only need to do this once). 
+  Click the button below to connect with Strava, and allow your activities to
+  be fetched (you only need to do this once).
 </p>
 <p class="font-thin text-2xl">
-  The  
-  <span class="font-extrabold">View data about your activities</span>
-  permission is required. If you want private activities to be included in 
-  your distance totals, you also need to allow 
-  <span class="font-extrabold">View data about your private activities</span>
-  .
+  The <span class="font-extrabold">View data about your activities</span>
+  permission is required. If you want private activities to be included in
+  your distance totals, you also need to allow
+  <span class="font-extrabold">View data about your private activities</span> .
 </p>
 <div class="mt-10 width-full flex flex-col items-center">
   <a href={@auth_url}>
-    <%= img_tag(Routes.static_path(@conn, "/images/btn_strava_connectwith_light.png"), class: "dark:hidden") %>
-    <%= img_tag(Routes.static_path(@conn, "/images/btn_strava_connectwith_orange.png"), class: "hidden dark:inline") %>
+    <%= img_tag(Routes.static_path(@conn, "/images/btn_strava_connectwith_light.png"),
+      class: "dark:hidden"
+    ) %>
+    <%= img_tag(Routes.static_path(@conn, "/images/btn_strava_connectwith_orange.png"),
+      class: "hidden dark:inline"
+    ) %>
   </a>
 </div>

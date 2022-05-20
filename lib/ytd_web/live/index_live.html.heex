@@ -1,4 +1,4 @@
-<hr class="separator">
+<hr class="separator" />
 <form class="flex flex-row justify-between" phx-change="select">
   <select class="select-noborder" id="type" name="type">
     <%= for type <- @types do %>
@@ -20,23 +20,28 @@
     <% end %>
   </select>
 </form>
-<hr class="separator">
-<p class="font-thin text-2xl mt-2">Year to date (<span id="count"><%= @count %></span>): </p>
+<hr class="separator" />
+<p class="font-thin text-2xl mt-2">Year to date (<span id="count"><%= @count %></span>):</p>
 <p class="text-5xl sm:text-7xl my-4">
   <a href="#" id="copy" onClick={"navigator.clipboard.writeText('#{@copy_text}'); return false;"}>
     <span class="font-extrabold" id="total"><%= @ytd %></span>
     <span class="font-thin"><%= @unit %></span>
   </a>
 </p>
-<p class="font-thin text-2xl mb-2">(That’s
-  <span class="font-extrabold" id="weekly-average"><%= @stats.weekly_average %> <%= @unit %></span>
+<p class="font-thin text-2xl mb-2">
+  (That’s
+  <span class="font-extrabold" id="weekly-average">
+    <%= @stats.weekly_average %> <%= @unit %>
+  </span>
   a week)
 </p>
 <%= if @stats.projected_annual do %>
-  <hr class="separator">
+  <hr class="separator" />
   <p class="font-thin text-2xl mt-2">Projected year total:</p>
-  <p class="text-5xl sm:text-7xl my-4"}>
-    <span class="font-extrabold" id="projected-annual"><%= :io_lib.format '~.1f', [@stats.projected_annual] %></span>
+  <p class="text-5xl sm:text-7xl my-4" }>
+    <span class="font-extrabold" id="projected-annual">
+      <%= :io_lib.format('~.1f', [@stats.projected_annual]) %>
+    </span>
     <span class="font-thin"><%= @unit %></span>
   </p>
   <p class="font-thin text-2xl mb-2">
@@ -51,13 +56,13 @@
     <.edit_target_modal type={@type} unit={@unit} target={@targets[@type]} />
   <% end %>
 <% end %>
-<hr class="separator">
+<hr class="separator" />
 <div class="flex flex-row justify-between items-center text-sm">
   <div class="font-thin" id="latest-activity">
     <%= if @latest_activity_name do %>
       Latest:
-      <span class="font-bold" id="latest-activity-name"><%= @latest_activity_name %></span>
-      (<span id="latest-activity-date"><%= @latest_activity_time %></span>)
+      <span class="font-bold" id="latest-activity-name"><%= @latest_activity_name %></span> (
+      <span id="latest-activity-date"><%= @latest_activity_time %></span>)
     <% end %>
   </div>
   <%= if @refreshing? do %>
@@ -65,14 +70,27 @@
       <i class="fas fa-sync fa-spin opacity-50"></i>
     </button>
   <% else %>
-    <button class="focus:outline-none" id="refresh" phx-click="refresh" title="Fetch new activities. Shift-click to discard all activities and reload everything from Strava.">
+    <button
+      class="focus:outline-none"
+      id="refresh"
+      phx-click="refresh"
+      title="Fetch new activities. Shift-click to discard all activities and reload everything from Strava."
+    >
       <i class="fas fa-sync"></i>
     </button>
   <% end %>
 </div>
-<hr class="separator">
+<hr class="separator" />
 <div class="flex flex-row justify-between items-end text-xs opacity-50">
-  <%= img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/api_logo_pwrdBy_strava_horiz_white.png"), width: "113", class: "dark:hidden") %>
-  <%= img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/api_logo_pwrdBy_strava_horiz_light.png"), width: "113", class: "hidden dark:inline") %>
-  <%= link "Made by Kerry Buckley", to: "https://github.com/kerryb/ytd" %>
+  <%= img_tag(
+    Routes.static_path(YTDWeb.Endpoint, "/images/api_logo_pwrdBy_strava_horiz_white.png"),
+    width: "113",
+    class: "dark:hidden"
+  ) %>
+  <%= img_tag(
+    Routes.static_path(YTDWeb.Endpoint, "/images/api_logo_pwrdBy_strava_horiz_light.png"),
+    width: "113",
+    class: "hidden dark:inline"
+  ) %>
+  <%= link("Made by Kerry Buckley", to: "https://github.com/kerryb/ytd") %>
 </div>

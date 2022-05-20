@@ -27,7 +27,9 @@ defmodule YTDWeb.Components do
     ~H"""
     You have hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
-      <%= @target.target %> <%= @target.unit %></a>!
+      <%= @target.target %> <%= @target.unit %>
+    </a>
+    !
     """
   end
 
@@ -36,7 +38,9 @@ defmodule YTDWeb.Components do
     ~H"""
     You are on track to hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
-      <%= @target.target %> <%= @target.unit %></a>, as long as you average
+      <%= @target.target %> <%= @target.unit %>
+    </a>
+    , as long as you average
     <span class="font-extrabold"><%= @stats.required_average %> <%= @unit %></span>
     a week from now on.
     """
@@ -47,7 +51,9 @@ defmodule YTDWeb.Components do
     ~H"""
     To hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
-      <%= @target.target %> <%= @target.unit %></a>, you need to average
+      <%= @target.target %> <%= @target.unit %>
+    </a>
+    , you need to average
     <span class="font-extrabold"><%= @stats.required_average %> <%= @unit %></span>
     a week from now on.
     """
@@ -60,13 +66,31 @@ defmodule YTDWeb.Components do
       <div class="max-w-xl max-h-full bg-strava-orange dark:bg-black dark:border dark:border-strava-orange rounded shadow-lg overflow-auto p-4 mb-2">
         <form id="edit-target-form" phx-submit="submit-target">
           <div class="mb-4">
-            <label for="target"><%= @type %> target: </label>
-            <input autofocus="true" class="w-20 text-strava-orange dark:bg-black dark:border dark:border-strava-orange pl-2 ml-2 rounded" id="target" name="target" type="number" value={if @target, do: @target.target, else: 0}>
+            <label for="target"><%= @type %> target:</label>
+            <input
+              autofocus="true"
+              class="w-20 text-strava-orange dark:bg-black dark:border dark:border-strava-orange pl-2 ml-2 rounded"
+              id="target"
+              name="target"
+              type="number"
+              value={if @target, do: @target.target, else: 0}
+            />
             <%= @unit %>
           </div>
           <div class="flex justify-between">
-            <button class="font-thin border rounded px-1 bg-strava-orange hover:bg-strava-orange-dark dark:bg-black dark:border-strava-orange dark:hover:bg-gray-800" phx-click="cancel-target" type="button">Cancel</button>
-            <button class="font-bold border-2 rounded px-1 bg-white text-strava-orange hover:bg-gray-200 dark:bg-strava-orange dark:border-strava-orange dark:text-black dark:hover:bg-strava-orange-dark" type="submit">Save</button>
+            <button
+              class="font-thin border rounded px-1 bg-strava-orange hover:bg-strava-orange-dark dark:bg-black dark:border-strava-orange dark:hover:bg-gray-800"
+              phx-click="cancel-target"
+              type="button"
+            >
+              Cancel
+            </button>
+            <button
+              class="font-bold border-2 rounded px-1 bg-white text-strava-orange hover:bg-gray-200 dark:bg-strava-orange dark:border-strava-orange dark:text-black dark:hover:bg-strava-orange-dark"
+              type="submit"
+            >
+              Save
+            </button>
           </div>
         </form>
       </div>
