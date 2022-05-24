@@ -9,7 +9,6 @@ defmodule YTD.Activities.API do
 
   @callback get_existing_activities(User.t()) :: [Activity.t()]
   @callback fetch_activities(User.t()) :: :ok
-  @callback refresh_activities(User.t()) :: :ok
   @callback reload_activities(User.t()) :: :ok
   @callback save_activity(user :: User.t(), activity :: SummaryActivity.t()) :: :ok
   @callback activity_created(athlete_id :: integer(), activity_id :: integer()) :: :ok

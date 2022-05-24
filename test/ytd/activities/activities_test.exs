@@ -130,23 +130,6 @@ defmodule YTD.ActivitiesTest do
     end
   end
 
-  describe "YTD.Activities.refresh_activities/2" do
-    setup :verify_on_exit!
-
-    test "requests new activities from Strava", %{user: user} do
-      insert(:activity, user: user, start_date: ~U[2021-01-19 14:00:00Z])
-      insert(:activity, user: user, start_date: ~U[2021-01-20 21:00:00Z])
-
-      expect(StravaMock, :stream_activities_since, fn ^user,
-                                                      ~U[2021-01-20 21:00:00Z],
-                                                      _callback ->
-        :ok
-      end)
-
-      Activities.refresh_activities(user)
-    end
-  end
-
   describe "YTD.Activities.reload_activities/2" do
     setup :stub_strava
     setup :verify_on_exit!

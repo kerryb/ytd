@@ -33,12 +33,6 @@ defmodule YTD.Activities do
   end
 
   @impl API
-  def refresh_activities(user) do
-    stream_activities_from_strava(user, latest_activity_or_beginning_of_year(user))
-    :ok
-  end
-
-  @impl API
   def reload_activities(user) do
     delete_all_activities(user)
     stream_activities_from_strava(user, Timex.beginning_of_year(DateTime.utc_now()))
