@@ -28,7 +28,6 @@ defmodule YTDWeb.IndexLive do
       PubSub.subscribe(:ytd, "athlete:#{user.athlete_id}")
       fetch_new_activities(user)
       update_name(user)
-      Process.send_after(self(), :refresh_stats, :timer.minutes(1))
     end
 
     {:ok,
@@ -72,14 +71,9 @@ defmodule YTDWeb.IndexLive do
     {:noreply, socket |> assign(unit: unit) |> update_calculated_values()}
   end
 
-  def handle_event("refresh", %{"shift_key" => true}, socket) do
+  def handle_event("refresh", _params, socket) do
     Task.start_link(fn -> :ok = activities_api().reload_activities(socket.assigns.user) end)
     {:noreply, socket |> assign(activities: [], refreshing?: true) |> update_calculated_values()}
-  end
-
-  def handle_event("refresh", _params, socket) do
-    Task.start_link(fn -> :ok = activities_api().refresh_activities(socket.assigns.user) end)
-    {:noreply, assign(socket, refreshing?: true)}
   end
 
   def handle_event("edit-target", _params, socket) do

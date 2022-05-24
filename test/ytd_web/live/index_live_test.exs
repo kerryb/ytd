@@ -16,7 +16,6 @@ defmodule YTDWeb.IndexLiveTest do
     ActivitiesMock
     |> stub(:get_existing_activities, fn _user -> [] end)
     |> stub(:fetch_activities, fn _user -> :ok end)
-    |> stub(:refresh_activities, fn _user -> :ok end)
     |> stub(:reload_activities, fn _user -> :ok end)
 
     stub(UsersMock, :update_name, fn _user -> :ok end)
@@ -301,27 +300,6 @@ defmodule YTDWeb.IndexLiveTest do
     end
   end
 
-  describe "YTDWeb.IndexLive, on timed stats refresh" do
-    test "updates current-time-related values", %{conn: conn, user: user} do
-      activity =
-        build(:activity,
-          strava_id: 5678,
-          name: "Afternoon run",
-          type: "Run",
-          distance: 100_000.0,
-          start_date: DateTime.truncate(DateTime.utc_now(), :second)
-        )
-
-      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
-      {:ok, view, _html} = live(conn, "/")
-      activity_date_1 = view |> element("#latest-activity-date") |> render()
-      Process.sleep(:timer.seconds(1))
-      send(view.pid, :refresh_stats)
-      activity_date_2 = view |> element("#latest-activity-date") |> render()
-      refute activity_date_1 == activity_date_2
-    end
-  end
-
   describe "YTDWeb.IndexLive, when all activities have been received" do
     test "clears the info message", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
@@ -480,34 +458,18 @@ defmodule YTDWeb.IndexLiveTest do
   end
 
   describe "YTDWeb.IndexLive, when the refresh button is clicked" do
-    test "requests new activities", %{conn: conn, user: user} do
-      {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", :all_activities_fetched)
-      expect(ActivitiesMock, :refresh_activities, fn ^user -> :ok end)
-      view |> element("button#refresh") |> render_click()
-    end
-
-    test "disables and animates the refresh button", %{conn: conn, user: user} do
-      {:ok, view, _html} = live(conn, "/")
-      PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", :all_activities_fetched)
-      view |> element("button#refresh") |> render_click()
-      assert view |> element("button#refresh[disabled] .fa-spin") |> has_element?()
-    end
-  end
-
-  describe "YTDWeb.IndexLive, when the refresh button is shift-clicked" do
     test "requests all activities", %{conn: conn, user: user} do
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", :all_activities_fetched)
       expect(ActivitiesMock, :reload_activities, fn ^user -> :ok end)
-      render_click(view, :refresh, %{"shift_key" => true})
+      render_click(view, :refresh)
     end
 
     test "clears the activity list", %{conn: conn, user: user} do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
       {:ok, view, _html} = live(conn, "/")
-      render_click(view, :refresh, %{"shift_key" => true})
+      render_click(view, :refresh)
       assert has_element?(view, "#count", "0 activities")
     end
 
@@ -516,7 +478,7 @@ defmodule YTDWeb.IndexLiveTest do
       stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
       {:ok, view, _html} = live(conn, "/")
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", :all_activities_fetched)
-      render_click(view, :refresh, %{"shift_key" => true})
+      render_click(view, :refresh)
       refute has_element?(view, "#latest-activity-name")
     end
 
@@ -524,7 +486,7 @@ defmodule YTDWeb.IndexLiveTest do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
       {:ok, view, _html} = live(conn, "/")
-      render_click(view, :refresh, %{"shift_key" => true})
+      render_click(view, :refresh)
       assert has_element?(view, "#total", "0.0")
     end
 
@@ -532,7 +494,7 @@ defmodule YTDWeb.IndexLiveTest do
       activity = build(:activity, type: "Run", distance: 5_000.0)
       stub(ActivitiesMock, :get_existing_activities, fn ^user -> [activity] end)
       {:ok, view, _html} = live(conn, "/")
-      render_click(view, :refresh, %{"shift_key" => true})
+      render_click(view, :refresh)
       assert has_element?(view, "#weekly-average", "0.0")
     end
 
