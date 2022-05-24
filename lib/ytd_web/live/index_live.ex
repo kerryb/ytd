@@ -128,11 +128,6 @@ defmodule YTDWeb.IndexLive do
     {:noreply, redirect(socket, to: "/")}
   end
 
-  def handle_info(:refresh_stats, socket) do
-    Process.send_after(self(), :refresh_stats, :timer.minutes(1))
-    {:noreply, update_calculated_values(socket)}
-  end
-
   def handle_info(message, socket) do
     Logger.warn("#{__MODULE__} Received unexpected message #{inspect(message)}")
     {:noreply, socket}
