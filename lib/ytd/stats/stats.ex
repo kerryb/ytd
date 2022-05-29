@@ -6,8 +6,6 @@ defmodule YTD.Stats do
 
   use Boundary, top_level?: true, deps: []
 
-  # TODO: switch to Decimal
-
   @type t :: %__MODULE__{
           weekly_average: float(),
           projected_annual: float(),
