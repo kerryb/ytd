@@ -28,8 +28,7 @@ defmodule YTDWeb.Components do
     You have hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
       <%= @target.target %> <%= @target.unit %>
-    </a>
-    !
+    </a> !
     """
   end
 
@@ -39,10 +38,8 @@ defmodule YTDWeb.Components do
     You are on track to hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
       <%= @target.target %> <%= @target.unit %>
-    </a>
-    , as long as you average
-    <span class="font-extrabold"><%= @stats.required_average %> <%= @unit %></span>
-    a week from now on.
+    </a> , as long as you average
+    <span class="font-extrabold"><%= @stats.required_average %> <%= @unit %></span> a week from now on.
     """
   end
 
@@ -52,10 +49,8 @@ defmodule YTDWeb.Components do
     To hit your target of
     <a class="link" href="#" id="edit-target" phx-click="edit-target">
       <%= @target.target %> <%= @target.unit %>
-    </a>
-    , you need to average
-    <span class="font-extrabold"><%= @stats.required_average %> <%= @unit %></span>
-    a week from now on.
+    </a> , you need to average
+    <span class="font-extrabold"><%= @stats.required_average %> <%= @unit %></span> a week from now on.
     """
   end
 

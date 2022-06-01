@@ -21,7 +21,9 @@
   </select>
 </form>
 <hr class="separator" />
-<p class="font-thin text-2xl mt-2">Year to date (<span id="count"><%= @count %></span>):</p>
+<p class="font-thin text-2xl mt-2">
+  Year to date (<span id="count"><%= @count %></span>):
+</p>
 <p class="text-5xl sm:text-7xl my-4">
   <a href="#" id="copy" onClick={"navigator.clipboard.writeText('#{@copy_text}'); return false;"}>
     <span class="font-extrabold" id="total"><%= @ytd %></span>
@@ -48,8 +50,7 @@
     <%= if @targets[@type] do %>
       <.target_progress stats={@stats} unit={@unit} target={@targets[@type]} />
     <% else %>
-      Why not
-      <a class="link" href="#" id="edit-target" phx-click="edit-target">set yourself a target</a>?
+      Why not <a class="link" href="#" id="edit-target" phx-click="edit-target">set yourself a target</a>?
     <% end %>
   </p>
   <%= if @edit_target? do %>
@@ -61,8 +62,8 @@
   <div class="font-thin" id="latest-activity">
     <%= if @latest_activity_name do %>
       Latest:
-      <span class="font-bold" id="latest-activity-name"><%= @latest_activity_name %></span> (
-      <span id="latest-activity-date"><%= @latest_activity_time %></span>)
+      <span class="font-bold" id="latest-activity-name"><%= @latest_activity_name %></span>
+      ( <span id="latest-activity-date"><%= @latest_activity_time %></span>)
     <% end %>
   </div>
   <%= if @refreshing? do %>
