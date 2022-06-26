@@ -62,7 +62,7 @@ defmodule YTDWeb.IndexLive do
   def handle_event("view-months", _params, socket), do: {:noreply, assign(socket, tab: :months)}
 
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket),
-    do: {:noreply, push_patch(socket, to: Routes.live_path(socket, IndexLive, type))}
+    do: {:noreply, push_patch(socket, to: Routes.live_path(socket, __MODULE__, type))}
 
   def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket),
     do: {:noreply, socket |> assign(unit: unit) |> update_calculated_values()}
