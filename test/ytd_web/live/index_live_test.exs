@@ -154,6 +154,24 @@ defmodule YTDWeb.IndexLiveTest do
     end
   end
 
+  describe "YTDWeb.IndexLive, when 'months' is selected" do
+    test "displays month totals", %{conn: conn, user: user} do
+      activities = [
+        build(:activity,
+          type: "Run",
+          start_date: Timex.set(DateTime.utc_now(), month: 1),
+          distance: 5_000.0
+        )
+      ]
+
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
+      {:ok, view, _html} = live(conn, "/")
+      view |> element("#tabs div", "Months") |> render_click()
+      assert view |> element("td", "January") |> has_element?()
+      assert view |> element("td", "3.1") |> has_element?()
+    end
+  end
+
   describe "YTDWeb.IndexLive, when a new activity is received" do
     test "updates latest activity", %{conn: conn, user: user} do
       new_activity = build(:activity, name: "New run", type: "Run", distance: 10_000.0)
@@ -424,8 +442,8 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       assert view |> element("#type option[selected]", "Run") |> has_element?()
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
-      {:ok, view, _html} = live(conn, "/")
-      assert view |> element("#type option[selected]", "Ride") |> has_element?()
+      {:ok, updated_view, _html} = live(conn, "/")
+      assert updated_view |> element("#type option[selected]", "Ride") |> has_element?()
     end
   end
 

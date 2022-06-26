@@ -139,6 +139,8 @@ defmodule YTDWeb.IndexLive do
     stats = calculate_stats(ytd, unit, Date.utc_today(), type, targets)
     copy_text = "#{today_distance(activities, type, unit)}/#{ytd}"
 
+    month_totals = month_totals(activities, type, unit)
+
     assign(socket,
       count: count,
       types: types,
@@ -146,7 +148,8 @@ defmodule YTDWeb.IndexLive do
       latest_activity_time: latest_activity_time,
       stats: stats,
       ytd: ytd,
-      copy_text: copy_text
+      copy_text: copy_text,
+      month_totals: month_totals
     )
   end
 
@@ -158,10 +161,7 @@ defmodule YTDWeb.IndexLive do
   defp total_distance(activities, type, unit) do
     activities
     |> Enum.filter(&(&1.type == type))
-    |> Enum.map(& &1.distance)
-    |> Enum.sum()
-    |> Util.convert(from: "metres", to: unit)
-    |> Float.round(1)
+    |> sum_of_distances(unit)
   end
 
   defp activity_count(activities, type) do
@@ -197,6 +197,21 @@ defmodule YTDWeb.IndexLive do
 
     activities
     |> Enum.reject(&(&1.type != type or DateTime.compare(&1.start_date, start_of_day) == :lt))
+    |> sum_of_distances(unit)
+  end
+
+  defp month_totals(activities, type, unit),
+    do: Enum.map(1..12, &month_total(&1, activities, type, unit))
+
+  defp month_total(month, activities, type, unit) do
+    {Timex.month_name(month),
+     activities
+     |> Enum.filter(&(&1.type == type and &1.start_date.month == month))
+     |> sum_of_distances(unit)}
+  end
+
+  defp sum_of_distances(activities, unit) do
+    activities
     |> Enum.map(& &1.distance)
     |> Enum.sum()
     |> Util.convert(from: "metres", to: unit)

@@ -20,7 +20,7 @@
     <% end %>
   </select>
 </form>
-<div class="mt-2 flex bg-white text-center border border-white">
+<div id="tabs" class="mt-2 flex bg-white text-center border border-white">
   <div
     class={
       "flex-1 py-0.5 cursor-pointer #{if @tab == :summary, do: "text-strava-orange", else: "bg-strava-orange"}"
@@ -38,42 +38,59 @@
     Months
   </div>
 </div>
-<p class="font-thin text-2xl mt-2">
-  Year to date (<span id="count"><%= @count %></span>):
-</p>
-<p class="text-5xl sm:text-7xl my-4">
-  <a href="#" id="copy" onClick={"navigator.clipboard.writeText('#{@copy_text}'); return false;"}>
-    <span class="font-extrabold" id="total"><%= @ytd %></span>
-    <span class="font-thin"><%= @unit %></span>
-  </a>
-</p>
-<p class="font-thin text-2xl mb-2">
-  (That’s
-  <span class="font-extrabold" id="weekly-average">
-    <%= @stats.weekly_average %> <%= @unit %>
-  </span>
-  a week)
-</p>
-<%= if @stats.projected_annual do %>
-  <hr class="separator" />
-  <p class="font-thin text-2xl mt-2">Projected year total:</p>
-  <p class="text-5xl sm:text-7xl my-4" }>
-    <span class="font-extrabold" id="projected-annual">
-      <%= :io_lib.format('~.1f', [@stats.projected_annual]) %>
-    </span>
-    <span class="font-thin"><%= @unit %></span>
+
+<%= if @tab == :summary do %>
+  <p class="font-thin text-2xl mt-2">
+    Year to date (<span id="count"><%= @count %></span>):
+  </p>
+  <p class="text-5xl sm:text-7xl my-4">
+    <a
+      href="#"
+      id="copy"
+      onClick={"navigator.clipboard.writeText('#{@copy_text}'); return false;"}
+    >
+      <span class="font-extrabold" id="total"><%= @ytd %></span>
+      <span class="font-thin"><%= @unit %></span>
+    </a>
   </p>
   <p class="font-thin text-2xl mb-2">
-    <%= if @targets[@type] do %>
-      <.target_progress stats={@stats} unit={@unit} target={@targets[@type]} />
-    <% else %>
-      Why not <a class="link" href="#" id="edit-target" phx-click="edit-target">set yourself a target</a>?
-    <% end %>
+    (That’s
+    <span class="font-extrabold" id="weekly-average">
+      <%= @stats.weekly_average %> <%= @unit %>
+    </span>
+    a week)
   </p>
-  <%= if @edit_target? do %>
-    <.edit_target_modal type={@type} unit={@unit} target={@targets[@type]} />
+  <%= if @stats.projected_annual do %>
+    <hr class="separator" />
+    <p class="font-thin text-2xl mt-2">Projected year total:</p>
+    <p class="text-5xl sm:text-7xl my-4" }>
+      <span class="font-extrabold" id="projected-annual">
+        <%= :io_lib.format('~.1f', [@stats.projected_annual]) %>
+      </span>
+      <span class="font-thin"><%= @unit %></span>
+    </p>
+    <p class="font-thin text-2xl mb-2">
+      <%= if @targets[@type] do %>
+        <.target_progress stats={@stats} unit={@unit} target={@targets[@type]} />
+      <% else %>
+        Why not <a class="link" href="#" id="edit-target" phx-click="edit-target">set yourself a target</a>?
+      <% end %>
+    </p>
+    <%= if @edit_target? do %>
+      <.edit_target_modal type={@type} unit={@unit} target={@targets[@type]} />
+    <% end %>
   <% end %>
+<% else %>
+  <table class="text-4xl ml-10">
+    <%= for {month, distance} <- @month_totals do %>
+      <tr>
+        <td align="right" class="font-thin"><%= month %></td>
+        <td class="pl-8 font-extrabold"><%= distance %></td>
+      </tr>
+    <% end %>
+  </table>
 <% end %>
+
 <hr class="separator" />
 <div class="flex flex-row justify-between items-center text-sm">
   <div class="font-thin" id="latest-activity">
