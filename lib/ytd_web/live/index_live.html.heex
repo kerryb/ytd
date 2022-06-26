@@ -23,7 +23,7 @@
 <div class="mt-2 flex bg-white text-center border border-white">
   <div
     class={
-      "flex-1 py-0.5 cursor-pointer #{if @page == :summary, do: "text-strava-orange", else: "bg-strava-orange"}"
+      "flex-1 py-0.5 cursor-pointer #{if @tab == :summary, do: "text-strava-orange", else: "bg-strava-orange"}"
     }
     phx-click="view-summary"
   >
@@ -31,7 +31,7 @@
   </div>
   <div
     class={
-      "flex-1 py-0.5 cursor-pointer #{if @page == :months, do: "text-strava-orange", else: "bg-strava-orange"}"
+      "flex-1 py-0.5 cursor-pointer #{if @tab == :months, do: "text-strava-orange", else: "bg-strava-orange"}"
     }
     phx-click="view-months"
   >

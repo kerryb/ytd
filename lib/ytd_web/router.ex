@@ -16,7 +16,7 @@ defmodule YTDWeb.Router do
   end
 
   pipeline :webhook do
-    plug :accepts, ["json"]
+    plug(:accepts, ["json"])
   end
 
   if Mix.env() in [:dev, :test] do
@@ -32,12 +32,12 @@ defmodule YTDWeb.Router do
     pipe_through(:browser)
     pipe_through(:app)
 
-    live("/", IndexLive, :index)
-    live("/:activity_type", IndexLive, :index)
+    live("/", IndexLive)
+    live("/:activity_type", IndexLive)
   end
 
   scope "/webhooks", YTDWeb do
-    get "/events", EventsController, :validate
-    post "/events", EventsController, :event
+    get("/events", EventsController, :validate)
+    post("/events", EventsController, :event)
   end
 end

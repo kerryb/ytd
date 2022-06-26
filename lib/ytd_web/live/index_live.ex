@@ -33,7 +33,7 @@ defmodule YTDWeb.IndexLive do
     {:ok,
      socket
      |> assign(
-       page: :summary,
+       tab: :summary,
        user: user,
        activities: activities,
        targets: targets,
@@ -64,8 +64,16 @@ defmodule YTDWeb.IndexLive do
   end
 
   @impl true
+  def handle_event("view-summary", _params, socket) do
+    {:noreply, assign(socket, tab: :summary)}
+  end
+
+  def handle_event("view-months", _params, socket) do
+    {:noreply, assign(socket, tab: :months)}
+  end
+
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket) do
-    {:noreply, push_patch(socket, to: Routes.index_path(Endpoint, :index, type))}
+    {:noreply, push_patch(socket, to: Routes.index_path(Endpoint, type))}
   end
 
   def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket) do
