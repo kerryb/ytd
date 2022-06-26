@@ -33,6 +33,7 @@ defmodule YTDWeb.IndexLive do
     {:ok,
      socket
      |> assign(
+       page: :summary,
        user: user,
        activities: activities,
        targets: targets,

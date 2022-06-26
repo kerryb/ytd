@@ -1,6 +1,6 @@
 <hr class="separator" />
 <form class="flex flex-row justify-between" phx-change="select">
-  <select class="select-noborder" id="type" name="type">
+  <select class="select-noborder cursor-pointer" id="type" name="type">
     <%= for type <- @types do %>
       <%= if type == @type do %>
         <option selected><%= type %></option>
@@ -10,7 +10,7 @@
     <% end %>
   </select>
   <span class="font-light" id="name"><%= @user.name %></span>
-  <select class="select-noborder" id="unit" name="unit">
+  <select class="select-noborder cursor-pointer" id="unit" name="unit">
     <%= for unit <- ~w[miles km] do %>
       <%= if unit == @unit do %>
         <option selected><%= unit %></option>
@@ -20,7 +20,24 @@
     <% end %>
   </select>
 </form>
-<hr class="separator" />
+<div class="mt-2 flex bg-white text-center border border-white">
+  <div
+    class={
+      "flex-1 py-0.5 cursor-pointer #{if @page == :summary, do: "text-strava-orange", else: "bg-strava-orange"}"
+    }
+    phx-click="view-summary"
+  >
+    Summary
+  </div>
+  <div
+    class={
+      "flex-1 py-0.5 cursor-pointer #{if @page == :months, do: "text-strava-orange", else: "bg-strava-orange"}"
+    }
+    phx-click="view-months"
+  >
+    Months
+  </div>
+</div>
 <p class="font-thin text-2xl mt-2">
   Year to date (<span id="count"><%= @count %></span>):
 </p>
