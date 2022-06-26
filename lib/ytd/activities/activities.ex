@@ -20,9 +20,10 @@ defmodule YTD.Activities do
     beginning_of_year = Timex.beginning_of_year(DateTime.utc_now())
 
     Repo.all(
-      from a in Activity,
+      from(a in Activity,
         where: a.user_id == ^user.id,
         where: a.start_date >= ^beginning_of_year
+      )
     )
   end
 
@@ -57,13 +58,12 @@ defmodule YTD.Activities do
 
   defp get_latest_activity(user) do
     Repo.one(
-      from a in Activity, where: a.user_id == ^user.id, order_by: [desc: a.start_date], limit: 1
+      from(a in Activity, where: a.user_id == ^user.id, order_by: [desc: a.start_date], limit: 1)
     )
   end
 
-  defp delete_all_activities(user) do
-    Repo.delete_all(from a in Activity, where: a.user_id == ^user.id)
-  end
+  defp delete_all_activities(user),
+    do: Repo.delete_all(from(a in Activity, where: a.user_id == ^user.id))
 
   @impl API
   def save_activity(user, activity) do
@@ -77,7 +77,7 @@ defmodule YTD.Activities do
 
   @impl API
   def activity_created(athlete_id, activity_id) do
-    with user <- Repo.one(from u in User, where: u.athlete_id == ^athlete_id),
+    with user <- Repo.one(from(u in User, where: u.athlete_id == ^athlete_id)),
          {:ok, activity} <- strava_api().get_activity(user, activity_id) do
       saved_activity = save_activity(user, activity)
       PubSub.broadcast!(:ytd, "athlete:#{athlete_id}", {:new_activity, saved_activity})
@@ -86,7 +86,7 @@ defmodule YTD.Activities do
 
   @impl API
   def activity_updated(athlete_id, activity_id) do
-    with user <- Repo.one(from u in User, where: u.athlete_id == ^athlete_id),
+    with user <- Repo.one(from(u in User, where: u.athlete_id == ^athlete_id)),
          {:ok, activity} <- strava_api().get_activity(user, activity_id) do
       saved_activity = save_activity(user, activity)
       PubSub.broadcast!(:ytd, "athlete:#{athlete_id}", {:updated_activity, saved_activity})
@@ -95,7 +95,7 @@ defmodule YTD.Activities do
 
   @impl API
   def activity_deleted(athlete_id, activity_id) do
-    Repo.delete_all(from a in Activity, where: a.strava_id == ^activity_id)
+    Repo.delete_all(from(a in Activity, where: a.strava_id == ^activity_id))
     PubSub.broadcast!(:ytd, "athlete:#{athlete_id}", {:deleted_activity, activity_id})
   end
 

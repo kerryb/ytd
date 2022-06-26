@@ -22,9 +22,8 @@ defmodule YTD.Users do
   }
 
   @impl API
-  def get_user_from_athlete_id(athlete_id) do
-    athlete_id |> Queries.get_user_from_athlete_id() |> Repo.one()
-  end
+  def get_user_from_athlete_id(athlete_id),
+    do: athlete_id |> Queries.get_user_from_athlete_id() |> Repo.one()
 
   @impl API
   def get_targets(user) do
@@ -82,13 +81,10 @@ defmodule YTD.Users do
   end
 
   @impl API
-  def athlete_updated(athlete_id, %{"authorized" => "false"}) do
-    athlete_deleted(athlete_id)
-  end
+  def athlete_updated(athlete_id, %{"authorized" => "false"}), do: athlete_deleted(athlete_id)
 
-  def athlete_updated(athlete_id, _updates) do
-    athlete_id |> get_user_from_athlete_id() |> update_name()
-  end
+  def athlete_updated(athlete_id, _updates),
+    do: athlete_id |> get_user_from_athlete_id() |> update_name()
 
   @impl API
   def athlete_deleted(athlete_id) do

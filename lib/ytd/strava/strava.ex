@@ -15,9 +15,7 @@ defmodule YTD.Strava do
   alias YTDWeb.Router.Helpers, as: Routes
 
   @impl API
-  def authorize_url do
-    Auth.authorize_url!(scope: "activity:read,activity:read_all")
-  end
+  def authorize_url, do: Auth.authorize_url!(scope: "activity:read,activity:read_all")
 
   @impl API
   def get_tokens_from_code(code) do
@@ -37,9 +35,7 @@ defmodule YTD.Strava do
   end
 
   @impl API
-  def get_athlete_details(user) do
-    user |> client() |> Athletes.get_logged_in_athlete()
-  end
+  def get_athlete_details(user), do: user |> client() |> Athletes.get_logged_in_athlete()
 
   @impl API
   def subscribe_to_events do
@@ -50,9 +46,8 @@ defmodule YTD.Strava do
   end
 
   @impl API
-  def get_activity(user, activity_id) do
-    user |> client() |> Activities.get_activity_by_id(activity_id)
-  end
+  def get_activity(user, activity_id),
+    do: user |> client() |> Activities.get_activity_by_id(activity_id)
 
   defp request_subscription do
     case :hackney.post(

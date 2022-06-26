@@ -17,9 +17,8 @@ defmodule YTD.Release.Tasks do
   end
 
   @spec rollback(Repo.t(), integer()) :: {:ok, any(), any()} | no_return()
-  def rollback(repo, version) do
-    {:ok, _return, _apps} = Migrator.with_repo(repo, &Migrator.run(&1, :down, to: version))
-  end
+  def rollback(repo, version),
+    do: {:ok, _return, _apps} = Migrator.with_repo(repo, &Migrator.run(&1, :down, to: version))
 
   defp repos do
     Application.load(@app)

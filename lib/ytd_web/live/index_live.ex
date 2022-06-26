@@ -10,7 +10,6 @@ defmodule YTDWeb.IndexLive do
 
   alias Phoenix.PubSub
   alias YTD.{Stats, Users, Util}
-  alias YTDWeb.Endpoint
   # credo:disable-for-next-line Credo.Check.Readability.AliasAs
   alias YTDWeb.Router.Helpers, as: Routes
 
@@ -45,13 +44,10 @@ defmodule YTDWeb.IndexLive do
      |> update_calculated_values()}
   end
 
-  defp fetch_new_activities(user) do
-    Task.start_link(fn -> :ok = activities_api().fetch_activities(user) end)
-  end
+  defp fetch_new_activities(user),
+    do: Task.start_link(fn -> :ok = activities_api().fetch_activities(user) end)
 
-  defp update_name(user) do
-    Task.start_link(fn -> :ok = users_api().update_name(user) end)
-  end
+  defp update_name(user), do: Task.start_link(fn -> :ok = users_api().update_name(user) end)
 
   @impl true
   def handle_params(%{"activity_type" => type}, _uri, socket) do
@@ -59,35 +55,25 @@ defmodule YTDWeb.IndexLive do
     {:noreply, socket |> assign(type: type) |> update_calculated_values()}
   end
 
-  def handle_params(_params, _uri, socket) do
-    {:noreply, socket}
-  end
+  def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
   @impl true
-  def handle_event("view-summary", _params, socket) do
-    {:noreply, assign(socket, tab: :summary)}
-  end
+  def handle_event("view-summary", _params, socket), do: {:noreply, assign(socket, tab: :summary)}
+  def handle_event("view-months", _params, socket), do: {:noreply, assign(socket, tab: :months)}
 
-  def handle_event("view-months", _params, socket) do
-    {:noreply, assign(socket, tab: :months)}
-  end
+  def handle_event("select", %{"_target" => ["type"], "type" => type}, socket),
+    do: {:noreply, push_patch(socket, to: Routes.live_path(socket, IndexLive, type))}
 
-  def handle_event("select", %{"_target" => ["type"], "type" => type}, socket) do
-    {:noreply, push_patch(socket, to: Routes.index_path(Endpoint, type))}
-  end
-
-  def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket) do
-    {:noreply, socket |> assign(unit: unit) |> update_calculated_values()}
-  end
+  def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket),
+    do: {:noreply, socket |> assign(unit: unit) |> update_calculated_values()}
 
   def handle_event("refresh", _params, socket) do
     Task.start_link(fn -> :ok = activities_api().reload_activities(socket.assigns.user) end)
     {:noreply, socket |> assign(activities: [], refreshing?: true) |> update_calculated_values()}
   end
 
-  def handle_event("edit-target", _params, socket) do
-    {:noreply, assign(socket, edit_target?: true)}
-  end
+  def handle_event("edit-target", _params, socket),
+    do: {:noreply, assign(socket, edit_target?: true)}
 
   def handle_event("submit-target", %{"target" => target}, socket) do
     Users.save_target(socket.assigns.user, socket.assigns.type, target, socket.assigns.unit)
@@ -97,9 +83,8 @@ defmodule YTDWeb.IndexLive do
      socket |> assign(targets: targets, edit_target?: false) |> update_calculated_values()}
   end
 
-  def handle_event("cancel-target", _params, socket) do
-    {:noreply, assign(socket, edit_target?: false)}
-  end
+  def handle_event("cancel-target", _params, socket),
+    do: {:noreply, assign(socket, edit_target?: false)}
 
   def handle_info({:new_activity, activity}, socket) do
     activities = [activity | socket.assigns.activities]
@@ -125,17 +110,11 @@ defmodule YTDWeb.IndexLive do
   end
 
   @impl true
-  def handle_info(:all_activities_fetched, socket) do
-    {:noreply, assign(socket, refreshing?: false)}
-  end
+  def handle_info(:all_activities_fetched, socket),
+    do: {:noreply, assign(socket, refreshing?: false)}
 
-  def handle_info({:name_updated, user}, socket) do
-    {:noreply, assign(socket, user: user)}
-  end
-
-  def handle_info(:deauthorised, socket) do
-    {:noreply, redirect(socket, to: "/")}
-  end
+  def handle_info({:name_updated, user}, socket), do: {:noreply, assign(socket, user: user)}
+  def handle_info(:deauthorised, socket), do: {:noreply, redirect(socket, to: "/")}
 
   def handle_info(message, socket) do
     Logger.warn("#{__MODULE__} Received unexpected message #{inspect(message)}")
@@ -171,9 +150,8 @@ defmodule YTDWeb.IndexLive do
     )
   end
 
-  defp types(activities) do
-    activities |> Enum.reject(&(&1.distance == 0)) |> Enum.map(& &1.type) |> Enum.uniq()
-  end
+  defp types(activities),
+    do: activities |> Enum.reject(&(&1.distance == 0)) |> Enum.map(& &1.type) |> Enum.uniq()
 
   defp total_distance([], _type, _unit), do: 0.0
 

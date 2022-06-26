@@ -85,12 +85,7 @@ defmodule YTD.MixProject do
     ]
   end
 
-  defp dialyzer do
-    [
-      plt_add_deps: :app_tree,
-      ignore_warnings: "dialyzer.ignore-warnings"
-    ]
-  end
+  defp dialyzer, do: [plt_add_deps: :app_tree]
 
   defp preferred_cli_env do
     [

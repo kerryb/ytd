@@ -50,15 +50,11 @@ defmodule YTD.Stats do
     }
   end
 
-  defp projected_annual(ytd, now) do
-    Float.round(ytd * days_in_year(now) / Timex.day(now), 1)
-  end
+  defp projected_annual(ytd, now), do: Float.round(ytd * days_in_year(now) / Timex.day(now), 1)
 
   defp days_in_year(now), do: if(Timex.is_leap?(now), do: 366, else: 365)
 
-  defp weekly_average(ytd, now) do
-    Float.round(ytd / Timex.day(now) * 7, 1)
-  end
+  defp weekly_average(ytd, now), do: Float.round(ytd / Timex.day(now) * 7, 1)
 
   defp on_target?(ytd, now, target), do: projected_annual(ytd, now) >= target
 

@@ -7,9 +7,7 @@ defmodule YTDWeb.Telemetry do
   use Supervisor
   import Telemetry.Metrics
 
-  def start_link(arg) do
-    Supervisor.start_link(__MODULE__, arg, name: __MODULE__)
-  end
+  def start_link(arg), do: Supervisor.start_link(__MODULE__, arg, name: __MODULE__)
 
   @impl true
   def init(_arg) do
