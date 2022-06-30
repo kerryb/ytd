@@ -166,7 +166,7 @@ defmodule YTDWeb.IndexLiveTest do
 
       stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
-      view |> element("#tabs div", "Months") |> render_click()
+      view |> element("#tabs a", "Months") |> render_click()
       assert view |> element("td", "January") |> has_element?()
       assert view |> element("td", "3.1") |> has_element?()
     end
@@ -389,7 +389,7 @@ defmodule YTDWeb.IndexLiveTest do
       assert view |> element("#total", "3.1") |> has_element?()
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
       path = assert_patch(view)
-      assert path == "/Ride"
+      assert path == "/Ride/summary"
       assert view |> element("#total", "6.2") |> has_element?()
     end
 

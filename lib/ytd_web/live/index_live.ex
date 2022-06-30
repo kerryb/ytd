@@ -12,6 +12,7 @@ defmodule YTDWeb.IndexLive do
   alias YTD.{Stats, Users, Util}
   # credo:disable-for-next-line Credo.Check.Readability.AliasAs
   alias YTDWeb.Router.Helpers, as: Routes
+  alias __MODULE__
 
   require Logger
 
@@ -32,7 +33,7 @@ defmodule YTDWeb.IndexLive do
     {:ok,
      socket
      |> assign(
-       tab: :summary,
+       tab: "summary",
        user: user,
        activities: activities,
        targets: targets,
@@ -50,6 +51,11 @@ defmodule YTDWeb.IndexLive do
   defp update_name(user), do: Task.start_link(fn -> :ok = users_api().update_name(user) end)
 
   @impl true
+  def handle_params(%{"activity_type" => type, "tab" => tab}, _uri, socket) do
+    Users.save_activity_type(socket.assigns.user, type)
+    {:noreply, socket |> assign(type: type, tab: tab) |> update_calculated_values()}
+  end
+
   def handle_params(%{"activity_type" => type}, _uri, socket) do
     Users.save_activity_type(socket.assigns.user, type)
     {:noreply, socket |> assign(type: type) |> update_calculated_values()}
@@ -58,12 +64,11 @@ defmodule YTDWeb.IndexLive do
   def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
   @impl true
-  def handle_event("view-summary", _params, socket), do: {:noreply, assign(socket, tab: :summary)}
-  def handle_event("view-months", _params, socket), do: {:noreply, assign(socket, tab: :months)}
-  def handle_event("view-graph", _params, socket), do: {:noreply, assign(socket, tab: :graph)}
 
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket),
-    do: {:noreply, push_patch(socket, to: Routes.live_path(socket, __MODULE__, type))}
+    do:
+      {:noreply,
+       push_patch(socket, to: Routes.live_path(socket, __MODULE__, type, socket.assigns.tab))}
 
   def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket),
     do: {:noreply, socket |> assign(unit: unit) |> update_calculated_values()}

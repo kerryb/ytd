@@ -20,14 +20,24 @@
     <% end %>
   </select>
 </form>
-<div id="tabs" class="tabs" >
-  <div class={"tab #{if @tab == :summary, do: "active"}"} phx-click="view-summary">Summary</div>
-  <div class={"tab #{if @tab == :months, do: "active"}"} phx-click="view-months">Months</div>
-  <div class={"tab #{if @tab == :graph, do: "active"}"} phx-click="view-graph">Graph</div>
+
+<div id="tabs" class="tabs">
+  <%= live_patch("Summary",
+    to: Routes.live_path(@socket, IndexLive, @type),
+    class: "tab #{if @tab == "summary", do: "active"}"
+  ) %>
+  <%= live_patch("Months",
+    to: Routes.live_path(@socket, IndexLive, @type, :months),
+    class: "tab #{if @tab == "months", do: "active"}"
+  ) %>
+  <%= live_patch("Graph",
+    to: Routes.live_path(@socket, IndexLive, @type, :graph),
+    class: "tab #{if @tab == "graph", do: "active"}"
+  ) %>
 </div>
 
 <%= case @tab do %>
-  <% :summary -> %>
+  <% "summary" -> %>
     <p class="font-thin text-2xl mt-2">
       Year to date (<span id="count"><%= @count %></span>):
     </p>
@@ -68,7 +78,7 @@
         <.edit_target_modal type={@type} unit={@unit} target={@targets[@type]} />
       <% end %>
     <% end %>
-  <% :months -> %>
+  <% "months" -> %>
     <table class="text-4xl ml-10">
       <%= for {month, distance} <- @month_totals do %>
         <tr>
@@ -77,7 +87,7 @@
         </tr>
       <% end %>
     </table>
-  <% :graph -> %>
+  <% "graph" -> %>
 <% end %>
 
 <hr class="separator" />
