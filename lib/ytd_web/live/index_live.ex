@@ -60,6 +60,7 @@ defmodule YTDWeb.IndexLive do
   @impl true
   def handle_event("view-summary", _params, socket), do: {:noreply, assign(socket, tab: :summary)}
   def handle_event("view-months", _params, socket), do: {:noreply, assign(socket, tab: :months)}
+  def handle_event("view-graph", _params, socket), do: {:noreply, assign(socket, tab: :graph)}
 
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket),
     do: {:noreply, push_patch(socket, to: Routes.live_path(socket, __MODULE__, type))}
