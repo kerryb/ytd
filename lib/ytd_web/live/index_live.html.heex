@@ -20,34 +20,10 @@
     <% end %>
   </select>
 </form>
-<div
-  id="tabs"
-  class="mt-2 flex bg-white dark:bg-black text-center border border-white dark:border-strava-orange"
->
-  <div
-    class={
-      "flex-1 py-0.5 cursor-pointer #{if @tab == :summary, do: "text-strava-orange dark:text-black dark:bg-strava-orange", else: "bg-strava-orange dark:bg-black border-r border-r-white dark:border-r-strava-orange"}"
-    }
-    phx-click="view-summary"
-  >
-    Summary
-  </div>
-  <div
-    class={
-      "flex-1 py-0.5 cursor-pointer #{if @tab == :months, do: "text-strava-orange dark:text-black dark:bg-strava-orange", else: "bg-strava-orange dark:bg-black border-r border-r-white dark:border-r-strava-orange"}"
-    }
-    phx-click="view-months"
-  >
-    Months
-  </div>
-  <div
-    class={
-      "flex-1 py-0.5 cursor-pointer #{if @tab == :graph, do: "text-strava-orange dark:text-black dark:bg-strava-orange", else: "bg-strava-orange dark:bg-black"}"
-    }
-    phx-click="view-graph"
-  >
-    Graph
-  </div>
+<div id="tabs" class="tabs" >
+  <div class={"tab #{if @tab == :summary, do: "active"}"} phx-click="view-summary">Summary</div>
+  <div class={"tab #{if @tab == :months, do: "active"}"} phx-click="view-months">Months</div>
+  <div class={"tab #{if @tab == :graph, do: "active"}"} phx-click="view-graph">Graph</div>
 </div>
 
 <%= case @tab do %>

@@ -14,4 +14,24 @@
   .link {
     @apply border-b border-dotted font-extrabold dark:border-strava-orange;
   }
+
+  .tabs {
+    @apply mt-2 flex bg-white dark:bg-black text-center border border-white dark:border-strava-orange;
+  }
+
+  .tab {
+    @apply flex-1 py-0.5 cursor-pointer;
+  }
+
+  .tab.active {
+    @apply text-strava-orange dark:text-black dark:bg-strava-orange;
+  }
+
+  .tab:not(.active) {
+    @apply bg-strava-orange dark:bg-black;
+  }
+
+  .tab:not(.active):not(:first-of-type) {
+    @apply border-l border-l-white dark:border-l-strava-orange;
+  }
 }
