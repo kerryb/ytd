@@ -51,6 +51,7 @@ defmodule YTDWeb.IndexLive do
   defp update_name(user), do: Task.start_link(fn -> :ok = users_api().update_name(user) end)
 
   @impl true
+  # TODO: combine the next two (and make sure all paths are tested
   def handle_params(%{"activity_type" => type, "tab" => tab}, _uri, socket) do
     Users.save_activity_type(socket.assigns.user, type)
     {:noreply, socket |> assign(type: type, tab: tab) |> update_calculated_values()}
