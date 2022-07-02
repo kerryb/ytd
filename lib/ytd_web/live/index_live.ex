@@ -51,21 +51,24 @@ defmodule YTDWeb.IndexLive do
   defp update_name(user), do: Task.start_link(fn -> :ok = users_api().update_name(user) end)
 
   @impl true
-  # TODO: combine the next two (and make sure all paths are tested
   def handle_params(%{"activity_type" => type, "tab" => tab}, _uri, socket) do
-    Users.save_activity_type(socket.assigns.user, type)
-    {:noreply, socket |> assign(type: type, tab: tab) |> update_calculated_values()}
+    {:noreply, socket |> assign(tab: tab) |> set_type(type) |> update_calculated_values()}
   end
 
   def handle_params(%{"activity_type" => type}, _uri, socket) do
-    Users.save_activity_type(socket.assigns.user, type)
-    {:noreply, socket |> assign(type: type) |> update_calculated_values()}
+    {:noreply, socket |> set_type(type) |> update_calculated_values()}
   end
 
   def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
-  @impl true
+  defp set_type(socket, nil), do: socket
 
+  defp set_type(socket, type) do
+    Users.save_activity_type(socket.assigns.user, type)
+    assign(socket, type: type)
+  end
+
+  @impl true
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket),
     do:
       {:noreply,
