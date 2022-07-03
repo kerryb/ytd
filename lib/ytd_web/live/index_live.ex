@@ -260,19 +260,19 @@ defmodule YTDWeb.IndexLive do
 
     ~H"""
     <svg
-      class="graph"
+      class="w-full h-[500px] p-4 stroke-current stroke-1"
       version="1.1"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       xmlns="http://www.w3.org/2000/svg"
       viewBox={"0 0 #{@max_x} #{@max_y}"}
       preserveAspectRatio="none"
     >
-      <g class="grid" style={"stroke-width: #{@vertical_scale_factor}"}>
+      <g class={"stroke-[#{@vertical_scale_factor}px]"}>
         <%= for y <- @horizontal_grid do %>
           <line x1="0" x2={@max_x} y1={y} y2={y}></line>
         <% end %>
       </g>
-      <g class="grid" style={"stroke-dasharray: #{@vertical_scale_factor} #{@vertical_scale_factor * 2}"}>
+      <g style={"stroke-dasharray: #{@vertical_scale_factor} #{@vertical_scale_factor * 2}"}>
         <%= for x <- @vertical_grid do %>
           <line x1={x} x2={x} y1="0" y2={@max_y}></line>
         <% end %>
