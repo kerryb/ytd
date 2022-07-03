@@ -34,4 +34,16 @@
   .tab:not(.active):not(:first-of-type) {
     @apply border-l border-l-white dark:border-l-strava-orange;
   }
+
+  svg.graph {
+    width: 100%;
+    height: 30rem;
+    padding: 1rem;
+  }
+
+  svg.graph .grid {
+    stroke: white;
+    stroke-dasharray: 1 2;
+    stroke-width: 1;
+  }
 }

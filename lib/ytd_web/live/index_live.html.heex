@@ -23,7 +23,7 @@
 
 <div id="tabs" class="tabs">
   <%= live_patch("Summary",
-    to: Routes.live_path(@socket, IndexLive, @type),
+    to: Routes.live_path(@socket, IndexLive, @type, :summary),
     class: "tab #{if @tab == "summary", do: "active"}"
   ) %>
   <%= live_patch("Months",
@@ -88,7 +88,7 @@
       <% end %>
     </table>
   <% "graph" -> %>
-    <p>Coming soon …</p>
+    <.graph target={@targets[@type]} ytd={@ytd} />
 <% end %>
 
 <hr class="separator" />

@@ -230,4 +230,53 @@ defmodule YTDWeb.IndexLive do
 
   defp activities_api, do: Application.fetch_env!(:ytd, :activities_api)
   defp users_api, do: Application.fetch_env!(:ytd, :users_api)
+
+  defp graph(assigns) do
+    max_x = Date.utc_today() |> Timex.end_of_year() |> Date.day_of_year()
+
+    max_y =
+      [assigns[:target].target, assigns[:ytd]]
+      |> Enum.reject(&is_nil/1)
+      |> Enum.max()
+      |> ceil()
+      |> IO.inspect(labeel: "max_y")
+
+    horizontal_grid = max_y..0//-100
+
+    vertical_grid =
+      Enum.map(1..12, fn month ->
+        Date.utc_today() |> Timex.set(month: month, day: 1) |> Date.day_of_year()
+      end)
+
+    assigns =
+      Map.merge(assigns, %{
+        max_x: max_x,
+        max_y: max_y,
+        horizontal_grid: horizontal_grid,
+        vertical_grid: vertical_grid
+      })
+
+    ~H"""
+    <svg
+      class="graph"
+      version="1.1"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox={"0 0 #{@max_x} #{@max_y}"}
+      preserveAspectRatio="none"
+    >
+      <g class="grid x-grid" id="xGrid">
+        <%= for y <- @horizontal_grid do %>
+          <line x1="0" x2={@max_x} y1={y} y2={y}></line>
+        <% end %>
+      </g>
+      <g class="grid y-grid" id="yGrid">
+        <%= for x <- @vertical_grid do %>
+          <line x1={x} x2={x} y1="0" y2={@max_y}></line>
+        <% end %>
+        <line x1={@max_x} x2={@max_x} y1="0" y2={@max_y}></line>
+      </g>
+    </svg>
+    """
+  end
 end
