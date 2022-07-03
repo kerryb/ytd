@@ -242,6 +242,7 @@ defmodule YTDWeb.IndexLive do
       |> IO.inspect(labeel: "max_y")
 
     horizontal_grid = max_y..0//-100
+    vertical_scale_factor = Enum.max([round(max_y / 500), 1])
 
     vertical_grid =
       Enum.map(1..12, fn month ->
@@ -253,7 +254,8 @@ defmodule YTDWeb.IndexLive do
         max_x: max_x,
         max_y: max_y,
         horizontal_grid: horizontal_grid,
-        vertical_grid: vertical_grid
+        vertical_grid: vertical_grid,
+        vertical_scale_factor: vertical_scale_factor
       })
 
     ~H"""
@@ -265,12 +267,12 @@ defmodule YTDWeb.IndexLive do
       viewBox={"0 0 #{@max_x} #{@max_y}"}
       preserveAspectRatio="none"
     >
-      <g class="grid x-grid" id="xGrid">
+      <g class="grid" style={"stroke-width: #{@vertical_scale_factor}"}>
         <%= for y <- @horizontal_grid do %>
           <line x1="0" x2={@max_x} y1={y} y2={y}></line>
         <% end %>
       </g>
-      <g class="grid y-grid" id="yGrid">
+      <g class="grid" style={"stroke-dasharray: #{@vertical_scale_factor} #{@vertical_scale_factor * 2}"}>
         <%= for x <- @vertical_grid do %>
           <line x1={x} x2={x} y1="0" y2={@max_y}></line>
         <% end %>
