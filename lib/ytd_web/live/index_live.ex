@@ -254,7 +254,8 @@ defmodule YTDWeb.IndexLive do
         max_y: max_y,
         horizontal_grid: horizontal_grid,
         vertical_grid: vertical_grid,
-        vertical_scale_factor: vertical_scale_factor
+        vertical_scale_factor: vertical_scale_factor,
+        months: ~w[J F M A M J J A S O N D]
       })
 
     ~H"""
@@ -266,12 +267,17 @@ defmodule YTDWeb.IndexLive do
       viewBox="0 0 1000 1000"
       preserveAspectRatio="none"
     >
-      <g class="axis">
+      <g class="labels x-labels">
+          <%= for {name, number} <- Enum.with_index(@months) do %>
+            <text x={number * 900 / 12 + 130} y="990"><%= name %></text>      
+        <% end %>
+      </g>
+      <g class="labels y-labels">
         <%= for miles <- 0..@max_y//100  do %>
           <text x="70" y={(@max_y - miles) * 920 / @max_y + 35}><%= miles %></text>      
         <% end %>
       </g>
-      <svg x="100" y="20" width="920" height="930" viewBox={"0 0 #{@max_x} #{@max_y}"} preserveAspectRatio="none">
+      <svg x="100" y="20" width="900" height="930" viewBox={"0 0 #{@max_x} #{@max_y}"} preserveAspectRatio="none">
         <g class={"stroke-[#{@vertical_scale_factor}px]"}>
           <%= for y <- @horizontal_grid do %>
             <line x1="0" x2={@max_x} y1={y} y2={y}></line>

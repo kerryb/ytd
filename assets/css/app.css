@@ -35,9 +35,16 @@
     @apply border-l border-l-white dark:border-l-strava-orange;
   }
 
-  svg .axis {
+  svg .labels {
     font-size: 30px;
     fill: white;
+  }
+
+  svg .x-labels {
+    text-anchor: center;
+  }
+
+  svg .y-labels {
     text-anchor: end;
   }
 }
