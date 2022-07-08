@@ -34,4 +34,10 @@
   .tab:not(.active):not(:first-of-type) {
     @apply border-l border-l-white dark:border-l-strava-orange;
   }
+
+  svg .axis {
+    font-size: 30px;
+    fill: white;
+    text-anchor: end;
+  }
 }

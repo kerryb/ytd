@@ -239,7 +239,6 @@ defmodule YTDWeb.IndexLive do
       |> Enum.reject(&is_nil/1)
       |> Enum.max()
       |> ceil()
-      |> IO.inspect(labeel: "max_y")
 
     horizontal_grid = max_y..0//-100
     vertical_scale_factor = Enum.max([round(max_y / 500), 1])
@@ -264,20 +263,27 @@ defmodule YTDWeb.IndexLive do
       version="1.1"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       xmlns="http://www.w3.org/2000/svg"
-      viewBox={"0 0 #{@max_x} #{@max_y}"}
+      viewBox="0 0 1000 1000"
       preserveAspectRatio="none"
     >
-      <g class={"stroke-[#{@vertical_scale_factor}px]"}>
-        <%= for y <- @horizontal_grid do %>
-          <line x1="0" x2={@max_x} y1={y} y2={y}></line>
+      <g class="axis">
+        <%= for miles <- 0..@max_y//100  do %>
+          <text x="70" y={(@max_y - miles) * 920 / @max_y + 35}><%= miles %></text>      
         <% end %>
       </g>
-      <g style={"stroke-dasharray: #{@vertical_scale_factor} #{@vertical_scale_factor * 2}"}>
-        <%= for x <- @vertical_grid do %>
-          <line x1={x} x2={x} y1="0" y2={@max_y}></line>
-        <% end %>
-        <line x1={@max_x} x2={@max_x} y1="0" y2={@max_y}></line>
-      </g>
+      <svg x="100" y="20" width="920" height="930" viewBox={"0 0 #{@max_x} #{@max_y}"} preserveAspectRatio="none">
+        <g class={"stroke-[#{@vertical_scale_factor}px]"}>
+          <%= for y <- @horizontal_grid do %>
+            <line x1="0" x2={@max_x} y1={y} y2={y}></line>
+          <% end %>
+        </g>
+        <g style={"stroke-dasharray: #{@vertical_scale_factor} #{@vertical_scale_factor * 2}"}>
+          <%= for x <- @vertical_grid do %>
+            <line x1={x} x2={x} y1="0" y2={@max_y}></line>
+          <% end %>
+          <line x1={@max_x} x2={@max_x} y1="0" y2={@max_y}></line>
+        </g>
+      </svg>
     </svg>
     """
   end
