@@ -260,10 +260,8 @@ defmodule YTDWeb.IndexLive do
 
     ~H"""
     <svg
-      class="w-full h-[500px] p-4 stroke-current stroke-1"
       version="1.1"
-      xmlns:xlink="http://www.w3.org/1999/xlink"
-      xmlns="http://www.w3.org/2000/svg"
+      class="w-full h-[500px] p-4 stroke-current stroke-1 text-[30px]"
       viewBox="0 0 1000 1000"
       preserveAspectRatio="none"
     >

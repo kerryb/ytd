@@ -35,9 +35,14 @@
     @apply border-l border-l-white dark:border-l-strava-orange;
   }
 
-  svg .labels {
-    font-size: 30px;
+  svg {
     fill: white;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    svg {
+      fill: #fc4c02;
+    }
   }
 
   svg .x-labels {
