@@ -235,10 +235,15 @@ defmodule YTDWeb.IndexLive do
     max_x = Date.utc_today() |> Timex.end_of_year() |> Date.day_of_year()
 
     max_y =
-      [assigns[:target].target, assigns[:ytd]]
-      |> Enum.reject(&is_nil/1)
-      |> Enum.max()
-      |> ceil()
+      case assigns[:target] do
+        nil ->
+          ceil(assigns.ytd)
+
+        target ->
+          [target.target, assigns.ytd]
+          |> Enum.max()
+          |> ceil()
+      end
 
     horizontal_grid = max_y..0//-100
     vertical_scale_factor = Enum.max([round(max_y / 500), 1])
@@ -250,15 +255,10 @@ defmodule YTDWeb.IndexLive do
 
     points =
       assigns.activities
-      |> IO.inspect(label: "activities")
       |> days_and_distances(assigns.unit)
-      |> IO.inspect(label: "days and distances")
       |> make_distances_cumulative()
-      |> IO.inspect(label: "cumulative")
       |> convert_to_coordinates(max_y)
-      |> IO.inspect(label: "coordinates")
       |> make_path()
-      |> IO.inspect(label: "path")
 
     assigns =
       Map.merge(assigns, %{
@@ -310,7 +310,9 @@ defmodule YTDWeb.IndexLive do
           <% end %>
           <line x1={@max_x} x2={@max_x} y1="0" y2={@max_y}></line>
         </g>
-        <line id="target" x1="0" x2={@max_x} y1={@max_y} y2="0" />
+        <%= if @target do %>
+          <line id="target" x1="0" x2={@max_x} y1={@max_y} y2="0" />
+        <% end %>
         <path id="actual" d={@points} />
       </svg>
     </svg>
