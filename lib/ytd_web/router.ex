@@ -28,16 +28,17 @@ defmodule YTDWeb.Router do
     end
   end
 
+  scope "/webhooks", YTDWeb do
+    get("/events", EventsController, :validate)
+    post("/events", EventsController, :event)
+  end
+
   scope "/", YTDWeb do
     pipe_through(:browser)
     pipe_through(:app)
 
     live("/", IndexLive)
     live("/:activity_type", IndexLive)
-  end
-
-  scope "/webhooks", YTDWeb do
-    get("/events", EventsController, :validate)
-    post("/events", EventsController, :event)
+    live("/:activity_type/:tab", IndexLive)
   end
 end

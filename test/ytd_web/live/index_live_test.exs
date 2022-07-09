@@ -166,9 +166,87 @@ defmodule YTDWeb.IndexLiveTest do
 
       stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
       {:ok, view, _html} = live(conn, "/")
-      view |> element("#tabs div", "Months") |> render_click()
+      view |> element("#tabs a", "Months") |> render_click()
       assert view |> element("td", "January") |> has_element?()
       assert view |> element("td", "3.1") |> has_element?()
+    end
+  end
+
+  describe "YTDWeb.IndexLive, when 'graph' is selected" do
+    test "displays a graph scaled to the target if it's higher than the YTD total", %{
+      conn: conn,
+      user: user
+    } do
+      activities = [
+        build(:activity,
+          type: "Run",
+          start_date: Timex.set(DateTime.utc_now(), month: 1),
+          distance: 5_000.0
+        )
+      ]
+
+      insert(:target, user: user, activity_type: "Run", target: 1234, unit: "miles")
+
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
+      {:ok, view, _html} = live(conn, "/")
+      view |> element("#tabs a", "Graph") |> render_click()
+      assert view |> element(".y-labels text", "1200") |> has_element?()
+      refute view |> element(".y-labels text", "1300") |> has_element?()
+    end
+
+    test "displays a graph scaled to the YTD total if it's higher than the target", %{
+      conn: conn,
+      user: user
+    } do
+      activities = [
+        build(:activity,
+          type: "Run",
+          start_date: Timex.set(DateTime.utc_now(), month: 1),
+          distance: 567_000.0
+        )
+      ]
+
+      insert(:target, user: user, activity_type: "Run", target: 1, unit: "miles")
+
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
+      {:ok, view, _html} = live(conn, "/")
+      view |> element("#tabs a", "Graph") |> render_click()
+      assert view |> element(".y-labels text", "300") |> has_element?()
+      refute view |> element(".y-labels text", "400") |> has_element?()
+    end
+
+    test "displays a graph scaled to the YTD total with no target line if there's no target", %{
+      conn: conn,
+      user: user
+    } do
+      activities = [
+        build(:activity,
+          type: "Run",
+          start_date: Timex.set(DateTime.utc_now(), month: 1),
+          distance: 567_000.0
+        )
+      ]
+
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
+      {:ok, view, _html} = live(conn, "/")
+      view |> element("#tabs a", "Graph") |> render_click()
+      assert view |> element(".y-labels text", "300") |> has_element?()
+      refute view |> element(".y-labels text", "400") |> has_element?()
+      refute view |> element("line#target") |> has_element?()
+    end
+
+    test "re-renders the graph when switching activity type", %{
+      conn: conn,
+      user: user
+    } do
+      insert(:target, user: user, activity_type: "Run", target: 1234, unit: "miles")
+      insert(:target, user: user, activity_type: "Ride", target: 4567, unit: "miles")
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [] end)
+      {:ok, view, _html} = live(conn, "/")
+      view |> element("#tabs a", "Graph") |> render_click()
+      refute view |> element(".y-labels text", "4000") |> has_element?()
+      view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
+      assert view |> element(".y-labels text", "4000") |> has_element?()
     end
   end
 
@@ -389,7 +467,7 @@ defmodule YTDWeb.IndexLiveTest do
       assert view |> element("#total", "3.1") |> has_element?()
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
       path = assert_patch(view)
-      assert path == "/Ride"
+      assert path == "/Ride/summary"
       assert view |> element("#total", "6.2") |> has_element?()
     end
 

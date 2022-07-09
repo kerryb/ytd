@@ -1,7 +1,7 @@
 defmodule YTD.ActivitiesTest do
   use YTD.DataCase, async: false
 
-  import Assertions, only: [assert_lists_equal: 2, assert_maps_equal: 3, assert_struct_in_list: 3]
+  import Assertions, only: [assert_maps_equal: 3, assert_struct_in_list: 3]
   import Ecto.Query
   import Mox
 
@@ -22,23 +22,24 @@ defmodule YTD.ActivitiesTest do
   end
 
   describe "YTD.Activities.get_existing_activities/1" do
-    test "returns all the user's activities for the current year from the database", %{user: user} do
+    test "returns all the user's activities for the current year from the database, oldest first",
+         %{user: user} do
       insert(:activity,
         user: user,
-        name: "Old run",
-        start_date: DateTime.utc_now() |> Timex.shift(years: -1) |> DateTime.truncate(:second)
+        name: "Afternoon run",
+        start_date: DateTime.truncate(DateTime.utc_now(), :second)
       )
 
       insert(:activity,
         user: user,
         name: "Morning run",
-        start_date: DateTime.truncate(DateTime.utc_now(), :second)
+        start_date: DateTime.utc_now() |> Timex.shift(hours: -1) |> DateTime.truncate(:second)
       )
 
       insert(:activity,
         user: user,
-        name: "Afternoon run",
-        start_date: DateTime.truncate(DateTime.utc_now(), :second)
+        name: "Old run",
+        start_date: DateTime.utc_now() |> Timex.shift(years: -1) |> DateTime.truncate(:second)
       )
 
       insert(:activity,
@@ -47,10 +48,8 @@ defmodule YTD.ActivitiesTest do
         start_date: DateTime.truncate(DateTime.utc_now(), :second)
       )
 
-      assert_lists_equal(user |> Activities.get_existing_activities() |> Enum.map(& &1.name), [
-        "Morning run",
-        "Afternoon run"
-      ])
+      assert [%{name: "Morning run"}, %{name: "Afternoon run"}] =
+               Activities.get_existing_activities(user)
     end
   end
 
@@ -139,7 +138,7 @@ defmodule YTD.ActivitiesTest do
       insert(:activity, user: user)
       other_user_activity = insert(:activity, user: another_user)
       Activities.reload_activities(user)
-      assert Repo.all(from a in Activity, select: a.id) == [other_user_activity.id]
+      assert Repo.all(from(a in Activity, select: a.id)) == [other_user_activity.id]
     end
 
     test "requests all activities for the year", %{user: user} do

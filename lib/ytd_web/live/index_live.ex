@@ -12,6 +12,7 @@ defmodule YTDWeb.IndexLive do
   alias YTD.{Stats, Users, Util}
   # credo:disable-for-next-line Credo.Check.Readability.AliasAs
   alias YTDWeb.Router.Helpers, as: Routes
+  alias __MODULE__
 
   require Logger
 
@@ -32,7 +33,7 @@ defmodule YTDWeb.IndexLive do
     {:ok,
      socket
      |> assign(
-       tab: :summary,
+       tab: "summary",
        user: user,
        activities: activities,
        targets: targets,
@@ -50,19 +51,28 @@ defmodule YTDWeb.IndexLive do
   defp update_name(user), do: Task.start_link(fn -> :ok = users_api().update_name(user) end)
 
   @impl true
+  def handle_params(%{"activity_type" => type, "tab" => tab}, _uri, socket) do
+    {:noreply, socket |> assign(tab: tab) |> set_type(type) |> update_calculated_values()}
+  end
+
   def handle_params(%{"activity_type" => type}, _uri, socket) do
-    Users.save_activity_type(socket.assigns.user, type)
-    {:noreply, socket |> assign(type: type) |> update_calculated_values()}
+    {:noreply, socket |> set_type(type) |> update_calculated_values()}
   end
 
   def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
-  @impl true
-  def handle_event("view-summary", _params, socket), do: {:noreply, assign(socket, tab: :summary)}
-  def handle_event("view-months", _params, socket), do: {:noreply, assign(socket, tab: :months)}
+  defp set_type(socket, nil), do: socket
 
+  defp set_type(socket, type) do
+    Users.save_activity_type(socket.assigns.user, type)
+    assign(socket, type: type)
+  end
+
+  @impl true
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket),
-    do: {:noreply, push_patch(socket, to: Routes.live_path(socket, __MODULE__, type))}
+    do:
+      {:noreply,
+       push_patch(socket, to: Routes.live_path(socket, __MODULE__, type, socket.assigns.tab))}
 
   def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket),
     do: {:noreply, socket |> assign(unit: unit) |> update_calculated_values()}
@@ -220,4 +230,111 @@ defmodule YTDWeb.IndexLive do
 
   defp activities_api, do: Application.fetch_env!(:ytd, :activities_api)
   defp users_api, do: Application.fetch_env!(:ytd, :users_api)
+
+  defp graph(assigns) do
+    activities = Enum.filter(assigns.activities, &(&1.type == assigns.type))
+    max_x = max_x()
+
+    max_y = max_y(assigns[:target], assigns.ytd)
+    horizontal_grid = max_y..0//-100
+    vertical_scale_factor = Enum.max([round(max_y / 500), 1])
+
+    vertical_grid =
+      Enum.map(1..12, fn month ->
+        Date.utc_today() |> Timex.set(month: month, day: 1) |> Date.day_of_year()
+      end)
+
+    points =
+      activities
+      |> days_and_distances(assigns.unit)
+      |> make_distances_cumulative()
+      |> convert_to_coordinates(max_y)
+      |> make_path()
+
+    assigns =
+      assign(assigns, %{
+        max_x: max_x,
+        max_y: max_y,
+        horizontal_grid: horizontal_grid,
+        vertical_grid: vertical_grid,
+        vertical_scale_factor: vertical_scale_factor,
+        months: ~w[J F M A M J J A S O N D],
+        points: points
+      })
+
+    ~H"""
+    <svg
+      version="1.1"
+      class="w-full h-[500px] p-4 stroke-current stroke-1 text-[30px]"
+      viewBox="0 0 1000 1000"
+      preserveAspectRatio="none"
+    >
+      <g class="labels x-labels">
+        <%= for {name, number} <- Enum.with_index(@months) do %>
+          <text x={number * 900 / 12 + 130} y="990"><%= name %></text>
+        <% end %>
+      </g>
+      <g class="labels y-labels">
+        <%= for miles <- 0..@max_y//100  do %>
+          <text x="70" y={(@max_y - miles) * 920 / @max_y + 35}><%= miles %></text>
+        <% end %>
+      </g>
+      <svg
+        x="100"
+        y="20"
+        width="900"
+        height="930"
+        viewBox={"0 0 #{@max_x} #{@max_y}"}
+        preserveAspectRatio="none"
+      >
+        <g class={"grid stroke-[#{@vertical_scale_factor}px]"}>
+          <%= for y <- @horizontal_grid do %>
+            <line x1="0" x2={@max_x} y1={y} y2={y}></line>
+          <% end %>
+        </g>
+        <g
+          class="grid"
+          style={"stroke-dasharray: #{@vertical_scale_factor} #{@vertical_scale_factor * 2}"}
+        >
+          <%= for x <- @vertical_grid do %>
+            <line x1={x} x2={x} y1="0" y2={@max_y}></line>
+          <% end %>
+          <line x1={@max_x} x2={@max_x} y1="0" y2={@max_y}></line>
+        </g>
+        <%= if @target do %>
+          <line id="target" x1="0" x2={@max_x} y1={@max_y} y2="0" />
+        <% end %>
+        <path id="actual" d={@points} />
+      </svg>
+    </svg>
+    """
+  end
+
+  defp max_x, do: Date.utc_today() |> Timex.end_of_year() |> Date.day_of_year()
+  defp max_y(nil, ytd), do: ceil(ytd)
+  defp max_y(target, ytd), do: [target.target, ytd] |> Enum.max() |> ceil()
+
+  defp days_and_distances(activities, unit) do
+    Enum.map(
+      activities,
+      &{Date.day_of_year(&1.start_date), Util.convert(&1.distance, from: "metres", to: unit)}
+    )
+  end
+
+  defp make_distances_cumulative(days_and_distances) do
+    days_and_distances
+    |> Enum.reduce({[], 0}, fn {day, distance}, {values, total} ->
+      {[{day, distance + total} | values], distance + total}
+    end)
+    |> elem(0)
+  end
+
+  defp convert_to_coordinates(days_and_cumulative_distances, max_y) do
+    Enum.map(days_and_cumulative_distances, fn {day, total} -> {day, max_y - round(total)} end)
+  end
+
+  defp make_path([]), do: ""
+  defp make_path([head | tail]), do: Enum.join([move(head) | Enum.map(tail, &draw/1)], " ")
+  defp move({x, y}), do: "M #{x},#{y}"
+  defp draw({x, y}), do: "L #{x},#{y}"
 end
