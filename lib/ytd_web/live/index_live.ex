@@ -232,6 +232,7 @@ defmodule YTDWeb.IndexLive do
   defp users_api, do: Application.fetch_env!(:ytd, :users_api)
 
   defp graph(assigns) do
+    activities = Enum.filter(assigns.activities, &(&1.type == assigns.type))
     max_x = Date.utc_today() |> Timex.end_of_year() |> Date.day_of_year()
 
     max_y =
@@ -254,14 +255,14 @@ defmodule YTDWeb.IndexLive do
       end)
 
     points =
-      assigns.activities
+      activities
       |> days_and_distances(assigns.unit)
       |> make_distances_cumulative()
       |> convert_to_coordinates(max_y)
       |> make_path()
 
     assigns =
-      Map.merge(assigns, %{
+      assign(assigns, %{
         max_x: max_x,
         max_y: max_y,
         horizontal_grid: horizontal_grid,
