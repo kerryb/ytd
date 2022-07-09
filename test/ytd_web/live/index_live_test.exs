@@ -235,10 +235,7 @@ defmodule YTDWeb.IndexLiveTest do
       refute view |> element("line#target") |> has_element?()
     end
 
-    test "re-renders the graph when switching activity type", %{
-      conn: conn,
-      user: user
-    } do
+    test "re-renders the graph when switching activity type", %{conn: conn, user: user} do
       insert(:target, user: user, activity_type: "Run", target: 1234, unit: "miles")
       insert(:target, user: user, activity_type: "Ride", target: 4567, unit: "miles")
       stub(ActivitiesMock, :get_existing_activities, fn ^user -> [] end)
@@ -247,6 +244,16 @@ defmodule YTDWeb.IndexLiveTest do
       refute view |> element(".y-labels text", "4000") |> has_element?()
       view |> element("form") |> render_change(%{_target: ["type"], type: "Ride"})
       assert view |> element(".y-labels text", "4000") |> has_element?()
+    end
+
+    test "re-scales the graph when switching unit", %{conn: conn, user: user} do
+      insert(:target, user: user, activity_type: "Run", target: 1234, unit: "miles")
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> [] end)
+      {:ok, view, _html} = live(conn, "/")
+      view |> element("#tabs a", "Graph") |> render_click()
+      refute view |> element(".y-labels text", "1900") |> has_element?()
+      view |> element("form") |> render_change(%{_target: ["unit"], unit: "km"})
+      assert view |> element(".y-labels text", "1900") |> has_element?()
     end
   end
 

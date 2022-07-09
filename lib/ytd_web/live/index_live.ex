@@ -234,8 +234,7 @@ defmodule YTDWeb.IndexLive do
   defp graph(assigns) do
     activities = Enum.filter(assigns.activities, &(&1.type == assigns.type))
     max_x = max_x()
-
-    max_y = max_y(assigns[:target], assigns.ytd)
+    max_y = max_y(assigns[:target], assigns.ytd, assigns.unit)
     horizontal_grid = max_y..0//-100
     vertical_scale_factor = Enum.max([round(max_y / 500), 1])
 
@@ -311,8 +310,10 @@ defmodule YTDWeb.IndexLive do
   end
 
   defp max_x, do: Date.utc_today() |> Timex.end_of_year() |> Date.day_of_year()
-  defp max_y(nil, ytd), do: ceil(ytd)
-  defp max_y(target, ytd), do: [target.target, ytd] |> Enum.max() |> ceil()
+  defp max_y(nil, ytd, _unit), do: ceil(ytd)
+
+  defp max_y(target, ytd, unit),
+    do: [Util.convert(target.target, from: target.unit, to: unit), ytd] |> Enum.max() |> ceil()
 
   defp days_and_distances(activities, unit) do
     Enum.map(
