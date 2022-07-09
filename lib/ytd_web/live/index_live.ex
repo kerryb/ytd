@@ -248,6 +248,18 @@ defmodule YTDWeb.IndexLive do
         Date.utc_today() |> Timex.set(month: month, day: 1) |> Date.day_of_year()
       end)
 
+    points =
+      assigns.activities
+      |> IO.inspect(label: "activities")
+      |> days_and_distances(assigns.unit)
+      |> IO.inspect(label: "days and distances")
+      |> make_distances_cumulative()
+      |> IO.inspect(label: "cumulative")
+      |> convert_to_coordinates(max_y)
+      |> IO.inspect(label: "coordinates")
+      |> make_path()
+      |> IO.inspect(label: "path")
+
     assigns =
       Map.merge(assigns, %{
         max_x: max_x,
@@ -255,7 +267,8 @@ defmodule YTDWeb.IndexLive do
         horizontal_grid: horizontal_grid,
         vertical_grid: vertical_grid,
         vertical_scale_factor: vertical_scale_factor,
-        months: ~w[J F M A M J J A S O N D]
+        months: ~w[J F M A M J J A S O N D],
+        points: points
       })
 
     ~H"""
@@ -266,29 +279,65 @@ defmodule YTDWeb.IndexLive do
       preserveAspectRatio="none"
     >
       <g class="labels x-labels">
-          <%= for {name, number} <- Enum.with_index(@months) do %>
-            <text x={number * 900 / 12 + 130} y="990"><%= name %></text>      
+        <%= for {name, number} <- Enum.with_index(@months) do %>
+          <text x={number * 900 / 12 + 130} y="990"><%= name %></text>
         <% end %>
       </g>
       <g class="labels y-labels">
         <%= for miles <- 0..@max_y//100  do %>
-          <text x="70" y={(@max_y - miles) * 920 / @max_y + 35}><%= miles %></text>      
+          <text x="70" y={(@max_y - miles) * 920 / @max_y + 35}><%= miles %></text>
         <% end %>
       </g>
-      <svg x="100" y="20" width="900" height="930" viewBox={"0 0 #{@max_x} #{@max_y}"} preserveAspectRatio="none">
-        <g class={"stroke-[#{@vertical_scale_factor}px]"}>
+      <svg
+        x="100"
+        y="20"
+        width="900"
+        height="930"
+        viewBox={"0 0 #{@max_x} #{@max_y}"}
+        preserveAspectRatio="none"
+      >
+        <g class={"grid stroke-[#{@vertical_scale_factor}px]"}>
           <%= for y <- @horizontal_grid do %>
             <line x1="0" x2={@max_x} y1={y} y2={y}></line>
           <% end %>
         </g>
-        <g style={"stroke-dasharray: #{@vertical_scale_factor} #{@vertical_scale_factor * 2}"}>
+        <g
+          class="grid"
+          style={"stroke-dasharray: #{@vertical_scale_factor} #{@vertical_scale_factor * 2}"}
+        >
           <%= for x <- @vertical_grid do %>
             <line x1={x} x2={x} y1="0" y2={@max_y}></line>
           <% end %>
           <line x1={@max_x} x2={@max_x} y1="0" y2={@max_y}></line>
         </g>
+        <line id="target" x1="0" x2={@max_x} y1={@max_y} y2="0" />
+        <path id="actual" d={@points} />
       </svg>
     </svg>
     """
   end
+
+  defp days_and_distances(activities, unit) do
+    Enum.map(
+      activities,
+      &{Date.day_of_year(&1.start_date), Util.convert(&1.distance, from: "metres", to: unit)}
+    )
+  end
+
+  defp make_distances_cumulative(days_and_distances) do
+    days_and_distances
+    |> Enum.reduce({[], 0}, fn {day, distance}, {values, total} ->
+      {[{day, distance + total} | values], distance + total}
+    end)
+    |> elem(0)
+  end
+
+  defp convert_to_coordinates(days_and_cumulative_distances, max_y) do
+    Enum.map(days_and_cumulative_distances, fn {day, total} -> {day, max_y - round(total)} end)
+  end
+
+  defp make_path([]), do: ""
+  defp make_path([head | tail]), do: Enum.join([move(head) | Enum.map(tail, &draw/1)], " ")
+  defp move({x, y}), do: "M #{x},#{y}"
+  defp draw({x, y}), do: "L #{x},#{y}"
 end

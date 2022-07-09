@@ -22,7 +22,8 @@ defmodule YTD.Activities do
     Repo.all(
       from(a in Activity,
         where: a.user_id == ^user.id,
-        where: a.start_date >= ^beginning_of_year
+        where: a.start_date >= ^beginning_of_year,
+        order_by: a.start_date
       )
     )
   end

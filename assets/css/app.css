@@ -34,22 +34,35 @@
   .tab:not(.active):not(:first-of-type) {
     @apply border-l border-l-white dark:border-l-strava-orange;
   }
+}
 
-  svg {
-    fill: white;
+svg .labels {
+  fill: white;
+}
+
+svg .x-labels {
+  text-anchor: center;
+}
+
+svg .y-labels {
+  text-anchor: end;
+}
+
+svg path {
+  fill: transparent;
+}
+
+svg .grid, svg line#target {
+  stroke: #F9A27F;
+}
+
+@media (prefers-color-scheme: dark) {
+  svg .labels {
+    fill: #fc4c02;
   }
 
-  @media (prefers-color-scheme: dark) {
-    svg {
-      fill: #fc4c02;
-    }
-  }
-
-  svg .x-labels {
-    text-anchor: center;
-  }
-
-  svg .y-labels {
-    text-anchor: end;
+  svg .grid, svg line#target {
+    stroke: #7A2301;
   }
 }
+
