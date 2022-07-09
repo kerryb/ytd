@@ -235,7 +235,8 @@ defmodule YTDWeb.IndexLive do
     activities = Enum.filter(assigns.activities, &(&1.type == assigns.type))
     max_x = max_x()
     max_y = max_y(assigns[:target], assigns.ytd, assigns.unit)
-    horizontal_grid = max_y..0//-100
+    y_grid_gap = y_grid_gap(max_y)
+    horizontal_grid = max_y..0//-y_grid_gap
     vertical_scale_factor = Enum.max([round(max_y / 500), 1])
 
     vertical_grid =
@@ -254,6 +255,7 @@ defmodule YTDWeb.IndexLive do
       assign(assigns, %{
         max_x: max_x,
         max_y: max_y,
+        y_grid_gap: y_grid_gap,
         horizontal_grid: horizontal_grid,
         vertical_grid: vertical_grid,
         vertical_scale_factor: vertical_scale_factor,
@@ -274,7 +276,7 @@ defmodule YTDWeb.IndexLive do
         <% end %>
       </g>
       <g class="labels y-labels">
-        <%= for miles <- 0..@max_y//100  do %>
+        <%= for miles <- 0..@max_y//@y_grid_gap  do %>
           <text x="70" y={(@max_y - miles) * 920 / @max_y + 35}><%= miles %></text>
         <% end %>
       </g>
@@ -314,6 +316,12 @@ defmodule YTDWeb.IndexLive do
 
   defp max_y(target, ytd, unit),
     do: [Util.convert(target.target, from: target.unit, to: unit), ytd] |> Enum.max() |> ceil()
+
+  defp y_grid_gap(max_y) when max_y < 250, do: 10
+  defp y_grid_gap(max_y) when max_y < 1000, do: 50
+  defp y_grid_gap(max_y) when max_y < 2500, do: 100
+  defp y_grid_gap(max_y) when max_y < 10_000, do: 500
+  defp y_grid_gap(_max_y), do: 1000
 
   defp days_and_distances(activities, unit) do
     Enum.map(
