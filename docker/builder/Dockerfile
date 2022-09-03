@@ -24,7 +24,8 @@ RUN set -xe \
 
 RUN set -xe \
   && version=`awk '/^elixir / { sub(/-.*/, "", $2) ; print $2 }' .tool-versions` \
-  && curl -fSL -o elixir-precompiled.zip https://github.com/elixir-lang/elixir/releases/download/v${version}/Precompiled.zip \
+  && otp_version=`awk '/^erlang / { sub (/\..*/, "") ; print $2 }' .tool-versions` \
+  && curl -fSL -o elixir-precompiled.zip https://github.com/elixir-lang/elixir/releases/download/v${version}/elixir-otp-${otp_version}.zip \
   && unzip -d /usr/local elixir-precompiled.zip \
   && rm elixir-precompiled.zip
 
