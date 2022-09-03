@@ -2,7 +2,7 @@
 defmodule YTDWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :ytd
 
-  if Application.get_env(:ytd, :sql_sandbox) do
+  if Application.compile_env(:ytd, :sql_sandbox) do
     plug(Phoenix.Ecto.SQL.Sandbox)
   end
 
