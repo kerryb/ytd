@@ -11,9 +11,8 @@ RUN set -xe \
 
 RUN set -xe \
   && curl -sL https://rpm.nodesource.com/setup_17.x | bash - \
-  && yum install -y nodejs \
+  && yum install -y nodejs
 
-RUN mkdir /app
 WORKDIR /app
 
 COPY .tool-versions ./
