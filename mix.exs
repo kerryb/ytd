@@ -52,6 +52,7 @@ defmodule YTD.MixProject do
       {:floki, ">= 0.0.0", only: :test},
       {:gettext, "~> 0.11"},
       {:hammox, "~> 0.2", only: :test},
+      {:heroicons, "~> 0.5"},
       {:jason, "~> 1.0"},
       {:phoenix, "~> 1.7.0-rc.2", override: true},
       {:phoenix_ecto, "~> 4.1"},

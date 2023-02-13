@@ -31,7 +31,7 @@
           "apps/*/test/",
           "apps/*/web/"
         ],
-        excluded: [~r"/_build/", ~r"/deps/"]
+        excluded: [~r"/_build/", ~r"/deps/", ~r"/ytd_web.ex", ~r"/core_components.ex"]
       },
       #
       # Load and configure plugins here:

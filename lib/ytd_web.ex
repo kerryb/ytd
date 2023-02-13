@@ -108,7 +108,7 @@ defmodule YTDWeb do
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
-      import YTDWeb.{ErrorHelpers, Gettext}
+      import YTDWeb.{CoreComponents, Gettext}
       unquote(verified_routes())
     end
   end

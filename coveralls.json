@@ -5,10 +5,10 @@
     "lib/ytd/repo.ex",
     "lib/ytd_web.ex",
     "lib/ytd_web/channels/user_socket.ex",
+    "lib/ytd_web/components/core_components.ex",
     "lib/ytd_web/endpoint.ex",
     "lib/ytd_web/gettext.ex",
     "lib/ytd_web/router.ex",
-    "lib/ytd_web/views/error_helpers.ex",
     "lib/ytd_web/views/layout_view.ex",
     "test"
   ]
