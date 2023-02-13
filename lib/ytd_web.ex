@@ -37,21 +37,6 @@ defmodule YTDWeb do
     end
   end
 
-  def view do
-    quote do
-      use Phoenix.View,
-        root: "lib/ytd_web/templates",
-        namespace: YTDWeb
-
-      # Import convenience functions from controllers
-      import Phoenix.Controller,
-        only: [view_module: 1, view_template: 1]
-
-      # Include shared imports and aliases for views
-      unquote(html_helpers())
-    end
-  end
-
   def html do
     quote do
       use Phoenix.Component
@@ -103,9 +88,6 @@ defmodule YTDWeb do
       use Phoenix.HTML
 
       import Phoenix.Component
-
-      # Import basic rendering functionality (render, render_layout, etc)
-      import Phoenix.View
 
       import YTDWeb.{CoreComponents, Gettext}
       unquote(verified_routes())

@@ -4,12 +4,11 @@ all: clean style compile dialyzer test docs bumbailiff
 setup:
 	mix deps.get
 	mix ecto.setup
-	cd assets && npm install
 clean:
 	MIX_ENV=test mix clean
 	rm -rf priv/static/assets/*
 deep-clean:
-	rm -rf _build assets/node_modules deps priv/static/assets
+	rm -rf _build deps priv/static/assets
 style:
 	mix format --check-formatted
 	mix credo
@@ -27,7 +26,6 @@ outdated:
 	mix hex.outdated
 update-deps:
 	mix deps.update --all
-	cd assets && npm update
 release: check-working-dir-clean check-version-up-to-date
 	rm -f ytd-*.gz
 	docker build --tag=ytd-release -f docker/builder/Dockerfile .

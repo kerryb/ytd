@@ -9,10 +9,6 @@ RUN locale
 RUN set -xe \
   && yum install -y gcc-c++ git make unzip
 
-RUN set -xe \
-  && curl -sL https://rpm.nodesource.com/setup_17.x | bash - \
-  && yum install -y nodejs
-
 WORKDIR /app
 
 COPY .tool-versions ./
@@ -37,10 +33,6 @@ ENV MIX_ENV=prod
 COPY mix.exs mix.lock ./
 RUN mix deps.get --only prod
 RUN mix deps.compile
-
-COPY assets/package.json assets/package.json
-COPY assets/package-lock.json assets/package-lock.json
-RUN cd assets && npm install
 
 COPY assets assets
 COPY config config
