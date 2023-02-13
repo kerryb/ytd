@@ -5,7 +5,7 @@
     <meta content="IE=edge" http-equiv="X-UA-Compatible" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <%= csrf_meta_tag() %>
-    <%= live_title_tag(Map.get(assigns, :page_title, "YTD")) %>
+    <.live_title><%= assigns[:page_title] || "YTD" %></.live_title>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")} />
     <link
       href={Routes.static_path(@conn, "/apple-icon-180x180.png")}
