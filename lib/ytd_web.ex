@@ -67,8 +67,7 @@ defmodule YTDWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView,
-        layout: {YTDWeb.LayoutView, :live}
+      use Phoenix.LiveView, layout: {YTDWeb.Layouts, :app}
 
       unquote(html_helpers())
     end

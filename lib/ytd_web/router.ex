@@ -6,9 +6,9 @@ defmodule YTDWeb.Router do
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_live_flash)
+    plug :put_root_layout, {YTDWeb.Layouts, :root}
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
-    plug(:put_root_layout, {YTDWeb.LayoutView, :root})
   end
 
   pipeline :app do
