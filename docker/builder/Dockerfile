@@ -51,7 +51,6 @@ COPY rel rel
 
 RUN mix compile
 
-RUN cd assets && npx postcss css/app.css -o ../priv/static/assets/app.css
 RUN mix esbuild default --minify
 RUN mix phx.digest
 
