@@ -53,7 +53,7 @@ defmodule YTDWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {YTDWeb.LayoutView, "live.html"}
+        layout: {YTDWeb.LayoutView, :live}
 
       unquote(view_helpers())
     end
@@ -89,6 +89,7 @@ defmodule YTDWeb do
       use Phoenix.HTML
 
       # Import LiveView helpers (live_render, live_component, live_patch, etc)
+      import Phoenix.Component
       import Phoenix.LiveView.Helpers
 
       # Import basic rendering functionality (render, render_layout, etc)
