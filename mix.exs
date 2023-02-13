@@ -58,7 +58,7 @@ defmodule YTD.MixProject do
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_dashboard, "~> 0.5"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.16"},
+      {:phoenix_live_view, "0.18.11"},
       {:phoenix_view, "~> 2.0"},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},

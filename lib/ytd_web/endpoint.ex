@@ -32,8 +32,8 @@ defmodule YTDWeb.Endpoint do
     at: "/",
     from: :ytd,
     gzip: true,
-    only: ~w(assets images robots.txt),
-    only_matching: ~w(favicon.ico favicon apple-icon)
+    only: YTDWeb.static_paths(),
+    only_matching: ~w(favicon apple-icon)
   )
 
   # Code reloading can be explicitly enabled under the

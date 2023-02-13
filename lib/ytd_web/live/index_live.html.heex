@@ -23,15 +23,15 @@
 
 <div id="tabs" class="tabs">
   <%= live_patch("Summary",
-    to: Routes.live_path(@socket, IndexLive, @type, :summary),
+    to: ~p"/#{@type}/summary",
     class: "tab #{if @tab == "summary", do: "active"}"
   ) %>
   <%= live_patch("Months",
-    to: Routes.live_path(@socket, IndexLive, @type, :months),
+    to: ~p"/#{@type}/months",
     class: "tab #{if @tab == "months", do: "active"}"
   ) %>
   <%= live_patch("Graph",
-    to: Routes.live_path(@socket, IndexLive, @type, :graph),
+    to: ~p"/#{@type}/graph",
     class: "tab #{if @tab == "graph", do: "active"}"
   ) %>
 </div>
@@ -123,13 +123,11 @@
 </div>
 <hr class="separator" />
 <div class="flex flex-row justify-between items-end text-xs opacity-50">
-  <%= img_tag(
-    Routes.static_path(YTDWeb.Endpoint, "/images/api_logo_pwrdBy_strava_horiz_white.png"),
+  <%= img_tag(~p"/images/api_logo_pwrdBy_strava_horiz_white.png",
     width: "113",
     class: "dark:hidden"
   ) %>
-  <%= img_tag(
-    Routes.static_path(YTDWeb.Endpoint, "/images/api_logo_pwrdBy_strava_horiz_light.png"),
+  <%= img_tag(~p"/images/api_logo_pwrdBy_strava_horiz_light.png",
     width: "113",
     class: "hidden dark:inline"
   ) %>

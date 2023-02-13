@@ -29,7 +29,7 @@ defmodule YTDWeb.ConnCase do
       import YTDWeb.ConnCase
       import YTD.Factory
 
-      alias YTDWeb.Router.Helpers, as: Routes
+      use YTDWeb, :verified_routes
 
       # The default endpoint for testing
       @endpoint YTDWeb.Endpoint

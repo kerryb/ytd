@@ -5,14 +5,12 @@ defmodule YTDWeb.IndexLive do
   """
 
   use YTDWeb, :live_view
+  use YTDWeb, :verified_routes
 
   import YTDWeb.Components
 
   alias Phoenix.PubSub
   alias YTD.{Stats, Users, Util}
-  # credo:disable-for-next-line Credo.Check.Readability.AliasAs
-  alias YTDWeb.Router.Helpers, as: Routes
-  alias __MODULE__
 
   require Logger
 
@@ -70,9 +68,7 @@ defmodule YTDWeb.IndexLive do
 
   @impl true
   def handle_event("select", %{"_target" => ["type"], "type" => type}, socket),
-    do:
-      {:noreply,
-       push_patch(socket, to: Routes.live_path(socket, __MODULE__, type, socket.assigns.tab))}
+    do: {:noreply, push_patch(socket, to: ~p"/#{type}/#{socket.assigns.tab}")}
 
   def handle_event("select", %{"_target" => ["unit"], "unit" => unit}, socket),
     do: {:noreply, socket |> assign(unit: unit) |> update_calculated_values()}

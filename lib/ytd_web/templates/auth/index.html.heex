@@ -7,10 +7,10 @@
   Track your progress towards a yearly distance target for running or cycling
   (or any other activity you track on Strava).
 </p>
-<%= img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/screenshot.png"),
+<%= img_tag(~p"/images/screenshot.png",
   class: "border mx-auto mb-5 transform -rotate-2 drop-shadow-lg dark:hidden"
 ) %>
-<%= img_tag(Routes.static_path(YTDWeb.Endpoint, "/images/screenshot-dark.png"),
+<%= img_tag(~p"/images/screenshot-dark.png",
   class: "border border-strava-orange mx-auto mb-5 transform -rotate-2 hidden dark:block"
 ) %>
 <p class="font-thin text-2xl mb-5">
@@ -26,11 +26,7 @@
 </p>
 <div class="mt-10 width-full flex flex-col items-center">
   <a href={@auth_url}>
-    <%= img_tag(Routes.static_path(@conn, "/images/btn_strava_connectwith_light.png"),
-      class: "dark:hidden"
-    ) %>
-    <%= img_tag(Routes.static_path(@conn, "/images/btn_strava_connectwith_orange.png"),
-      class: "hidden dark:inline"
-    ) %>
+    <%= img_tag(~p"/images/btn_strava_connectwith_light.png", class: "dark:hidden") %>
+    <%= img_tag(~p"/images/btn_strava_connectwith_orange.png", class: "hidden dark:inline") %>
   </a>
 </div>

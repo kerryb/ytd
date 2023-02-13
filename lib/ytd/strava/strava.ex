@@ -6,13 +6,11 @@ defmodule YTD.Strava do
 
   @behaviour YTD.Strava.API
 
-  use Boundary, top_level?: true, deps: [Strava, YTD.Users.Tokens, YTDWeb]
+  use Boundary, top_level?: true, deps: [Phoenix.VerifiedRoutes, Strava, YTD.Users.Tokens, YTDWeb]
+  use YTDWeb, :verified_routes
 
   alias Strava.{Activities, Athletes, Auth, Client}
   alias YTD.Strava.API
-  alias YTDWeb.Endpoint
-  # credo:disable-for-next-line Credo.Check.Readability.AliasAs
-  alias YTDWeb.Router.Helpers, as: Routes
 
   @impl API
   def authorize_url, do: Auth.authorize_url!(scope: "activity:read,activity:read_all")
@@ -57,7 +55,7 @@ defmodule YTD.Strava do
             [
               client_id: Application.get_env(:strava, :client_id),
               client_secret: Application.get_env(:strava, :client_secret),
-              callback_url: Routes.events_url(Endpoint, :validate),
+              callback_url: url(~p"/webhooks/events"),
               verify_token: "ytd"
             ]},
            with_body: true

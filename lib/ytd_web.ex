@@ -22,8 +22,10 @@ defmodule YTDWeb do
   """
 
   use Boundary,
-    deps: [Phoenix, YTD, YTD.{Stats, Users, Util}],
-    exports: [Endpoint, Router.Helpers]
+    deps: [Phoenix, Phoenix.VerifiedRoutes, YTD.{Stats, Users, Util}],
+    exports: [Endpoint]
+
+  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
 
   def controller do
     quote do
@@ -31,7 +33,7 @@ defmodule YTDWeb do
 
       import Plug.Conn
       import YTDWeb.Gettext
-      alias YTDWeb.Router.Helpers, as: Routes
+      unquote(verified_routes())
     end
   end
 
@@ -94,7 +96,16 @@ defmodule YTDWeb do
       import Phoenix.View
 
       import YTDWeb.{ErrorHelpers, Gettext}
-      alias YTDWeb.Router.Helpers, as: Routes
+      unquote(verified_routes())
+    end
+  end
+
+  def verified_routes do
+    quote do
+      use Phoenix.VerifiedRoutes,
+        endpoint: YTDWeb.Endpoint,
+        router: YTDWeb.Router,
+        statics: YTDWeb.static_paths()
     end
   end
 
