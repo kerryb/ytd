@@ -23,6 +23,8 @@ test:
 	mix coveralls.html
 docs:
 	mix docs
+outdated:
+	mix hex.outdated
 update-deps:
 	mix deps.update --all
 	cd assets && npm update
