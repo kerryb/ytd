@@ -16,7 +16,7 @@ defmodule YTDWeb.AuthPlug do
   alias Phoenix.Controller
   alias Plug.Conn
   alias YTD.{Strava, Users}
-  alias YTDWeb.AuthView
+  alias YTDWeb.Auth
 
   plug(:get_user_if_signed_in)
   plug(:authorize_with_strava_if_not_signed_in)
@@ -76,7 +76,7 @@ defmodule YTDWeb.AuthPlug do
 
   defp render_pre_auth_page(conn, strava) do
     conn
-    |> Controller.put_view(AuthView)
+    |> Controller.put_view(Auth)
     |> Conn.assign(:auth_url, strava.authorize_url)
     |> Controller.render("index.html")
     |> halt()
