@@ -54,12 +54,12 @@ defmodule YTD.MixProject do
       {:hammox, "~> 0.2", only: :test},
       {:heroicons, "~> 0.5"},
       {:jason, "~> 1.0"},
-      {:phoenix, "~> 1.7.0-rc.2", override: true},
+      {:phoenix, "~> 1.7.0-rc.3", override: true},
       {:phoenix_ecto, "~> 4.1"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_dashboard, "~> 0.5"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "0.18.11"},
+      {:phoenix_live_view, "~> 0.18"},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:strava, "~> 1.0"},
@@ -88,7 +88,12 @@ defmodule YTD.MixProject do
     ]
   end
 
-  defp dialyzer, do: [plt_add_deps: :app_tree]
+  defp dialyzer do
+    [
+      plt_add_deps: :app_tree,
+      ignore_warnings: "dialyzer_ignore_warnings.exs"
+    ]
+  end
 
   defp preferred_cli_env do
     [
