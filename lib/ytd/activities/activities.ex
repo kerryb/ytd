@@ -11,7 +11,7 @@ defmodule YTD.Activities do
   import Ecto.Query
 
   alias Phoenix.PubSub
-  alias YTD.Activities.{Activity, API}
+  alias YTD.Activities.{Activity, API, WeekGroup}
   alias YTD.Repo
   alias YTD.Users.User
 
@@ -74,6 +74,39 @@ defmodule YTD.Activities do
       on_conflict: {:replace, [:name, :type, :start_date, :distance, :updated_at]},
       conflict_target: :strava_id
     )
+  end
+
+  @impl API
+  def by_week_and_day(activities, today \\ Date.utc_today()) do
+    activities |> Enum.group_by(&Timex.iso_week(&1.start_date)) |> group_into_weeks(today)
+  end
+
+  defp group_into_weeks(activities_by_week, today) do
+    {_, current_week} = Timex.iso_week(today)
+
+    Enum.map(
+      current_week..1,
+      &week_activities(&1, today.year, activities_by_week[{today.year, &1}])
+    )
+  end
+
+  defp week_activities(week, year, activities) do
+    %WeekGroup{
+      from: Timex.from_iso_triplet({year, week, 1}),
+      to: Timex.from_iso_triplet({year, week, 7}),
+      day_activities: day_activities(activities)
+    }
+  end
+
+  @empty_days Enum.into(1..7, %{}, &{&1, []})
+  defp day_activities(nil), do: @empty_days
+
+  @dialyzer {:nowarn_function, day_activities: 1}
+  defp day_activities(activities) do
+    activities
+    |> Enum.sort_by(& &1.start_date, DateTime)
+    |> Enum.group_by(&Timex.weekday!(&1.start_date))
+    |> then(&Map.merge(@empty_days, &1))
   end
 
   @impl API

@@ -8,7 +8,7 @@ defmodule YTD.ActivitiesTest do
   alias Phoenix.PubSub
   alias Strava.{DetailedActivity, SummaryActivity}
   alias YTD.{Activities, Repo}
-  alias YTD.Activities.Activity
+  alias YTD.Activities.{Activity, WeekGroup}
 
   defp stub_strava(_context) do
     stub(StravaMock, :stream_activities_since, fn _user, _timestamp, _callback -> :ok end)
@@ -189,6 +189,56 @@ defmodule YTD.ActivitiesTest do
 
       saved_activity = Repo.one(from(a in Activity))
       assert_maps_equal(updated_activity, saved_activity, [:name, :type, :start_date, :distance])
+    end
+  end
+
+  describe "YTD.Activities.by_week_and_day/2" do
+    test "groups activities by week and day, for each week going back from the current one" do
+      activities = [
+        build(:activity, name: "Week 1 Tue", start_date: ~U[2023-01-03 12:00:00Z]),
+        build(:activity, name: "Week 3 Mon 1", start_date: ~U[2023-01-16 12:00:00Z]),
+        build(:activity, name: "Week 3 Mon 2", start_date: ~U[2023-01-16 19:00:00Z]),
+        build(:activity, name: "Week 3 Sun", start_date: ~U[2023-01-22 12:00:00Z])
+      ]
+
+      assert [
+               %WeekGroup{
+                 from: ~D[2023-01-23],
+                 to: ~D[2023-01-29],
+                 day_activities: %{1 => [], 2 => [], 3 => [], 4 => [], 5 => [], 6 => [], 7 => []}
+               },
+               %WeekGroup{
+                 from: ~D[2023-01-16],
+                 to: ~D[2023-01-22],
+                 day_activities: %{
+                   1 => [%{name: "Week 3 Mon 1"}, %{name: "Week 3 Mon 2"}],
+                   2 => [],
+                   3 => [],
+                   4 => [],
+                   5 => [],
+                   6 => [],
+                   7 => [%{name: "Week 3 Sun"}]
+                 }
+               },
+               %WeekGroup{
+                 from: ~D[2023-01-09],
+                 to: ~D[2023-01-15],
+                 day_activities: %{1 => [], 2 => [], 3 => [], 4 => [], 5 => [], 6 => [], 7 => []}
+               },
+               %WeekGroup{
+                 from: ~D[2023-01-02],
+                 to: ~D[2023-01-08],
+                 day_activities: %{
+                   1 => [],
+                   2 => [%{name: "Week 1 Tue"}],
+                   3 => [],
+                   4 => [],
+                   5 => [],
+                   6 => [],
+                   7 => []
+                 }
+               }
+             ] = Activities.by_week_and_day(activities, ~D[2023-01-24])
     end
   end
 
