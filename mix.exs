@@ -54,7 +54,7 @@ defmodule YTD.MixProject do
       {:hammox, "~> 0.2", only: :test},
       {:heroicons, "~> 0.5"},
       {:jason, "~> 1.0"},
-      {:phoenix, "~> 1.7.0-rc.3", override: true},
+      {:phoenix, "~> 1.7"},
       {:phoenix_ecto, "~> 4.1"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_dashboard, "~> 0.5"},
