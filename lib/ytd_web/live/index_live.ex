@@ -257,7 +257,7 @@ defmodule YTDWeb.IndexLive do
       <%= if @total do %>
         <%= @total %>
         <%= if @count > 1 do %>
-          <span class="font-thin">(<%= @count %>)</span>
+          <span class="font-thin">⧉</span>
         <% end %>
       <% end %>
     </td>
