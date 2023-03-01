@@ -233,6 +233,14 @@ defmodule YTDWeb.IndexLive do
   defp activities_api, do: Application.fetch_env!(:ytd, :activities_api)
   defp users_api, do: Application.fetch_env!(:ytd, :users_api)
 
+  defp week_label(week_group) do
+    if week_group.from.month == week_group.to.month do
+      "#{Timex.format!(week_group.from, "{D}")} – #{Timex.format!(week_group.to, "{D} {Mshort}")}"
+    else
+      "#{Timex.format!(week_group.from, "{D} {Mshort}")} – #{Timex.format!(week_group.to, "{D} {Mshort}")}"
+    end
+  end
+
   attr(:activities, :list, required: true)
   attr(:unit, :string, required: true)
 

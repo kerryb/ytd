@@ -92,18 +92,17 @@
         <th width="10%">Tot</th>
       </thead>
       <tbody>
-        <%= for week_activities <- @activities_by_week do %>
+        <%= for week_group <- @activities_by_week do %>
           <tr>
             <th>
-              <%= Timex.format!(week_activities.from, "{D} {Mshort}") %> – <%= Timex.format!(
-                week_activities.to,
-                "{D} {Mshort}"
-              ) %>
+              <%= week_label(week_group) %>
             </th>
             <%= for day <- 1..7 do %>
-              <.day_activities activities={week_activities.day_activities[day]} unit={@unit} />
+              <.day_activities activities={week_group.day_activities[day]} unit={@unit} />
             <% end %>
-            <td class="font-bold"><%= week_activities.total|> Util.convert(from: "metres", to: @unit)|>Float.round(1) %></td>
+            <td class="font-bold">
+              <%= week_group.total |> Util.convert(from: "metres", to: @unit) |> Float.round(1) %>
+            </td>
           </tr>
         <% end %>
       </tbody>
