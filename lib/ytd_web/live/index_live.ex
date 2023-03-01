@@ -92,6 +92,7 @@ defmodule YTDWeb.IndexLive do
   def handle_event("cancel-target", _params, socket),
     do: {:noreply, assign(socket, edit_target?: false)}
 
+  @impl true
   def handle_info({:new_activity, activity}, socket) do
     activities = [activity | socket.assigns.activities]
     {:noreply, socket |> assign(activities: activities) |> update_calculated_values()}
@@ -115,7 +116,6 @@ defmodule YTDWeb.IndexLive do
     {:noreply, socket |> assign(activities: activities) |> update_calculated_values()}
   end
 
-  @impl true
   def handle_info(:all_activities_fetched, socket),
     do: {:noreply, assign(socket, refreshing?: false)}
 
@@ -146,6 +146,7 @@ defmodule YTDWeb.IndexLive do
     copy_text = "#{today_distance(activities, type, unit)}/#{ytd}"
 
     month_totals = month_totals(activities, type, unit)
+    activities_by_week = activities_by_week(activities, type)
 
     assign(socket,
       count: count,
@@ -155,7 +156,8 @@ defmodule YTDWeb.IndexLive do
       stats: stats,
       ytd: ytd,
       copy_text: copy_text,
-      month_totals: month_totals
+      month_totals: month_totals,
+      activities_by_week: activities_by_week
     )
   end
 
@@ -224,8 +226,49 @@ defmodule YTDWeb.IndexLive do
     |> Float.round(1)
   end
 
+  defp activities_by_week(activities, type) do
+    activities |> Enum.filter(&(&1.type == type)) |> activities_api().by_week_and_day()
+  end
+
   defp activities_api, do: Application.fetch_env!(:ytd, :activities_api)
   defp users_api, do: Application.fetch_env!(:ytd, :users_api)
+
+  attr(:activities, :list, required: true)
+  attr(:unit, :string, required: true)
+
+  defp day_activities(assigns) do
+    total =
+      case assigns.activities do
+        [] ->
+          nil
+
+        activities ->
+          activities
+          |> Enum.map(&Util.convert(&1.distance, from: "metres", to: assigns.unit))
+          |> Enum.sum()
+          |> Float.round(1)
+      end
+
+    count = length(assigns.activities)
+    assigns = assign(assigns, total: total, count: count)
+
+    ~H"""
+    <td>
+      <%= if @total do %>
+        <%= @total %>
+        <%= if @count > 1 do %>
+          <span class="font-thin">(<%= @count %>)</span>
+        <% end %>
+      <% end %>
+    </td>
+    """
+  end
+
+  attr(:activities, :list, required: true)
+  attr(:type, :string, required: true)
+  attr(:unit, :string, required: true)
+  attr(:target, :integer, required: true)
+  attr(:ytd, :integer, required: true)
 
   defp graph(assigns) do
     activities = Enum.filter(assigns.activities, &(&1.type == assigns.type))

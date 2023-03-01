@@ -195,17 +195,26 @@ defmodule YTD.ActivitiesTest do
   describe "YTD.Activities.by_week_and_day/2" do
     test "groups activities by week and day, for each week going back from the current one" do
       activities = [
-        build(:activity, name: "Week 1 Tue", start_date: ~U[2023-01-03 12:00:00Z]),
-        build(:activity, name: "Week 3 Mon 1", start_date: ~U[2023-01-16 12:00:00Z]),
-        build(:activity, name: "Week 3 Mon 2", start_date: ~U[2023-01-16 19:00:00Z]),
-        build(:activity, name: "Week 3 Sun", start_date: ~U[2023-01-22 12:00:00Z])
+        build(:activity, name: "Week 1 Tue", start_date: ~U[2023-01-03 12:00:00Z], distance: 1000),
+        build(:activity,
+          name: "Week 3 Mon 1",
+          start_date: ~U[2023-01-16 12:00:00Z],
+          distance: 2000
+        ),
+        build(:activity,
+          name: "Week 3 Mon 2",
+          start_date: ~U[2023-01-16 19:00:00Z],
+          distance: 3000
+        ),
+        build(:activity, name: "Week 3 Sun", start_date: ~U[2023-01-22 12:00:00Z], distance: 4000)
       ]
 
       assert [
                %WeekGroup{
                  from: ~D[2023-01-23],
                  to: ~D[2023-01-29],
-                 day_activities: %{1 => [], 2 => [], 3 => [], 4 => [], 5 => [], 6 => [], 7 => []}
+                 day_activities: %{1 => [], 2 => [], 3 => [], 4 => [], 5 => [], 6 => [], 7 => []},
+                 total: 0
                },
                %WeekGroup{
                  from: ~D[2023-01-16],
@@ -218,12 +227,14 @@ defmodule YTD.ActivitiesTest do
                    5 => [],
                    6 => [],
                    7 => [%{name: "Week 3 Sun"}]
-                 }
+                 },
+                 total: 9000
                },
                %WeekGroup{
                  from: ~D[2023-01-09],
                  to: ~D[2023-01-15],
-                 day_activities: %{1 => [], 2 => [], 3 => [], 4 => [], 5 => [], 6 => [], 7 => []}
+                 day_activities: %{1 => [], 2 => [], 3 => [], 4 => [], 5 => [], 6 => [], 7 => []},
+                 total: 0
                },
                %WeekGroup{
                  from: ~D[2023-01-02],
@@ -236,7 +247,8 @@ defmodule YTD.ActivitiesTest do
                    5 => [],
                    6 => [],
                    7 => []
-                 }
+                 },
+                 total: 1000
                }
              ] = Activities.by_week_and_day(activities, ~D[2023-01-24])
     end

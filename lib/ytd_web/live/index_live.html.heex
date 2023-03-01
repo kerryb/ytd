@@ -26,6 +26,10 @@
     to: ~p"/#{@type}/summary",
     class: "tab #{if @tab == "summary", do: "active"}"
   ) %>
+  <%= live_patch("Activities",
+    to: ~p"/#{@type}/activities",
+    class: "tab #{if @tab == "activities", do: "active"}"
+  ) %>
   <%= live_patch("Months",
     to: ~p"/#{@type}/months",
     class: "tab #{if @tab == "months", do: "active"}"
@@ -78,6 +82,32 @@
         <.edit_target_modal type={@type} unit={@unit} target={@targets[@type]} />
       <% end %>
     <% end %>
+  <% "activities" -> %>
+    <table class="table-fixed w-full text-sm text-left">
+      <thead>
+        <th />
+        <%= for day <- 1..7 do %>
+          <th width="10%"><%= Timex.day_shortname(day) %></th>
+        <% end %>
+        <th width="10%">Tot</th>
+      </thead>
+      <tbody>
+        <%= for week_activities <- @activities_by_week do %>
+          <tr>
+            <th>
+              <%= Timex.format!(week_activities.from, "{D} {Mshort}") %> – <%= Timex.format!(
+                week_activities.to,
+                "{D} {Mshort}"
+              ) %>
+            </th>
+            <%= for day <- 1..7 do %>
+              <.day_activities activities={week_activities.day_activities[day]} unit={@unit} />
+            <% end %>
+            <td class="font-bold"><%= week_activities.total|> Util.convert(from: "metres", to: @unit)|>Float.round(1) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   <% "months" -> %>
     <table class="text-4xl ml-10">
       <%= for {month, distance} <- @month_totals do %>

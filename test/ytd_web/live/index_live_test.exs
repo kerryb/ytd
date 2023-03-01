@@ -8,7 +8,7 @@ defmodule YTDWeb.IndexLiveTest do
 
   alias Ecto.Changeset
   alias Phoenix.PubSub
-  alias YTD.Repo
+  alias YTD.{Activities, Repo}
 
   @endpoint YTDWeb.Endpoint
 
@@ -17,6 +17,7 @@ defmodule YTDWeb.IndexLiveTest do
     |> stub(:get_existing_activities, fn _user -> [] end)
     |> stub(:fetch_activities, fn _user -> :ok end)
     |> stub(:reload_activities, fn _user -> :ok end)
+    |> stub(:by_week_and_day, &Activities.by_week_and_day/1)
 
     stub(UsersMock, :update_name, fn _user -> :ok end)
     :ok

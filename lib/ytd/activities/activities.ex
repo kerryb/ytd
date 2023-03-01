@@ -94,9 +94,13 @@ defmodule YTD.Activities do
     %WeekGroup{
       from: Timex.from_iso_triplet({year, week, 1}),
       to: Timex.from_iso_triplet({year, week, 7}),
-      day_activities: day_activities(activities)
+      day_activities: day_activities(activities),
+      total: total(activities)
     }
   end
+
+  defp total(nil), do: 0
+  defp total(activities), do: activities |> Enum.map(& &1.distance) |> Enum.sum()
 
   @empty_days Enum.into(1..7, %{}, &{&1, []})
   defp day_activities(nil), do: @empty_days
