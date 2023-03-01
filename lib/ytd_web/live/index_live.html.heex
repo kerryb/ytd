@@ -83,18 +83,18 @@
       <% end %>
     <% end %>
   <% "activities" -> %>
-    <table class="table-fixed w-full text-sm text-left">
-      <thead>
-        <th />
+    <table class="table-fixed w-full my-4 text-sm text-center">
+      <thead class="border-b">
+        <th class="border-r" />
         <%= for day <- 1..7 do %>
-          <th width="10%"><%= Timex.day_shortname(day) %></th>
+          <th class="border-r" width="10%"><%= Timex.day_shortname(day) %></th>
         <% end %>
         <th width="10%">Tot</th>
       </thead>
       <tbody>
         <%= for week_group <- @activities_by_week do %>
           <tr>
-            <th>
+            <th class="text-right border-r pr-2">
               <%= week_label(week_group) %>
             </th>
             <%= for day <- 1..7 do %>

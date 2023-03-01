@@ -261,7 +261,7 @@ defmodule YTDWeb.IndexLive do
     assigns = assign(assigns, total: total, count: count)
 
     ~H"""
-    <td>
+    <td class="border-r">
       <%= if @total do %>
         <%= @total %>
         <%= if @count > 1 do %>
