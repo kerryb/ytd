@@ -155,6 +155,25 @@ defmodule YTDWeb.IndexLiveTest do
     end
   end
 
+  describe "YTDWeb.IndexLive, when 'activities' is selected" do
+    test "shows daily mileages, allowing details to be viewed", %{conn: conn, user: user} do
+      activities = [
+        build(:activity,
+          type: "Run",
+          name: "An example run",
+          start_date: Timex.set(DateTime.utc_now(), month: 1),
+          distance: 5_000.0
+        )
+      ]
+
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
+      {:ok, view, _html} = live(conn, "/")
+      view |> element("#tabs a", "Activities") |> render_click()
+      view |> element("a", "3.1") |> render_click()
+      assert view |> element("a", "An example run") |> has_element?()
+    end
+  end
+
   describe "YTDWeb.IndexLive, when 'months' is selected" do
     test "displays month totals", %{conn: conn, user: user} do
       activities = [
