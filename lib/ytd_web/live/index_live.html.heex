@@ -84,17 +84,19 @@
     <% end %>
   <% "activities" -> %>
     <table class="table-fixed w-full my-4 text-[9px] sm:text-sm text-center">
-      <thead class="border-b">
-        <th class="border-r" />
+      <thead class="border-b dark:border-strava-orange">
+        <th class="border-r dark:border-strava-orange" />
         <%= for day <- 1..7 do %>
-          <th class="border-r" width="10%"><%= Timex.day_shortname(day) %></th>
+          <th class="border-r dark:border-strava-orange" width="10%">
+            <%= Timex.day_shortname(day) %>
+          </th>
         <% end %>
         <th width="10%">Tot</th>
       </thead>
       <tbody>
         <%= for week_group <- @activities_by_week do %>
           <tr>
-            <th class="text-right border-r pr-2">
+            <th class="text-right border-r dark:border-strava-orange pr-2">
               <%= week_label(week_group) %>
             </th>
             <%= for day <- 1..7 do %>
@@ -112,7 +114,10 @@
           </tr>
           <%= if @week_beginning == week_group.from do %>
             <tr>
-              <td colspan="9" class="bg-white text-strava-orange text-left px-4 py-2 rounded">
+              <td
+                colspan="9"
+                class="bg-white dark:bg-strava-orange text-strava-orange dark:text-black text-left px-4 py-2 rounded"
+              >
                 <%= for activity <- week_group.day_activities[@day] do %>
                   <p>
                     <%= Timex.format!(activity.start_date, "{h12}:{m} {am}") %>:

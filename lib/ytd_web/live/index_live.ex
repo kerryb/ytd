@@ -263,7 +263,7 @@ defmodule YTDWeb.IndexLive do
 
   defp day_activities(%{activities: []} = assigns) do
     ~H"""
-    <td class="border-r"></td>
+    <td class="border-r dark:border-strava-orange"></td>
     """
   end
 
@@ -278,7 +278,7 @@ defmodule YTDWeb.IndexLive do
     assigns = assign(assigns, total: total, count: count)
 
     ~H"""
-    <td class={"border-r #{if @selected, do: "bg-white text-strava-orange"}"}>
+    <td class={"border-r dark:border-strava-orange #{if @selected, do: "bg-white dark:bg-strava-orange text-strava-orange dark:text-black"}"}>
       <a
         class="link"
         href="#"
