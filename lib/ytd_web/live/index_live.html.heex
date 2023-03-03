@@ -98,12 +98,38 @@
               <%= week_label(week_group) %>
             </th>
             <%= for day <- 1..7 do %>
-              <.day_activities activities={week_group.day_activities[day]} unit={@unit} />
+              <.day_activities
+                activities={week_group.day_activities[day]}
+                week_beginning={week_group.from}
+                day={day}
+                selected={@week_beginning == week_group.from and @day == day}
+                unit={@unit}
+              />
             <% end %>
             <td class="font-bold">
               <%= week_group.total |> Util.convert(from: "metres", to: @unit) |> Float.round(1) %>
             </td>
           </tr>
+          <%= if @week_beginning == week_group.from do %>
+            <tr>
+              <td colspan="9" class="bg-white text-strava-orange text-left px-4 py-2 rounded">
+                <%= for activity <- week_group.day_activities[@day] do %>
+                  <p>
+                    <%= Timex.format!(activity.start_date, "{h12}:{m} {am}") %>:
+                    <a
+                      class="link"
+                      href={"https://www.strava.com/activities/#{activity.strava_id}"}
+                    >
+                      <%= activity.name %>
+                    </a>
+                    (<%= activity.distance
+                    |> Util.convert(from: "metres", to: @unit)
+                    |> Float.round(1) %> <%= @unit %>)
+                  </p>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
         <% end %>
       </tbody>
     </table>

@@ -38,6 +38,8 @@ defmodule YTDWeb.IndexLive do
        type: type,
        unit: unit,
        edit_target?: false,
+       week_beginning: nil,
+       day: nil,
        refreshing?: true
      )
      |> update_calculated_values()}
@@ -91,6 +93,18 @@ defmodule YTDWeb.IndexLive do
 
   def handle_event("cancel-target", _params, socket),
     do: {:noreply, assign(socket, edit_target?: false)}
+
+  def handle_event("show-activities", params, socket) do
+    {:noreply,
+     assign(socket,
+       week_beginning:
+         params["week-beginning"] |> Timex.parse!("{YYYY}-{M}-{D}") |> Timex.to_date(),
+       day: String.to_integer(params["day"])
+     )}
+  end
+
+  def handle_event("hide-activities", _params, socket),
+    do: {:noreply, assign(socket, week_beginning: nil, day: nil)}
 
   @impl true
   def handle_info({:new_activity, activity}, socket) do
@@ -242,31 +256,41 @@ defmodule YTDWeb.IndexLive do
   end
 
   attr(:activities, :list, required: true)
+  attr(:week_beginning, Date, required: true)
+  attr(:day, :integer, required: true)
+  attr :selected, :boolean, required: true
   attr(:unit, :string, required: true)
 
-  defp day_activities(assigns) do
+  defp day_activities(%{activities: []} = assigns) do
+    ~H"""
+    <td class="border-r"></td>
+    """
+  end
+
+  defp day_activities(%{activities: activities} = assigns) do
     total =
-      case assigns.activities do
-        [] ->
-          nil
+      activities
+      |> Enum.map(&Util.convert(&1.distance, from: "metres", to: assigns.unit))
+      |> Enum.sum()
+      |> Float.round(1)
 
-        activities ->
-          activities
-          |> Enum.map(&Util.convert(&1.distance, from: "metres", to: assigns.unit))
-          |> Enum.sum()
-          |> Float.round(1)
-      end
-
-    count = length(assigns.activities)
+    count = length(activities)
     assigns = assign(assigns, total: total, count: count)
 
     ~H"""
-    <td class="border-r">
-      <%= if @total do %>
+    <td class={"border-r #{if @selected, do: "bg-white text-strava-orange"}"}>
+      <a
+        class="link"
+        href="#"
+        phx-click="show-activities"
+        phx-click-away="hide-activities"
+        phx-value-week-beginning={@week_beginning}
+        phx-value-day={@day}
+      >
         <%= @total %>
-        <%= if @count > 1 do %>
-          <span class="font-thin">⧉</span>
-        <% end %>
+      </a>
+      <%= if @count > 1 do %>
+        <span class="font-thin">⧉</span>
       <% end %>
     </td>
     """
