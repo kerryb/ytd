@@ -40,7 +40,7 @@ link_release() {
 }
 
 migrate_database() {
-  ./current/bin/ytd eval "YTD.Release.Tasks.migrate()"
+  ./current/bin/ytd migrate
 }
 
 stop_server() {

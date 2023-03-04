@@ -111,10 +111,12 @@ set_up_environment() {
   if ! [[ -f ${base_dir}/ytd.env ]] ; then
     cat <<EOF >> ${base_dir}/ytd.env
 RELEASE_NAME='ytd'
+PHX_SERVER=true
 RUN_ERL_LOG_MAXSIZE=200000
 RUN_ERL_LOG_GENERATIONS=50
 YTD_APP_NAME='ytd'
 YTD_HOSTNAME='ytd.kerryb.org'
+YTD_PORT=4000
 YTD_SECRET_KEY_BASE='$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 128 | head -n 1)'
 YTD_LIVE_VIEW_SIGNING_SALT='$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)'
 YTD_DATABASE_USERNAME='ytd'
