@@ -3,7 +3,8 @@ defmodule YTD.Users.UpdateName do
   Use case for updating a user's name.
   """
 
-  alias Ecto.{Changeset, Multi}
+  alias Ecto.Changeset
+  alias Ecto.Multi
   alias YTD.Users.User
 
   @spec call(User.t(), String.t()) :: Multi.t()

@@ -21,11 +21,13 @@ defmodule YTD.DataCase do
 
   using do
     quote do
-      alias YTD.Repo
-
       import Ecto
-      import Ecto.{Changeset, Query}
-      import YTD.{DataCase, Factory}
+      import Ecto.Changeset
+      import Ecto.Query
+      import YTD.DataCase
+      import YTD.Factory
+
+      alias YTD.Repo
     end
   end
 

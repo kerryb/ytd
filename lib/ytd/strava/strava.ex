@@ -9,7 +9,10 @@ defmodule YTD.Strava do
   use Boundary, top_level?: true, deps: [Phoenix.VerifiedRoutes, Strava, YTD.Users.Tokens, YTDWeb]
   use YTDWeb, :verified_routes
 
-  alias Strava.{Activities, Athletes, Auth, Client}
+  alias Strava.Activities
+  alias Strava.Athletes
+  alias Strava.Auth
+  alias Strava.Client
   alias YTD.Strava.API
 
   @impl API
@@ -25,8 +28,9 @@ defmodule YTD.Strava do
   def stream_activities_since(user, timestamp, callback) do
     client = client(user)
 
-    Strava.Paginator.stream(&Activities.get_logged_in_athlete_activities(client, &1))
-    |> Stream.take_while(&(DateTime.compare(&1.start_date, timestamp) == :gt))
+    (&Activities.get_logged_in_athlete_activities(client, &1))
+    |> Strava.Paginator.stream()
+    |> Stream.take_while(&DateTime.after?(&1.start_date, timestamp))
     |> Enum.each(callback)
 
     :ok
@@ -44,8 +48,7 @@ defmodule YTD.Strava do
   end
 
   @impl API
-  def get_activity(user, activity_id),
-    do: user |> client() |> Activities.get_activity_by_id(activity_id)
+  def get_activity(user, activity_id), do: user |> client() |> Activities.get_activity_by_id(activity_id)
 
   defp request_subscription do
     case :hackney.post(
@@ -68,8 +71,7 @@ defmodule YTD.Strava do
   defp client(user) do
     Client.new(user.access_token,
       refresh_token: user.refresh_token,
-      token_refreshed:
-        &YTD.Users.Tokens.update_user_tokens(user, &1.token.access_token, &1.token.refresh_token)
+      token_refreshed: &YTD.Users.Tokens.update_user_tokens(user, &1.token.access_token, &1.token.refresh_token)
     )
   end
 end

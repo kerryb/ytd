@@ -24,12 +24,12 @@ defmodule YTDWeb.ConnCase do
   using do
     quote do
       # Import conveniences for testing with connections
-      import Plug.Conn
-      import Phoenix.ConnTest
-      import YTDWeb.ConnCase
-      import YTD.Factory
-
       use YTDWeb, :verified_routes
+
+      import Phoenix.ConnTest
+      import Plug.Conn
+      import YTD.Factory
+      import YTDWeb.ConnCase
 
       # The default endpoint for testing
       @endpoint YTDWeb.Endpoint

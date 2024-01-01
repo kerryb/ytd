@@ -4,7 +4,8 @@ defmodule YTD.Activities.API do
   """
 
   alias Strava.SummaryActivity
-  alias YTD.Activities.{Activity, WeekGroup}
+  alias YTD.Activities.Activity
+  alias YTD.Activities.WeekGroup
   alias YTD.Users.User
 
   @callback get_existing_activities(User.t()) :: [Activity.t()]

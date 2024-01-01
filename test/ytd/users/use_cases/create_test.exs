@@ -3,7 +3,8 @@ defmodule YTD.Users.CreateTest do
 
   alias YTD.Repo
   alias YTD.Strava.Tokens
-  alias YTD.Users.{Create, User}
+  alias YTD.Users.Create
+  alias YTD.Users.User
 
   require Ecto.Query
 

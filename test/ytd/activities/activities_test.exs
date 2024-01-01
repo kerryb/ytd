@@ -6,9 +6,12 @@ defmodule YTD.ActivitiesTest do
   import Mox
 
   alias Phoenix.PubSub
-  alias Strava.{DetailedActivity, SummaryActivity}
-  alias YTD.{Activities, Repo}
-  alias YTD.Activities.{Activity, WeekGroup}
+  alias Strava.DetailedActivity
+  alias Strava.SummaryActivity
+  alias YTD.Activities
+  alias YTD.Activities.Activity
+  alias YTD.Activities.WeekGroup
+  alias YTD.Repo
 
   defp stub_strava(_context) do
     stub(StravaMock, :stream_activities_since, fn _user, _timestamp, _callback -> :ok end)
@@ -60,9 +63,7 @@ defmodule YTD.ActivitiesTest do
     test "requests new activities from Strava", %{user: user} do
       insert(:activity, user: user, start_date: ~U[2021-01-20 21:00:00Z])
 
-      expect(StravaMock, :stream_activities_since, fn ^user,
-                                                      ~U[2021-01-20 21:00:00Z],
-                                                      _callback ->
+      expect(StravaMock, :stream_activities_since, fn ^user, ~U[2021-01-20 21:00:00Z], _callback ->
         :ok
       end)
 

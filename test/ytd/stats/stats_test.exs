@@ -1,5 +1,6 @@
 defmodule YTD.StatsTest do
   use ExUnit.Case
+
   alias YTD.Stats
 
   describe "YTD.Stats.calculate/3, when given a target," do

@@ -5,7 +5,8 @@ defmodule YTD.Users.API do
 
   alias Ecto.Multi
   alias YTD.Strava.Tokens
-  alias YTD.Users.{Target, User}
+  alias YTD.Users.Target
+  alias YTD.Users.User
 
   @type multi_result ::
           {:ok, any()}

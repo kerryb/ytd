@@ -3,12 +3,14 @@ defmodule YTDWeb.IndexLiveTest do
 
   import ExUnit.CaptureLog
   import Mox
+  import Phoenix.ConnTest
+  import Phoenix.LiveViewTest
   import Plug.Conn
-  import Phoenix.{ConnTest, LiveViewTest}
 
   alias Ecto.Changeset
   alias Phoenix.PubSub
-  alias YTD.{Activities, Repo}
+  alias YTD.Activities
+  alias YTD.Repo
 
   @endpoint YTDWeb.Endpoint
 

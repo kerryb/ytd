@@ -3,7 +3,8 @@ defmodule YTD.Users.UpdateTokens do
   Use case for updating a user's Strava tokens.
   """
 
-  alias Ecto.{Changeset, Multi}
+  alias Ecto.Changeset
+  alias Ecto.Multi
   alias YTD.Users.User
 
   @spec call(User.t(), String.t(), String.t()) :: Multi.t()

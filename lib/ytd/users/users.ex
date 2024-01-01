@@ -5,32 +5,29 @@ defmodule YTD.Users do
   """
 
   @behaviour YTD.Users.API
+
   use Boundary, top_level?: true, deps: [Ecto, YTD.Repo], exports: [UpdateTokens, User]
 
   alias Phoenix.PubSub
   alias YTD.Repo
-
-  alias YTD.Users.{
-    API,
-    Create,
-    Queries,
-    SaveTarget,
-    UpdateName,
-    UpdateSelectedActivityType,
-    UpdateSelectedUnit,
-    UpdateTokens
-  }
+  alias YTD.Users.API
+  alias YTD.Users.Create
+  alias YTD.Users.Queries
+  alias YTD.Users.SaveTarget
+  alias YTD.Users.UpdateName
+  alias YTD.Users.UpdateSelectedActivityType
+  alias YTD.Users.UpdateSelectedUnit
+  alias YTD.Users.UpdateTokens
 
   @impl API
-  def get_user_from_athlete_id(athlete_id),
-    do: athlete_id |> Queries.get_user_from_athlete_id() |> Repo.one()
+  def get_user_from_athlete_id(athlete_id), do: athlete_id |> Queries.get_user_from_athlete_id() |> Repo.one()
 
   @impl API
   def get_targets(user) do
     user
     |> Queries.get_targets()
     |> Repo.all()
-    |> Enum.into(%{}, &{&1.activity_type, &1})
+    |> Map.new(&{&1.activity_type, &1})
   end
 
   @impl API
@@ -83,8 +80,7 @@ defmodule YTD.Users do
   @impl API
   def athlete_updated(athlete_id, %{"authorized" => "false"}), do: athlete_deleted(athlete_id)
 
-  def athlete_updated(athlete_id, _updates),
-    do: athlete_id |> get_user_from_athlete_id() |> update_name()
+  def athlete_updated(athlete_id, _updates), do: athlete_id |> get_user_from_athlete_id() |> update_name()
 
   @impl API
   def athlete_deleted(athlete_id) do

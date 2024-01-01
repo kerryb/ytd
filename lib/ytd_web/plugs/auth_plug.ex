@@ -15,7 +15,8 @@ defmodule YTDWeb.AuthPlug do
 
   alias Phoenix.Controller
   alias Plug.Conn
-  alias YTD.{Strava, Users}
+  alias YTD.Strava
+  alias YTD.Users
   alias YTDWeb.Auth
 
   plug(:get_user_if_signed_in)

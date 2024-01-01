@@ -6,7 +6,8 @@ defmodule YTD.Users.SaveTarget do
   import Ecto.Query
 
   alias Ecto.Multi
-  alias YTD.Users.{Target, User}
+  alias YTD.Users.Target
+  alias YTD.Users.User
 
   @spec call(User.t(), String.t(), String.t(), String.t()) :: Multi.t()
   def call(user, activity_type, "", _unit) do

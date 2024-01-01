@@ -33,6 +33,7 @@ defmodule YTDWeb do
 
       import Plug.Conn
       import YTDWeb.Gettext
+
       unquote(verified_routes())
     end
   end
@@ -70,14 +71,16 @@ defmodule YTDWeb do
     quote do
       use Phoenix.Router
 
+      import Phoenix.Controller
+      import Phoenix.LiveView.Router
       import Plug.Conn
-      import Phoenix.{Controller, LiveView.Router}
     end
   end
 
   def channel do
     quote do
       use Phoenix.Channel
+
       import YTDWeb.Gettext
     end
   end
@@ -88,8 +91,9 @@ defmodule YTDWeb do
       use Phoenix.HTML
 
       import Phoenix.Component
+      import YTDWeb.CoreComponents
+      import YTDWeb.Gettext
 
-      import YTDWeb.{CoreComponents, Gettext}
       unquote(verified_routes())
     end
   end

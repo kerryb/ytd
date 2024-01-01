@@ -11,7 +11,9 @@ defmodule YTD.Activities do
   import Ecto.Query
 
   alias Phoenix.PubSub
-  alias YTD.Activities.{Activity, API, WeekGroup}
+  alias YTD.Activities.Activity
+  alias YTD.Activities.API
+  alias YTD.Activities.WeekGroup
   alias YTD.Repo
   alias YTD.Users.User
 
@@ -58,13 +60,10 @@ defmodule YTD.Activities do
   end
 
   defp get_latest_activity(user) do
-    Repo.one(
-      from(a in Activity, where: a.user_id == ^user.id, order_by: [desc: a.start_date], limit: 1)
-    )
+    Repo.one(from(a in Activity, where: a.user_id == ^user.id, order_by: [desc: a.start_date], limit: 1))
   end
 
-  defp delete_all_activities(user),
-    do: Repo.delete_all(from(a in Activity, where: a.user_id == ^user.id))
+  defp delete_all_activities(user), do: Repo.delete_all(from(a in Activity, where: a.user_id == ^user.id))
 
   @impl API
   def save_activity(user, activity) do
@@ -102,7 +101,7 @@ defmodule YTD.Activities do
   defp total(nil), do: 0
   defp total(activities), do: activities |> Enum.map(& &1.distance) |> Enum.sum()
 
-  @empty_days Enum.into(1..7, %{}, &{&1, []})
+  @empty_days Map.new(1..7, &{&1, []})
   defp day_activities(nil), do: @empty_days
 
   @dialyzer {:nowarn_function, day_activities: 1}
@@ -115,8 +114,9 @@ defmodule YTD.Activities do
 
   @impl API
   def activity_created(athlete_id, activity_id) do
-    with user <- Repo.one(from(u in User, where: u.athlete_id == ^athlete_id)),
-         {:ok, activity} <- strava_api().get_activity(user, activity_id) do
+    user = Repo.one(from(u in User, where: u.athlete_id == ^athlete_id))
+
+    with {:ok, activity} <- strava_api().get_activity(user, activity_id) do
       saved_activity = save_activity(user, activity)
       PubSub.broadcast!(:ytd, "athlete:#{athlete_id}", {:new_activity, saved_activity})
     end
@@ -124,8 +124,9 @@ defmodule YTD.Activities do
 
   @impl API
   def activity_updated(athlete_id, activity_id) do
-    with user <- Repo.one(from(u in User, where: u.athlete_id == ^athlete_id)),
-         {:ok, activity} <- strava_api().get_activity(user, activity_id) do
+    user = Repo.one(from(u in User, where: u.athlete_id == ^athlete_id))
+
+    with {:ok, activity} <- strava_api().get_activity(user, activity_id) do
       saved_activity = save_activity(user, activity)
       PubSub.broadcast!(:ytd, "athlete:#{athlete_id}", {:updated_activity, saved_activity})
     end

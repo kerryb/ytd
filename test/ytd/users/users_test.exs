@@ -5,8 +5,9 @@ defmodule YTD.UsersTest do
 
   alias Phoenix.PubSub
   alias Strava.DetailedAthlete
-  alias YTD.{Repo, Users}
+  alias YTD.Repo
   alias YTD.Strava.Tokens
+  alias YTD.Users
   alias YTD.Users.User
 
   require Ecto.Query

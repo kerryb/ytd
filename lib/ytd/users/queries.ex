@@ -9,8 +9,7 @@ defmodule YTD.Users.Queries do
   alias YTD.Users.User
 
   @spec get_user_from_athlete_id(integer()) :: Query.t()
-  def get_user_from_athlete_id(athlete_id),
-    do: from(u in User, where: u.athlete_id == ^athlete_id)
+  def get_user_from_athlete_id(athlete_id), do: from(u in User, where: u.athlete_id == ^athlete_id)
 
   @spec get_targets(User.t()) :: Query.t()
   def get_targets(user), do: Ecto.assoc(user, :targets)

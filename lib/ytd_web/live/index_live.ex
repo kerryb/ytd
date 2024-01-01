@@ -10,7 +10,9 @@ defmodule YTDWeb.IndexLive do
   import YTDWeb.Components
 
   alias Phoenix.PubSub
-  alias YTD.{Stats, Users, Util}
+  alias YTD.Stats
+  alias YTD.Users
+  alias YTD.Util
 
   require Logger
 
@@ -45,8 +47,7 @@ defmodule YTDWeb.IndexLive do
      |> update_calculated_values()}
   end
 
-  defp fetch_new_activities(user),
-    do: Task.start_link(fn -> :ok = activities_api().fetch_activities(user) end)
+  defp fetch_new_activities(user), do: Task.start_link(fn -> :ok = activities_api().fetch_activities(user) end)
 
   defp update_name(user), do: Task.start_link(fn -> :ok = users_api().update_name(user) end)
 
@@ -80,31 +81,26 @@ defmodule YTDWeb.IndexLive do
     {:noreply, socket |> assign(activities: [], refreshing?: true) |> update_calculated_values()}
   end
 
-  def handle_event("edit-target", _params, socket),
-    do: {:noreply, assign(socket, edit_target?: true)}
+  def handle_event("edit-target", _params, socket), do: {:noreply, assign(socket, edit_target?: true)}
 
   def handle_event("submit-target", %{"target" => target}, socket) do
     Users.save_target(socket.assigns.user, socket.assigns.type, target, socket.assigns.unit)
     targets = Users.get_targets(socket.assigns.user)
 
-    {:noreply,
-     socket |> assign(targets: targets, edit_target?: false) |> update_calculated_values()}
+    {:noreply, socket |> assign(targets: targets, edit_target?: false) |> update_calculated_values()}
   end
 
-  def handle_event("cancel-target", _params, socket),
-    do: {:noreply, assign(socket, edit_target?: false)}
+  def handle_event("cancel-target", _params, socket), do: {:noreply, assign(socket, edit_target?: false)}
 
   def handle_event("show-activities", params, socket) do
     {:noreply,
      assign(socket,
-       week_beginning:
-         params["week-beginning"] |> Timex.parse!("{YYYY}-{M}-{D}") |> Timex.to_date(),
+       week_beginning: params["week-beginning"] |> Timex.parse!("{YYYY}-{M}-{D}") |> Timex.to_date(),
        day: String.to_integer(params["day"])
      )}
   end
 
-  def handle_event("hide-activities", _params, socket),
-    do: {:noreply, assign(socket, week_beginning: nil, day: nil)}
+  def handle_event("hide-activities", _params, socket), do: {:noreply, assign(socket, week_beginning: nil, day: nil)}
 
   @impl true
   def handle_info({:new_activity, activity}, socket) do
@@ -130,14 +126,13 @@ defmodule YTDWeb.IndexLive do
     {:noreply, socket |> assign(activities: activities) |> update_calculated_values()}
   end
 
-  def handle_info(:all_activities_fetched, socket),
-    do: {:noreply, assign(socket, refreshing?: false)}
+  def handle_info(:all_activities_fetched, socket), do: {:noreply, assign(socket, refreshing?: false)}
 
   def handle_info({:name_updated, user}, socket), do: {:noreply, assign(socket, user: user)}
   def handle_info(:deauthorised, socket), do: {:noreply, redirect(socket, to: "/")}
 
   def handle_info(message, socket) do
-    Logger.warn("#{__MODULE__} Received unexpected message #{inspect(message)}")
+    Logger.warning("#{__MODULE__} Received unexpected message #{inspect(message)}")
     {:noreply, socket}
   end
 
@@ -175,8 +170,7 @@ defmodule YTDWeb.IndexLive do
     )
   end
 
-  defp types(activities),
-    do: activities |> Enum.reject(&(&1.distance == 0)) |> Enum.map(& &1.type) |> Enum.uniq()
+  defp types(activities), do: activities |> Enum.reject(&(&1.distance == 0)) |> Enum.map(& &1.type) |> Enum.uniq()
 
   defp total_distance([], _type, _unit), do: 0.0
 
@@ -218,12 +212,11 @@ defmodule YTDWeb.IndexLive do
     start_of_day = Timex.beginning_of_day(DateTime.utc_now())
 
     activities
-    |> Enum.reject(&(&1.type != type or DateTime.compare(&1.start_date, start_of_day) == :lt))
+    |> Enum.reject(&(&1.type != type or DateTime.before?(&1.start_date, start_of_day)))
     |> sum_of_distances(unit)
   end
 
-  defp month_totals(activities, type, unit),
-    do: Enum.map(1..12, &month_total(&1, activities, type, unit))
+  defp month_totals(activities, type, unit), do: Enum.map(1..12, &month_total(&1, activities, type, unit))
 
   defp month_total(month, activities, type, unit) do
     {Timex.month_name(month),

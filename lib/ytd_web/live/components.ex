@@ -6,7 +6,8 @@ defmodule YTDWeb.Components do
 
   use Phoenix.Component
 
-  alias Phoenix.LiveView.{Rendered, Socket}
+  alias Phoenix.LiveView.Rendered
+  alias Phoenix.LiveView.Socket
 
   @spec target_progress(Socket.assigns()) :: Rendered.t()
   def target_progress(assigns) do

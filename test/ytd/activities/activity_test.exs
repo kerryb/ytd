@@ -1,7 +1,8 @@
 defmodule YTD.Activities.ActivityTest do
   use ExUnit.Case, async: true
 
-  alias Strava.{DetailedActivity, SummaryActivity}
+  alias Strava.DetailedActivity
+  alias Strava.SummaryActivity
   alias YTD.Activities.Activity
   alias YTD.Users.User
 

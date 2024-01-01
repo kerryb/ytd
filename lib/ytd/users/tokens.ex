@@ -8,7 +8,8 @@ defmodule YTD.Users.Tokens do
   use Boundary, top_level?: true, deps: [Ecto, YTD.{Repo, Users}]
 
   alias YTD.Repo
-  alias YTD.Users.{UpdateTokens, User}
+  alias YTD.Users.UpdateTokens
+  alias YTD.Users.User
 
   @spec update_user_tokens(
           user :: User.t(),

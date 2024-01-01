@@ -2,7 +2,8 @@ defmodule YTD.Users.UpdateSelectedActivityTypeTest do
   use YTD.DataCase, async: true
 
   alias YTD.Repo
-  alias YTD.Users.{UpdateSelectedActivityType, User}
+  alias YTD.Users.UpdateSelectedActivityType
+  alias YTD.Users.User
 
   require Ecto.Query
 

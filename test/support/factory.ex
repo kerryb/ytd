@@ -8,7 +8,8 @@ defmodule YTD.Factory do
   use ExMachina.Ecto, repo: YTD.Repo
 
   alias YTD.Activities.Activity
-  alias YTD.Users.{Target, User}
+  alias YTD.Users.Target
+  alias YTD.Users.User
 
   def user_factory do
     %User{

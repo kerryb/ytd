@@ -2,7 +2,8 @@ defmodule YTD.Users.UpdateSelectedUnitTest do
   use YTD.DataCase, async: true
 
   alias YTD.Repo
-  alias YTD.Users.{UpdateSelectedUnit, User}
+  alias YTD.Users.UpdateSelectedUnit
+  alias YTD.Users.User
 
   require Ecto.Query
 

@@ -6,7 +6,8 @@ defmodule YTDWeb.AuthPlugTest do
 
   alias Plug.Conn
   alias YTD.Strava.Tokens
-  alias YTDWeb.{AuthPlug, Endpoint}
+  alias YTDWeb.AuthPlug
+  alias YTDWeb.Endpoint
 
   @athlete_id 123
   @access_token "456"
@@ -74,7 +75,8 @@ defmodule YTDWeb.AuthPlugTest do
       stub(UsersMock, :save_user_tokens, fn ^tokens -> :ok end)
 
       conn =
-        build_conn(:get, "/", %{"code" => @code, "scope" => "activity:read,maybe-other-scopes"})
+        :get
+        |> build_conn("/", %{"code" => @code, "scope" => "activity:read,maybe-other-scopes"})
         |> init_test_session([])
 
       %{conn: conn, tokens: tokens}
@@ -119,7 +121,8 @@ defmodule YTDWeb.AuthPlugTest do
       stub(UsersMock, :save_user_tokens, fn ^tokens -> :ok end)
 
       conn =
-        build_conn(:get, "/", %{"code" => @code, "scope" => "only-other-scopes"})
+        :get
+        |> build_conn("/", %{"code" => @code, "scope" => "only-other-scopes"})
         |> Conn.put_private(:phoenix_endpoint, Endpoint)
         |> init_test_session([])
 
@@ -146,7 +149,8 @@ defmodule YTDWeb.AuthPlugTest do
       stub(UsersMock, :save_user_tokens, fn ^tokens -> :ok end)
 
       conn =
-        build_conn(:get, "/", %{})
+        :get
+        |> build_conn("/", %{})
         |> Conn.put_private(:phoenix_endpoint, Endpoint)
         |> init_test_session([])
 

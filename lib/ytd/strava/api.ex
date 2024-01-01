@@ -3,7 +3,9 @@ defmodule YTD.Strava.API do
   API behaviour for the Strava context.
   """
 
-  alias Strava.{DetailedActivity, DetailedAthlete, SummaryActivity}
+  alias Strava.DetailedActivity
+  alias Strava.DetailedAthlete
+  alias Strava.SummaryActivity
   alias YTD.Strava.Tokens
   alias YTD.Users.User
 

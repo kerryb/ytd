@@ -3,7 +3,8 @@ defmodule YTD.UsersTokensTest do
 
   alias YTD.Repo
   alias YTD.Strava.Tokens
-  alias YTD.Users.{Tokens, User}
+  alias YTD.Users.Tokens
+  alias YTD.Users.User
 
   describe "YTD.Users.Tokens.update_user_tokens/2" do
     test "updates strava tokens for an existing user" do

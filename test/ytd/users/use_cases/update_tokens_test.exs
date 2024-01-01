@@ -2,7 +2,8 @@ defmodule YTD.Users.UpdateTokensTest do
   use YTD.DataCase, async: true
 
   alias YTD.Repo
-  alias YTD.Users.{UpdateTokens, User}
+  alias YTD.Users.UpdateTokens
+  alias YTD.Users.User
 
   require Ecto.Query
 

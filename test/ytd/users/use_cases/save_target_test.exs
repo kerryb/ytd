@@ -4,7 +4,8 @@ defmodule YTD.Users.SaveTargetTest do
   import Assertions, only: [assert_lists_equal: 3, assert_structs_equal: 3]
 
   alias YTD.Repo
-  alias YTD.Users.{SaveTarget, Target}
+  alias YTD.Users.SaveTarget
+  alias YTD.Users.Target
 
   require Ecto.Query
 
