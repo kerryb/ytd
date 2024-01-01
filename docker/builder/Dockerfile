@@ -1,29 +1,32 @@
 FROM centos:7
 
+SHELL ["/bin/bash", "-lc"]
+
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 RUN locale
 
-RUN set -xe \
-  && yum install -y gcc-c++ git make unzip
+RUN yum update -y
 
+RUN yum install -y gcc-c++ git curl make unzip openssl-devel ncurses-devel \
+                   glibc-locale-source glibc-langpack-en
+
+RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.3 \
+  && echo 'export ASDF_DIR="$HOME/.asdf"' >> ~/.bashrc \
+  && echo '. "$HOME/.asdf/asdf.sh"' >> ~/.bashrc
+
+RUN mkdir /app
 WORKDIR /app
 
 COPY .tool-versions ./
 
-RUN set -xe \
-  && yum install -y http://packages.erlang-solutions.com/erlang-solutions-1.0-1.noarch.rpm \
-  && version=`awk '/^erlang / { print $2 }' .tool-versions` \
-  && yum install -y -v $version esl-erlang
+RUN asdf plugin add erlang \
+  && asdf plugin add elixir
 
-RUN set -xe \
-  && version=`awk '/^elixir / { sub(/-.*/, "", $2) ; print $2 }' .tool-versions` \
-  && otp_version=`awk '/^erlang / { sub (/\..*/, "") ; print $2 }' .tool-versions` \
-  && curl -fSL -o elixir-precompiled.zip https://github.com/elixir-lang/elixir/releases/download/v${version}/elixir-otp-${otp_version}.zip \
-  && unzip -d /usr/local elixir-precompiled.zip \
-  && rm elixir-precompiled.zip
+RUN asdf install erlang \
+  && asdf install elixir
 
 RUN mix local.hex --force \
   && mix local.rebar --force
