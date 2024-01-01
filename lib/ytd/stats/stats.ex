@@ -58,7 +58,7 @@ defmodule YTD.Stats do
 
   defp on_target?(ytd, now, target), do: projected_annual(ytd, now) >= target
 
-  defp estimated_target_completion(0.0, _now, _target), do: nil
+  defp estimated_target_completion(+0.0, _now, _target), do: nil
 
   defp estimated_target_completion(ytd, now, target) do
     days = Timex.day(now)

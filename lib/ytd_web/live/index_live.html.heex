@@ -22,22 +22,10 @@
 </form>
 
 <div id="tabs" class="tabs">
-  <%= live_patch("Summary",
-    to: ~p"/#{@type}/summary",
-    class: "tab #{if @tab == "summary", do: "active"}"
-  ) %>
-  <%= live_patch("Activities",
-    to: ~p"/#{@type}/activities",
-    class: "tab #{if @tab == "activities", do: "active"}"
-  ) %>
-  <%= live_patch("Months",
-    to: ~p"/#{@type}/months",
-    class: "tab #{if @tab == "months", do: "active"}"
-  ) %>
-  <%= live_patch("Graph",
-    to: ~p"/#{@type}/graph",
-    class: "tab #{if @tab == "graph", do: "active"}"
-  ) %>
+  <.link patch={~p"/#{@type}/summary"} class={["tab", if(@tab == "summary", do: "active")]}>Summary</.link>
+  <.link patch={~p"/#{@type}/activities"} class={["tab", if(@tab == "activities", do: "active")]}>Activities</.link>
+  <.link patch={~p"/#{@type}/months"} class={["tab", if(@tab == "months", do: "active")]}>Months</.link>
+  <.link patch={~p"/#{@type}/graph"} class={["tab", if(@tab == "graph", do: "active")]}>Graph</.link>
 </div>
 
 <%= case @tab do %>
