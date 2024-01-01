@@ -55,6 +55,14 @@ defmodule YTDWeb.IndexLiveTest do
       assert view |> element("#type option[selected]", "Ride") |> has_element?()
     end
 
+    test "uses the latest activity type if there are no activities of the saved type", %{conn: conn, user: user} do
+      user = user |> Changeset.change(selected_activity_type: "Ride") |> Repo.update!()
+      activities = [build(:activity, type: "Run")]
+      stub(ActivitiesMock, :get_existing_activities, fn ^user -> activities end)
+      {:ok, view, _html} = live(conn, "/")
+      assert view |> element("#type option[selected]", "Run") |> has_element?()
+    end
+
     test "uses the saved selection for unit", %{conn: conn, user: user} do
       user |> Changeset.change(selected_unit: "km") |> Repo.update!()
       {:ok, view, _html} = live(conn, "/")

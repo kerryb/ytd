@@ -21,7 +21,7 @@ defmodule YTDWeb.IndexLive do
     user = Users.get_user_from_athlete_id(session["athlete_id"])
     targets = Users.get_targets(user)
     activities = activities_api().get_existing_activities(user)
-    type = user.selected_activity_type
+    type = saved_or_latest_activity_type(user, activities)
     unit = user.selected_unit
 
     if connected?(socket) do
@@ -45,6 +45,16 @@ defmodule YTDWeb.IndexLive do
        refreshing?: true
      )
      |> update_calculated_values()}
+  end
+
+  def saved_or_latest_activity_type(user, activities) do
+    saved_type = user.selected_activity_type
+
+    if activities == [] or Enum.any?(activities, &(&1.type == saved_type)) do
+      saved_type
+    else
+      latest_activity(activities).type
+    end
   end
 
   defp fetch_new_activities(user), do: Task.start_link(fn -> :ok = activities_api().fetch_activities(user) end)
