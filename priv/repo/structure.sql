@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.6 (Homebrew)
--- Dumped by pg_dump version 14.6 (Homebrew)
+-- Dumped from database version 16.1 (Homebrew)
+-- Dumped by pg_dump version 16.1 (Homebrew)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
