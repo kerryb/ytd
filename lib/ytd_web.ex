@@ -87,10 +87,9 @@ defmodule YTDWeb do
 
   defp html_helpers do
     quote do
-      # Use all HTML functionality (forms, tags, etc)
-      use Phoenix.HTML
-
       import Phoenix.Component
+      import Phoenix.HTML
+      import Phoenix.HTML.Form
       import YTDWeb.CoreComponents
       import YTDWeb.Gettext
 

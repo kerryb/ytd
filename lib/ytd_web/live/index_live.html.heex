@@ -22,10 +22,18 @@
 </form>
 
 <div id="tabs" class="tabs">
-  <.link patch={~p"/#{@type}/summary"} class={["tab", if(@tab == "summary", do: "active")]}>Summary</.link>
-  <.link patch={~p"/#{@type}/activities"} class={["tab", if(@tab == "activities", do: "active")]}>Activities</.link>
-  <.link patch={~p"/#{@type}/months"} class={["tab", if(@tab == "months", do: "active")]}>Months</.link>
-  <.link patch={~p"/#{@type}/graph"} class={["tab", if(@tab == "graph", do: "active")]}>Graph</.link>
+  <.link patch={~p"/#{@type}/summary"} class={["tab", if(@tab == "summary", do: "active")]}>
+    Summary
+  </.link>
+  <.link patch={~p"/#{@type}/activities"} class={["tab", if(@tab == "activities", do: "active")]}>
+    Activities
+  </.link>
+  <.link patch={~p"/#{@type}/months"} class={["tab", if(@tab == "months", do: "active")]}>
+    Months
+  </.link>
+  <.link patch={~p"/#{@type}/graph"} class={["tab", if(@tab == "graph", do: "active")]}>
+    Graph
+  </.link>
 </div>
 
 <%= case @tab do %>
@@ -55,7 +63,7 @@
       <p class="font-thin text-2xl mt-2">Projected year total:</p>
       <p class="text-5xl sm:text-7xl my-4" }>
         <span class="font-extrabold" id="projected-annual">
-          <%= :io_lib.format('~.1f', [@stats.projected_annual]) %>
+          <%= :io_lib.format(~c"~.1f", [@stats.projected_annual]) %>
         </span>
         <span class="font-thin"><%= @unit %></span>
       </p>
@@ -171,13 +179,11 @@
 </div>
 <hr class="separator" />
 <div class="flex flex-row justify-between items-end text-xs opacity-50">
-  <%= img_tag(~p"/images/api_logo_pwrdBy_strava_horiz_white.png",
-    width: "113",
-    class: "dark:hidden"
-  ) %>
-  <%= img_tag(~p"/images/api_logo_pwrdBy_strava_horiz_light.png",
-    width: "113",
-    class: "hidden dark:inline"
-  ) %>
-  <%= link("Made by Kerry Buckley", to: "https://github.com/kerryb/ytd") %>
+  <img src={~p"/images/api_logo_pwrdBy_strava_horiz_white.png"} width="113" class="dark:hidden" />
+  <img
+    src={~p"/images/api_logo_pwrdBy_strava_horiz_light.png"}
+    width="113"
+    class="hidden dark:inline"
+  />
+  <a href="https://github.com/kerryb/ytd">Made by Kerry Buckley</a>
 </div>
