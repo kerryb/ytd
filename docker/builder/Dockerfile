@@ -10,8 +10,13 @@ RUN locale
 
 RUN yum update -y
 
-RUN yum install -y gcc-c++ git curl make unzip openssl-devel ncurses-devel \
-                   glibc-locale-source glibc-langpack-en
+RUN yum install -y centos-release-scl \
+  && yum -y install devtoolset-7 \
+  && scl enable devtoolset-7 bash
+
+RUN echo 'source /opt/rh/devtoolset-7/enable' >> ~/.bashrc
+
+RUN yum install -y git curl openssl-devel ncurses-devel
 
 RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.3 \
   && echo 'export ASDF_DIR="$HOME/.asdf"' >> ~/.bashrc \
