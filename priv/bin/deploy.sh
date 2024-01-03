@@ -40,7 +40,7 @@ link_release() {
 }
 
 migrate_database() {
-  ./current/bin/ytd migrate
+  ./current/bin/migrate
 }
 
 stop_server() {
