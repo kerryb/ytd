@@ -31,6 +31,7 @@ release-local:
 	mix release
 release: check-working-dir-clean check-version-up-to-date
 	rm -f ytd-*.gz
+	mix assets.deploy
 	docker build --tag=ytd-release -f docker/builder/Dockerfile .
 	docker rm -f ytd-release
 	docker create --name ytd-release ytd-release
