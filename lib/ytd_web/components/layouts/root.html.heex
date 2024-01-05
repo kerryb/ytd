@@ -4,6 +4,8 @@
     <meta charset="utf-8" />
     <meta content="IE=edge" http-equiv="X-UA-Compatible" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta charset="UTF-8" />
+    <meta content={get_csrf_token()} name="csrf-token" />
     <.live_title><%= assigns[:page_title] || "YTD" %></.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <link href={~p"/apple-icon-180x180.png"} rel="apple-touch-icon" sizes="180x180" />
