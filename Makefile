@@ -26,6 +26,9 @@ outdated:
 	mix hex.outdated
 update-deps:
 	mix deps.update --all
+release-local:
+	mix assets.deploy
+	mix release
 release: check-working-dir-clean check-version-up-to-date
 	rm -f ytd-*.gz
 	docker build --tag=ytd-release -f docker/builder/Dockerfile .
