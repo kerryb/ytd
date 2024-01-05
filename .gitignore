@@ -23,6 +23,6 @@ erl_crash.dump
 ytd-*.tar.gz
 
 /assets/node_modules/
-/priv/static/assets
+/priv/static
 screenshots
 tmp/
