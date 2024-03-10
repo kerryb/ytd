@@ -169,6 +169,7 @@ defmodule YTDWeb.IndexLiveTest do
     test "shows daily mileages, allowing details to be viewed", %{conn: conn, user: user} do
       activities = [
         build(:activity,
+          strava_id: 123,
           type: "Run",
           name: "An example run",
           start_date: Timex.set(DateTime.utc_now(), month: 1),
@@ -180,7 +181,8 @@ defmodule YTDWeb.IndexLiveTest do
       {:ok, view, _html} = live(conn, "/")
       view |> element("#tabs a", "Activities") |> render_click()
       view |> element("a", "3.1") |> render_click()
-      assert view |> element("a", "An example run") |> has_element?()
+      assert view |> element("p", "An example run") |> has_element?()
+      assert view |> element("a[href='https://www.strava.com/activities/123']", "View on Strava") |> has_element?()
     end
   end
 
