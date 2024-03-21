@@ -66,7 +66,7 @@ defmodule YTD.MixProject do
       {:strava, "~> 1.0"},
       {:styler, "~> 0.11", only: [:dev, :test], runtime: false},
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
-      {:telemetry_metrics, "~> 0.6"},
+      {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
       {:timex, "~> 3.6"}
     ]
