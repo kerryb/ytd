@@ -1,0 +1,8 @@
+<%= cond do %>
+  <% @stats.completed? -> %>
+    <.target_hit target={@target} />
+  <% @stats.on_target? -> %>
+    <.on_target target={@target} stats={@stats} unit={@unit} />
+  <% true -> %>
+    <.behind_target target={@target} stats={@stats} unit={@unit} />
+<% end %>
