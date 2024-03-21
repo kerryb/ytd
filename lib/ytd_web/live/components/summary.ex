@@ -1,15 +1,14 @@
-# credo:disable-for-this-file Credo.Check.Refactor.ModuleDependencies
 # credo:disable-for-this-file Credo.Check.Readability.Specs
-defmodule YTDWeb.Components do
+defmodule YTDWeb.Components.Summary do
   @moduledoc """
-  Stateless view components.
+  Component functions for the summary tab.
   """
 
   use Phoenix.Component
 
   alias YTD.Stats
 
-  embed_templates "components/*"
+  embed_templates "summary/*"
 
   attr :stats, Stats, required: true
   attr :target, :integer, required: true
