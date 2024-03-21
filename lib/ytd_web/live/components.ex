@@ -8,7 +8,11 @@ defmodule YTDWeb.Components do
 
   alias Phoenix.LiveView.Rendered
   alias Phoenix.LiveView.Socket
+  alias YTD.Stats
 
+  attr :stats, Stats, required: true
+  attr :target, :integer, required: true
+  attr :unit, :atom, required: true
   @spec target_progress(Socket.assigns()) :: Rendered.t()
   def target_progress(assigns) do
     ~H"""
@@ -23,6 +27,7 @@ defmodule YTDWeb.Components do
     """
   end
 
+  attr :target, :integer, required: true
   @spec target_hit(Socket.assigns()) :: Rendered.t()
   def target_hit(assigns) do
     ~H"""
@@ -33,6 +38,9 @@ defmodule YTDWeb.Components do
     """
   end
 
+  attr :stats, Stats, required: true
+  attr :target, :integer, required: true
+  attr :unit, :atom, required: true
   @spec on_target(Socket.assigns()) :: Rendered.t()
   def on_target(assigns) do
     ~H"""
@@ -44,6 +52,9 @@ defmodule YTDWeb.Components do
     """
   end
 
+  attr :stats, Stats, required: true
+  attr :target, :integer, required: true
+  attr :unit, :atom, required: true
   @spec behind_target(Socket.assigns()) :: Rendered.t()
   def behind_target(assigns) do
     ~H"""
@@ -55,6 +66,9 @@ defmodule YTDWeb.Components do
     """
   end
 
+  attr :target, :integer, required: true
+  attr :type, :atom, required: true
+  attr :unit, :atom, required: true
   @spec edit_target_modal(Socket.assigns()) :: Rendered.t()
   def edit_target_modal(assigns) do
     ~H"""
