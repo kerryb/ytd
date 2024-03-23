@@ -107,10 +107,16 @@ defmodule YTDWeb.Components.Graph do
   defp y_grid_gap(_max_y), do: 1000
 
   defp days_and_distances(activities, unit) do
+    activities_by_date = Enum.group_by(activities, &DateTime.to_date(&1.start_date))
+
     Enum.map(
-      activities,
-      &{Date.day_of_year(&1.start_date), Util.convert(&1.distance, from: "metres", to: unit)}
+      Date.range(Timex.beginning_of_year(Date.utc_today()), Date.utc_today()),
+      &{Date.day_of_year(&1), total_distance(Map.get(activities_by_date, &1, []), unit)}
     )
+  end
+
+  defp total_distance(activities, unit) do
+    activities |> Enum.map(& &1.distance) |> Enum.sum() |> Util.convert(from: "metres", to: unit)
   end
 
   defp make_distances_cumulative(days_and_distances) do
