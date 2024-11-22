@@ -78,7 +78,7 @@ defmodule YTDWeb.AuthPlug do
   defp render_pre_auth_page(conn, strava) do
     conn
     |> Controller.put_view(Auth)
-    |> Conn.assign(:auth_url, strava.authorize_url)
+    |> Conn.assign(:auth_url, strava.authorize_url())
     |> Controller.render("index.html")
     |> halt()
   end
