@@ -9,9 +9,9 @@ module.exports = {
     extend: {
       colors: {
         'strava-orange': {
-          light: '#fd7135',
-          DEFAULT: '#fc4c02',
-          dark: '#ca3e02',
+          light: '#fe7134',
+          DEFAULT: '#fc4c01',
+          dark: '#cb3e01',
         },
       },
        spacing: {
