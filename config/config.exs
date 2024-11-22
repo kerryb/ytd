@@ -7,21 +7,14 @@
 # General application configuration
 import Config
 
-config :ytd,
-  namespace: YTD,
-  ecto_repos: [YTD.Repo],
-  env: Mix.env(),
-  activities_api: YTD.Activities,
-  strava_api: YTD.Strava,
-  users_api: YTD.Users
-
-# Configures the endpoint
-config :ytd, YTDWeb.Endpoint,
-  url: [host: "localhost"],
-  secret_key_base: "7doapOrfFIlllbrpZYxU9N/dPYI9z6Ruxmu5ZQAQfSXDICtTTZTl0g0fBmqrXkZh",
-  render_errors: [formats: [html: YTDWeb.ErrorHTML], layout: false],
-  pubsub_server: :ytd,
-  live_view: [signing_salt: "5X4BW26y"]
+# Configure esbuild (the version is required)
+config :esbuild,
+  version: "0.13.10",
+  default: [
+    args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
+    cd: Path.expand("../assets", __DIR__),
+    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  ]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -36,13 +29,11 @@ config :phoenix, :template_engines,
   slime: PhoenixSlime.Engine,
   slimleex: PhoenixSlime.LiveViewEngine
 
-# Configure esbuild (the version is required)
-config :esbuild,
-  version: "0.13.10",
+config :phoenix_copy,
   default: [
-    args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
-    cd: Path.expand("../assets", __DIR__),
-    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+    source: Path.expand("../assets/static/", __DIR__),
+    destination: Path.expand("../priv/static/", __DIR__),
+    debounce: 100
   ]
 
 config :tailwind,
@@ -56,13 +47,22 @@ config :tailwind,
     cd: Path.expand("../assets", __DIR__)
   ]
 
-config :phoenix_copy,
-  default: [
-    source: Path.expand("../assets/static/", __DIR__),
-    destination: Path.expand("../priv/static/", __DIR__),
-    debounce: 100
-  ]
+# Configures the endpoint
+config :ytd, YTDWeb.Endpoint,
+  url: [host: "localhost"],
+  secret_key_base: "7doapOrfFIlllbrpZYxU9N/dPYI9z6Ruxmu5ZQAQfSXDICtTTZTl0g0fBmqrXkZh",
+  render_errors: [formats: [html: YTDWeb.ErrorHTML], layout: false],
+  pubsub_server: :ytd,
+  live_view: [signing_salt: "5X4BW26y"]
 
-# Import environment specific config. This must remain at the bottom
-# of this file so it overrides the configuration defined above.
+config :ytd,
+  namespace: YTD,
+  ecto_repos: [YTD.Repo],
+  env: Mix.env(),
+  activities_api: YTD.Activities,
+  strava_api: YTD.Strava,
+  # Import environment specific config. This must remain at the bottom
+  # of this file so it overrides the configuration defined above.
+  users_api: YTD.Users
+
 import_config "#{Mix.env()}.exs"

@@ -69,7 +69,7 @@ defmodule YTD.Users do
     {:ok, athlete} = strava_api().get_athlete_details(user)
     name = "#{athlete.firstname} #{athlete.lastname}"
 
-    unless user.name == name do
+    if user.name != name do
       {:ok, %{update_name: updated_user}} = user |> UpdateName.call(name) |> Repo.transaction()
       PubSub.broadcast!(:ytd, "athlete:#{user.athlete_id}", {:name_updated, updated_user})
     end

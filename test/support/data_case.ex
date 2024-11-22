@@ -34,7 +34,7 @@ defmodule YTD.DataCase do
   setup tags do
     :ok = Sandbox.checkout(YTD.Repo)
 
-    unless tags[:async] do
+    if !tags[:async] do
       Sandbox.mode(YTD.Repo, {:shared, self()})
     end
 

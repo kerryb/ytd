@@ -30,9 +30,9 @@ defmodule YTDWeb do
   def controller do
     quote do
       use Phoenix.Controller, namespace: YTDWeb
+      use Gettext, backend: YTDWeb.Gettext
 
       import Plug.Conn
-      import YTDWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -80,18 +80,18 @@ defmodule YTDWeb do
   def channel do
     quote do
       use Phoenix.Channel
-
-      import YTDWeb.Gettext
+      use Gettext, backend: YTDWeb.Gettext
     end
   end
 
   defp html_helpers do
     quote do
+      use Gettext, backend: YTDWeb.Gettext
+
       import Phoenix.Component
       import Phoenix.HTML
       import Phoenix.HTML.Form
       import YTDWeb.CoreComponents
-      import YTDWeb.Gettext
 
       unquote(verified_routes())
     end
