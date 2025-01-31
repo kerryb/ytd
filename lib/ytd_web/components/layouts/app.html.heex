@@ -2,10 +2,10 @@
   <div class="m-2 w-144">
     <main class="container" role="main">
       <p class="alert alert-info" role="alert">
-        <%= Phoenix.Flash.get(@flash, :info) %>
+        {Phoenix.Flash.get(@flash, :info)}
       </p>
       <p class="alert alert-danger" role="alert">
-        <%= Phoenix.Flash.get(@flash, :error) %>
+        {Phoenix.Flash.get(@flash, :error)}
       </p>
       <.flash
         id="disconnected"
@@ -18,7 +18,7 @@
       >
         Attempting to reconnect <Heroicons.arrow_path class="ml-1 w-3 h-3 inline animate-spin" />
       </.flash>
-      <%= @inner_content %>
+      {@inner_content}
     </main>
   </div>
 </div>

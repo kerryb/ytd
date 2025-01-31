@@ -2,7 +2,7 @@
   <div class="max-w-xl max-h-full bg-strava-orange dark:bg-black dark:border dark:border-strava-orange rounded shadow-lg overflow-auto p-4 mb-2">
     <form id="edit-target-form" phx-submit="submit-target">
       <div class="mb-4">
-        <label for="target"><%= @type %> target:</label>
+        <label for="target">{@type} target:</label>
         <input
           autofocus="true"
           class="w-20 text-strava-orange dark:bg-black dark:border dark:border-strava-orange pl-2 ml-2 rounded"
@@ -11,7 +11,7 @@
           type="number"
           value={if @target, do: @target.target, else: 0}
         />
-        <%= @unit %>
+        {@unit}
       </div>
       <div class="flex justify-between">
         <button

@@ -55,12 +55,12 @@ defmodule YTDWeb.Components.Graph do
     >
       <g class="labels x-labels">
         <%= for {name, number} <- Enum.with_index(@months) do %>
-          <text x={number * 900 / 12 + 130} y="990"><%= name %></text>
+          <text x={number * 900 / 12 + 130} y="990">{name}</text>
         <% end %>
       </g>
       <g class="labels y-labels">
         <%= for miles <- 0..@max_y//@y_grid_gap  do %>
-          <text x="70" y={(@max_y - miles) * 920 / @max_y + 35}><%= miles %></text>
+          <text x="70" y={(@max_y - miles) * 920 / @max_y + 35}>{miles}</text>
         <% end %>
       </g>
       <svg

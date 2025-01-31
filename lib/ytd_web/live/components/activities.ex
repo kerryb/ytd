@@ -39,7 +39,7 @@ defmodule YTDWeb.Components.Activities do
         phx-value-week-beginning={@week_beginning}
         phx-value-day={@day}
       >
-        <%= @total %>
+        {@total}
       </a>
       <%= if @count > 1 do %>
         <span class="font-thin">⧉</span>

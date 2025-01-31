@@ -6,7 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta charset="UTF-8" />
     <meta content={get_csrf_token()} name="csrf-token" />
-    <.live_title><%= assigns[:page_title] || "YTD" %></.live_title>
+    <.live_title>{assigns[:page_title] || "YTD"}</.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <link href={~p"/apple-icon-180x180.png"} rel="apple-touch-icon" sizes="180x180" />
     <link href={~p"/apple-icon-180x180.png"} rel="icon" sizes="180x180" type="image/png" />
@@ -17,6 +17,6 @@
     </script>
   </head>
   <body class="bg-strava-orange dark:bg-black text-white dark:text-strava-orange font-sans">
-    <%= @inner_content %>
+    {@inner_content}
   </body>
 </html>
