@@ -4,7 +4,7 @@ config :strava,
   client_id: System.get_env("YTD_STRAVA_CLIENT_ID"),
   client_secret: System.get_env("YTD_STRAVA_CLIENT_SECRET"),
   redirect_uri: System.get_env("YTD_STRAVA_REDIRECT_URL"),
-  recv_timeout: :timer.minutes(5)
+  recv_timeout: to_timeout(minute: 5)
 
 if System.get_env("PHX_SERVER") do
   config :ytd, YTDWeb.Endpoint, server: true
