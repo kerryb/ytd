@@ -1,5 +1,5 @@
 defmodule YTD.Users.UpdateSelectedActivityTypeTest do
-  use YTD.DataCase, async: true
+  use YTD.DataCase
 
   alias YTD.Repo
   alias YTD.Users.UpdateSelectedActivityType

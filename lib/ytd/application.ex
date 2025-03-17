@@ -6,6 +6,7 @@ defmodule YTD.Application do
   use Boundary, top_level?: true, deps: [YTD, YTDWeb]
 
   def start(_type, _args) do
+    YTD.Release.migrate()
     opts = [strategy: :one_for_one, name: YTD.Supervisor]
     Supervisor.start_link(children(), opts)
   end

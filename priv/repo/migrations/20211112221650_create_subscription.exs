@@ -3,7 +3,7 @@ defmodule YTD.Repo.Migrations.CreateSubscription do
 
   def change do
     create table(:subscription) do
-      add :strava_id, :decimal, unique: true
+      add :strava_id, :bigint, unique: true
       timestamps()
     end
 

@@ -1,6 +1,6 @@
 # credo:disable-for-this-file /Pipe/
 defmodule YTDWeb.AuthPlugTest do
-  use YTDWeb.ConnCase, async: true
+  use YTDWeb.ConnCase
 
   import Hammox
 

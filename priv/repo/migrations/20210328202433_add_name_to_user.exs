@@ -3,7 +3,7 @@ defmodule YTD.Repo.Migrations.AddNameToUser do
 
   def change do
     alter table(:users) do
-      add :name, :string
+      add :name, :text
     end
   end
 end

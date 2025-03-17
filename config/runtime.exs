@@ -21,14 +21,16 @@ if config_env() == :prod do
   host = System.get_env("PHX_HOST") || "ytd.kerryb.org"
   port = String.to_integer(System.get_env("YTD_PORT") || "4000")
 
-  config :ytd, YTD.Repo,
-    database: "ytd",
-    hostname: "localhost",
-    username: System.get_env("YTD_DATABASE_USERNAME"),
-    password: System.get_env("YTD_DATABASE_PASSWORD"),
-    pool_size: 10
+  database_path =
+    System.get_env("DATABASE_PATH") ||
+      raise """
+      environment variable DATABASE_PATH is missing.
+      For example: /data/name/name.db
+      """
 
-  config :ytd, YTDWeb.Endpoint, secret_key_base: secret_key_base
+  config :ytd, YTD.Repo,
+    database: database_path,
+    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")
 
   config :ytd, YTDWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],

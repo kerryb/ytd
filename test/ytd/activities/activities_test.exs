@@ -1,5 +1,5 @@
 defmodule YTD.ActivitiesTest do
-  use YTD.DataCase, async: false
+  use YTD.DataCase
 
   import Assertions, only: [assert_maps_equal: 3, assert_struct_in_list: 3]
   import Ecto.Query

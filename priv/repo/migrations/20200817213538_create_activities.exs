@@ -3,8 +3,8 @@ defmodule YTD.Repo.Migrations.CreateActivities do
 
   def change do
     create table(:activities) do
-      add :user_id, references("users")
-      add :strava_id, :decimal
+      add :user_id, references("users", on_delete: :delete_all)
+      add :strava_id, :bigint
       add :type, :text
       add :name, :text
       add :distance, :float

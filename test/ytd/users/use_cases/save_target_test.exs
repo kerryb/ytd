@@ -1,5 +1,5 @@
 defmodule YTD.Users.SaveTargetTest do
-  use YTD.DataCase, async: true
+  use YTD.DataCase
 
   import Assertions, only: [assert_lists_equal: 3, assert_structs_equal: 3]
 

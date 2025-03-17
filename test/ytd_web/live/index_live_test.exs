@@ -1,5 +1,5 @@
 defmodule YTDWeb.IndexLiveTest do
-  use YTDWeb.ConnCase, async: true
+  use YTDWeb.ConnCase
 
   import ExUnit.CaptureLog
   import Mox

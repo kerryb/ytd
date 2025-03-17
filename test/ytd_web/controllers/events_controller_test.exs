@@ -1,5 +1,5 @@
 defmodule YTDWeb.EventsControllerTest do
-  use YTDWeb.ConnCase, async: true
+  use YTDWeb.ConnCase
 
   import Mox
 

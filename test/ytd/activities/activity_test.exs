@@ -1,5 +1,5 @@
 defmodule YTD.Activities.ActivityTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   alias Strava.DetailedActivity
   alias Strava.SummaryActivity

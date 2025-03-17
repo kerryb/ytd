@@ -7,5 +7,5 @@ defmodule YTD do
   if it comes from the database, an external API or others.
   """
 
-  use Boundary, deps: [], exports: []
+  use Boundary, deps: [], exports: [Release]
 end

@@ -1,5 +1,5 @@
 defmodule YTD.Users.UpdateTokensTest do
-  use YTD.DataCase, async: true
+  use YTD.DataCase
 
   alias YTD.Repo
   alias YTD.Users.UpdateTokens

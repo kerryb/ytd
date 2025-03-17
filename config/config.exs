@@ -29,24 +29,6 @@ config :phoenix, :template_engines,
   slime: PhoenixSlime.Engine,
   slimleex: PhoenixSlime.LiveViewEngine
 
-config :phoenix_copy,
-  default: [
-    source: Path.expand("../assets/static/", __DIR__),
-    destination: Path.expand("../priv/static/", __DIR__),
-    debounce: 100
-  ]
-
-config :tailwind,
-  version: "3.2.4",
-  default: [
-    args: ~w(
-      --config=tailwind.config.js
-      --input=css/app.css
-      --output=../priv/static/assets/app.css
-    ),
-    cd: Path.expand("../assets", __DIR__)
-  ]
-
 # Configures the endpoint
 config :ytd, YTDWeb.Endpoint,
   url: [host: "localhost"],

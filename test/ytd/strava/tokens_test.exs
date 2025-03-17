@@ -1,5 +1,5 @@
 defmodule YTD.Strava.TokensTest do
-  use ExUnit.Case, async: true, async: true
+  use ExUnit.Case
 
   alias YTD.Strava.Tokens
 

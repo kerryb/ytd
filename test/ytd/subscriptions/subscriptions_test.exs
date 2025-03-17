@@ -1,5 +1,5 @@
 defmodule YTD.SubscriptionsTest do
-  use YTD.DataCase, async: true
+  use YTD.DataCase
 
   import Mox
 

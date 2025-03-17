@@ -10,7 +10,25 @@ config :phoenix, :plug_init_mode, :runtime
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
+config :phoenix_copy,
+  default: [
+    source: Path.expand("../assets/static/", __DIR__),
+    destination: Path.expand("../priv/static/", __DIR__),
+    debounce: 100
+  ]
+
 config :strava, redirect_uri: "http://localhost:4000"
+
+config :tailwind,
+  version: "3.2.4",
+  default: [
+    args: ~w(
+      --config=tailwind.config.js
+      --input=css/app.css
+      --output=../priv/static/assets/app.css
+    ),
+    cd: Path.expand("../assets", __DIR__)
+  ]
 
 # Configure your database
 # For development, we disable any cache and enable
@@ -20,10 +38,9 @@ config :strava, redirect_uri: "http://localhost:4000"
 # watchers to your application. For example, we use it
 # with esbuild to recompile .js and .css sources.
 config :ytd, YTD.Repo,
-  database: "ytd_dev",
-  hostname: "localhost",
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  database: Path.expand("../ytd_dev.db", Path.dirname(__ENV__.file)),
+  pool_size: 5,
+  show_sensitive_data_on_connection_error: true
 
 config :ytd, YTDWeb.Endpoint,
   http: [port: 4000],

@@ -10,11 +10,11 @@ kill_signal = 'SIGTERM'
 [build]
 
 [deploy]
-  release_command = '/app/bin/migrate'
 
 [env]
   PHX_HOST = 'ytd.fly.dev'
   PORT = '8080'
+  DATABASE_PATH = "/mnt/ytd/ytd.db"
 
 [http_service]
   internal_port = 8080
@@ -28,6 +28,10 @@ kill_signal = 'SIGTERM'
     type = 'connections'
     hard_limit = 1000
     soft_limit = 1000
+
+[mounts]
+  source="ytd"
+  destination="/mnt/ytd"
 
 [[vm]]
   size = 'shared-cpu-1x'
