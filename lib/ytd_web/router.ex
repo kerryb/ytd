@@ -3,6 +3,7 @@ defmodule YTDWeb.Router do
   use YTDWeb, :router
 
   pipeline :browser do
+    plug :put_root_layout, html: {MyAppWeb.Layouts, :root}
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_live_flash)

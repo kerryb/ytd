@@ -13,7 +13,6 @@ defmodule YTD.MixProject do
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
       dialyzer: dialyzer(),
-      preferred_cli_env: preferred_cli_env(),
       releases: releases(),
       boundary: boundary()
     ]
@@ -37,6 +36,7 @@ defmodule YTD.MixProject do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
+    # styler:sort
     [
       {:assertions, "~> 0.10", only: :test},
       {:boundary, "~> 0.8", runtime: false},
@@ -54,9 +54,10 @@ defmodule YTD.MixProject do
       {:hammox, "~> 0.2", only: :test},
       {:heroicons, "~> 0.5"},
       {:jason, "~> 1.0"},
+      {:lazy_html, ">= 0.1.0", only: :test},
       {:phoenix, "~> 1.7"},
-      {:phoenix_ecto, "~> 4.1"},
       {:phoenix_copy, "~> 0.1", only: :dev},
+      {:phoenix_ecto, "~> 4.1"},
       {:phoenix_html, "~> 4.0"},
       {:phoenix_live_dashboard, "~> 0.5"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
@@ -97,11 +98,13 @@ defmodule YTD.MixProject do
     ]
   end
 
-  defp preferred_cli_env do
+  def cli do
     [
-      coveralls: :test,
-      "coveralls.detail": :test,
-      "coveralls.html": :test
+      preferred_envs: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 

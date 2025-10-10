@@ -29,7 +29,7 @@ defmodule YTDWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: YTDWeb
+      use Phoenix.Controller, formats: [:html]
       use Gettext, backend: YTDWeb.Gettext
 
       import Plug.Conn

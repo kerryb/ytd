@@ -71,7 +71,7 @@ defmodule YTDWeb.AuthPlug do
 
     conn
     |> put_session("athlete_id", tokens.athlete_id)
-    |> Phoenix.Controller.redirect(to: "/")
+    |> Controller.redirect(to: "/")
     |> halt()
   end
 
