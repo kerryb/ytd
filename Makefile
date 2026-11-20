@@ -19,7 +19,7 @@ compile:
 dialyzer:
 	mix dialyzer --format dialyxir
 test:
-	mix coveralls.html
+	mix coveralls.html --warnings-as-errors
 docs:
 	mix docs
 outdated:
