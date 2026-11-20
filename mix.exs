@@ -54,6 +54,7 @@ defmodule YTD.MixProject do
       {:hammox, "~> 0.2", only: :test},
       {:heroicons, "~> 0.5"},
       {:jason, "~> 1.0"},
+      {:lazy_html, ">= 0.1.0", only: :test},
       {:phoenix, "~> 1.7"},
       {:phoenix_ecto, "~> 4.1"},
       {:phoenix_copy, "~> 0.1", only: :dev},
