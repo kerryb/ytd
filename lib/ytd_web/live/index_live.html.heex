@@ -1,5 +1,5 @@
 <hr class="separator" />
-<form class="flex flex-row justify-between" phx-change="select">
+<form class="flex flex-row justify-between" id="main-form" phx-change="select">
   <select class="select-noborder cursor-pointer" id="type" name="type">
     <%= for type <- @types do %>
       <%= if type == @type do %>

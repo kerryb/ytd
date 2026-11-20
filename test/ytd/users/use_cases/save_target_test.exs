@@ -7,8 +7,6 @@ defmodule YTD.Users.SaveTargetTest do
   alias YTD.Users.SaveTarget
   alias YTD.Users.Target
 
-  require Ecto.Query
-
   describe "YTD.Users.SaveTarget.call/4" do
     test "returns a multi that creates a target if none exists for the activity type" do
       user = insert(:user)
