@@ -5,7 +5,7 @@ defmodule YTD.MixProject do
     [
       app: :ytd,
       version: version(),
-      elixir: "~> 1.10",
+      elixir: "~> 1.20",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:boundary] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
