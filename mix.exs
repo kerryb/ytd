@@ -13,7 +13,7 @@ defmodule YTD.MixProject do
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
       dialyzer: dialyzer(),
-      preferred_cli_env: preferred_cli_env(),
+      cli: cli(),
       releases: releases(),
       boundary: boundary()
     ]
@@ -97,12 +97,8 @@ defmodule YTD.MixProject do
     ]
   end
 
-  defp preferred_cli_env do
-    [
-      coveralls: :test,
-      "coveralls.detail": :test,
-      "coveralls.html": :test
-    ]
+  def cli do
+    [preferred_envs: [coveralls: :test, "coveralls.detail": :test, "coveralls.html": :test]]
   end
 
   defp version, do: "VERSION" |> File.read() |> extract_version()
