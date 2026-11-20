@@ -1,6 +1,6 @@
 .PHONY: bumbailiff check-working-dir-clean check-version-up-to-date clean deploy dialyzer \
 	setup style test unit-test update-deps
-all: clean style compile dialyzer test docs bumbailiff
+all: style compile dialyzer test docs bumbailiff
 setup:
 	mix deps.get
 	mix ecto.setup
