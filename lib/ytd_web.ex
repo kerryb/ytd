@@ -29,7 +29,7 @@ defmodule YTDWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: YTDWeb
+      use Phoenix.Controller, plug: :put_layout, html: YTDWeb.LayoutView, formats: [:html, :json]
       use Gettext, backend: YTDWeb.Gettext
 
       import Plug.Conn

@@ -28,7 +28,7 @@ defmodule YTD.Factory do
       type: Enum.random(["Run", "Ride", "Swim"]),
       name: Faker.Lorem.sentence(3),
       distance: :rand.uniform_real() * 100,
-      start_date: DateTime.add(DateTime.utc_now(), -:rand.uniform(10_000_000), :second)
+      start_date: DateTime.shift(DateTime.utc_now(), second: -:rand.uniform(10_000_000))
     }
   end
 

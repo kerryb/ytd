@@ -5,7 +5,6 @@ defmodule YTDWeb.IndexLive do
   """
 
   use YTDWeb, :live_view
-  use YTDWeb, :verified_routes
 
   import YTDWeb.Components.Activities
   import YTDWeb.Components.Graph
