@@ -2,15 +2,13 @@
 #
 # Server setup script
 
-set -x
-set -e
+set -xe
+umask 022
 user="ytd"
 base_dir="/opt/ytd"
 database_root="/var/postgres"
 database_password=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-set -u
-set -o pipefail
-umask 022
+set -uo pipefail
 
 setup() {
   create_user
@@ -18,16 +16,16 @@ setup() {
   set_up_maintenance_page_dir
   install_nginx
   install_certbot
-  set_up_nginx
-  install_postgres
-  set_up_postgres
-  create_database
-  set_up_environment
-  install_systemd_service
+  # set_up_nginx
+  # install_postgres
+  # set_up_postgres
+  # create_database
+  # set_up_environment
+  # install_systemd_service
 }
 
 create_user() {
-  if ! grep -q "^${user}:" /etc/passwd ; then
+  if ! grep -q "^${user}:" /etc/passwd; then
     useradd -m -s /bin/bash -d ${base_dir} "${user}"
   fi
 }
@@ -36,7 +34,7 @@ set_up_release_dirs() {
   mkdir -p "${base_dir}/releases"
   mkdir -p "${base_dir}/shared/var"
   cp files/ytd/deploy-release.sh ${base_dir}
-  chown -R #{user} ${base_dir}
+  chown -R ${user} ${base_dir}
   chmod +x ${base_dir}/deploy-release.sh
 }
 
@@ -48,20 +46,25 @@ set_up_maintenance_page_dir() {
 }
 
 install_nginx() {
-  yum install -y yum-utils
-  cp files/yum/nginx.repo /etc/yum.repos.d/nginx.repo
-  yum install -y nginx
+  if [[ ! -f /usr/sbin/nginx ]]; then
+    apt install -y curl gnupg2 ca-certificates lsb-release ubuntu-keyring
+    curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor >/usr/share/keyrings/nginx-archive-keyring.gpg
+    # gpg --dry-run --quiet --no-keyring --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg |
+    #   grep -q 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
+    echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] https://nginx.org/packages/ubuntu $(lsb_release -cs) nginx" \
+      >/etc/apt/sources.list.d/nginx.list
+    echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
+      >/etc/apt/preferences.d/99nginx
+    apt -y update
+    apt -y install nginx
+  fi
 }
 
 install_certbot() {
-  if [[ ! -f /usr/bin/certbot ]] ; then
-    yum install -y epel-release
-    yum install -y snapd
-    systemctl enable --now snapd.socket
-    ln -s /var/lib/snapd/snap /snap
-    snap wait system seed.loaded
+  if [[ ! -f /usr/bin/certbot ]]; then
     snap install --classic certbot
     ln -s /snap/bin/certbot /usr/bin/certbot
+    certbot --nginx
   fi
 }
 
@@ -81,13 +84,13 @@ set_up_nginx() {
 }
 
 install_postgres() {
-  yum update -y
-  yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-  yum install -y postgresql13-server
+  apt install -y https://download.postgresql.org/pub/repos/apt/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+  apt update -y
+  apt install -y postgresql13-server
 }
 
 set_up_postgres() {
-  if [[ ! -e ${database_root}/base ]] ; then
+  if [[ ! -e ${database_root}/base ]]; then
     /usr/pgsql-13/bin/postgresql-13-setup initdb
     systemctl enable postgresql-13
     systemctl stop postgresql-13
@@ -108,8 +111,8 @@ EOSUDO
 }
 
 set_up_environment() {
-  if ! [[ -f ${base_dir}/ytd.env ]] ; then
-    cat <<EOF >> ${base_dir}/ytd.env
+  if ! [[ -f ${base_dir}/ytd.env ]]; then
+    cat <<EOF >>${base_dir}/ytd.env
 RELEASE_NAME='ytd'
 PHX_SERVER=true
 RUN_ERL_LOG_MAXSIZE=200000
@@ -128,21 +131,20 @@ YTD_STRAVA_REDIRECT_URL='-----UPDATE ME-----'
 EOF
   fi
 
-  if ! grep -q ytd\.env ${base_dir}/.bash_profile ; then
-    echo 'source ytd.env' >> ${base_dir}/.bash_profile
-    sed 's/^\([^=]*\)=.*/export \1/' ${base_dir}/ytd.env >> ${base_dir}/.bash_profile
+  if ! grep -q ytd\.env ${base_dir}/.bash_profile; then
+    echo 'source ytd.env' >>${base_dir}/.bash_profile
+    sed 's/^\([^=]*\)=.*/export \1/' ${base_dir}/ytd.env >>${base_dir}/.bash_profile
   fi
 
-  if [[ ! -f ${base_dir}/.profile ]] ; then
+  if [[ ! -f ${base_dir}/.profile ]]; then
     ln -s ${base_dir}/.{bash_,}profile
   fi
 }
 
-
 install_systemd_service() {
   cp files/ytd/ytd.service /usr/lib/systemd/system/ytd.service
   systemctl enable ytd
-  echo "${user} ALL=(root) NOPASSWD: /bin/systemctl * ytd" > /etc/sudoers.d/${user}
+  echo "${user} ALL=(root) NOPASSWD: /bin/systemctl * ytd" >/etc/sudoers.d/${user}
 }
 
 setup
