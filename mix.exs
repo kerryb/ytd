@@ -92,6 +92,7 @@ defmodule YTD.MixProject do
 
   defp dialyzer do
     [
+      flags: [:no_opaque],
       plt_add_deps: :app_tree,
       ignore_warnings: "dialyzer_ignore_warnings.exs"
     ]
