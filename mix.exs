@@ -37,6 +37,7 @@ defmodule YTD.MixProject do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
+    # styler:sort
     [
       {:assertions, "~> 0.10", only: :test},
       {:boundary, "~> 0.8", runtime: false},
@@ -56,8 +57,8 @@ defmodule YTD.MixProject do
       {:jason, "~> 1.0"},
       {:lazy_html, ">= 0.1.0", only: :test},
       {:phoenix, "~> 1.7"},
-      {:phoenix_ecto, "~> 4.1"},
       {:phoenix_copy, "~> 0.1", only: :dev},
+      {:phoenix_ecto, "~> 4.1"},
       {:phoenix_html, "~> 4.0"},
       {:phoenix_live_dashboard, "~> 0.5"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
