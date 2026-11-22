@@ -16,12 +16,12 @@ setup() {
   set_up_maintenance_page_dir
   install_nginx
   install_certbot
-  # set_up_nginx
-  # install_postgres
-  # set_up_postgres
-  # create_database
-  # set_up_environment
-  # install_systemd_service
+  set_up_nginx
+  install_postgres
+  set_up_postgres
+  create_database
+  set_up_environment
+  install_systemd_service
 }
 
 create_user() {
@@ -49,8 +49,6 @@ install_nginx() {
   if [[ ! -f /usr/sbin/nginx ]]; then
     apt install -y curl gnupg2 ca-certificates lsb-release ubuntu-keyring
     curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor >/usr/share/keyrings/nginx-archive-keyring.gpg
-    # gpg --dry-run --quiet --no-keyring --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg |
-    #   grep -q 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
     echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] https://nginx.org/packages/ubuntu $(lsb_release -cs) nginx" \
       >/etc/apt/sources.list.d/nginx.list
     echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
@@ -84,17 +82,18 @@ set_up_nginx() {
 }
 
 install_postgres() {
-  apt install -y https://download.postgresql.org/pub/repos/apt/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-  apt update -y
-  apt install -y postgresql13-server
+  apt -y install postgresql-common
+  /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+  apt -y update
+  apt -y install postgresql-18
 }
 
 set_up_postgres() {
   if [[ ! -e ${database_root}/base ]]; then
-    /usr/pgsql-13/bin/postgresql-13-setup initdb
-    systemctl enable postgresql-13
-    systemctl stop postgresql-13
-    systemctl start postgresql-13
+    /usr/pgsql-18/bin/postgresql-18-setup initdb
+    systemctl enable postgresql-18
+    systemctl stop postgresql-18
+    systemctl start postgresql-18
   fi
 }
 
