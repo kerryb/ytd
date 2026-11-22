@@ -51,11 +51,12 @@ defmodule YTD.MixProject do
       {:excoveralls, "~> 0.13", only: :test},
       {:faker, "~> 0.17", only: :test},
       {:floki, ">= 0.0.0", only: :test},
-      {:gettext, "~> 0.11"},
-      {:hammox, "~> 0.2", only: :test},
+      {:gettext, "~> 1.0"},
+      {:hammox, "~> 1.0", only: :test},
       {:heroicons, "~> 0.5"},
       {:jason, "~> 1.0"},
       {:lazy_html, ">= 0.1.0", only: :test},
+      {:oauth2, "~> 2.0", override: true},
       {:phoenix, "~> 1.7"},
       {:phoenix_copy, "~> 0.1", only: :dev},
       {:phoenix_ecto, "~> 4.1"},
@@ -70,7 +71,7 @@ defmodule YTD.MixProject do
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
-      {:timex, "~> 3.6"}
+      {:timex, "~> 4.0"}
     ]
   end
 
